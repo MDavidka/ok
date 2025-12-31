@@ -1,0 +1,113 @@
+// api.ts
+
+import { DataType } from './types/data';
+
+const API_BASE_URL = 'https://api.example.com'; // Replace with your actual API base URL
+
+/**
+ * Fetches data from the specified endpoint.
+ * @param endpoint The endpoint to fetch data from.
+ * @returns A promise that resolves to the data or null if an error occurs.
+ */
+async function fetchData<T>(endpoint: string): Promise<T | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${endpoint}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data: T = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+}
+
+/**
+ * Sends data to the specified endpoint using the specified method.
+ * @param endpoint The endpoint to send data to.
+ * @param method The HTTP method to use (e.g., 'POST', 'PUT', 'DELETE').
+ * @param data The data to send in the request body.
+ * @returns A promise that resolves to the response data or null if an error occurs.
+ */
+async function sendData<T>(endpoint: string, method: string, data: any): Promise<T | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const responseData: T = await response.json();
+    return responseData;
+  } catch (error) {
+    console.error('Error sending data:', error);
+    return null;
+  }
+}
+
+/**
+ * Retrieves a list of items.
+ * @returns A promise that resolves to an array of items or null if an error occurs.
+ */
+export async function getItems(): Promise<DataType[] | null> {
+  return fetchData<DataType[]>('items');
+}
+
+/**
+ * Retrieves a single item by its ID.
+ * @param id The ID of the item to retrieve.
+ * @returns A promise that resolves to the item or null if an error occurs.
+ */
+export async function getItem(id: string): Promise<DataType | null> {
+  return fetchData<DataType>(`items/${id}`);
+}
+
+/**
+ * Creates a new item.
+ * @param item The item data to create.
+ * @returns A promise that resolves to the created item or null if an error occurs.
+ */
+export async function createItem(item: DataType): Promise<DataType | null> {
+  return sendData<DataType>('items', 'POST', item);
+}
+
+/**
+ * Updates an existing item.
+ * @param id The ID of the item to update.
+ * @param item The updated item data.
+ * @returns A promise that resolves to the updated item or null if an error occurs.
+ */
+export async function updateItem(id: string, item: DataType): Promise<DataType | null> {
+  return sendData<DataType>(`items/${id}`, 'PUT', item);
+}
+
+/**
+ * Deletes an item by its ID.
+ * @param id The ID of the item to delete.
+ * @returns A promise that resolves to true if the item was deleted successfully, or false if an error occurs.
+ */
+export async function deleteItem(id: string): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/items/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return response.status === 204; // Assuming 204 No Content indicates success
+  } catch (error) {
+    console.error('Error deleting item:', error);
+    return false;
+  }
+}
