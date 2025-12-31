@@ -1,0 +1,97 @@
+import { fetchData } from './api';
+import { Button } from './components/button';
+import { Card } from './components/card';
+import { formatCurrency } from './utils/format';
+import { useStore } from './state/store';
+
+interface AppState {
+  isLoading: boolean;
+  data: any[];
+  error: string | null;
+}
+
+const App = () => {
+  const { state, dispatch } = useStore<AppState>({
+    isLoading: true,
+    data: [],
+    error: null,
+  });
+
+  React.useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await fetchData();
+        dispatch({ type: 'SET_DATA', payload: data });
+      } catch (error: any) {
+        dispatch({ type: 'SET_ERROR', payload: error.message });
+      } finally {
+        dispatch({ type: 'SET_LOADING', payload: false });
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const handleRetry = () => {
+    dispatch({ type: 'SET_LOADING', payload: true });
+    dispatch({ type: 'SET_ERROR', payload: null });
+    const loadData = async () => {
+      try {
+        const data = await fetchData();
+        dispatch({ type: 'SET_DATA', payload: data });
+      } catch (error: any) {
+        dispatch({ type: 'SET_ERROR', payload: error.message });
+      } finally {
+        dispatch({ type: 'SET_LOADING', payload: false });
+      }
+    };
+
+    loadData();
+  };
+
+  if (state.isLoading) {
+    return React.createElement('div', { className: 'flex justify-center items-center h-screen' },
+      React.createElement('p', { className: 'text-gray-600 text-lg' }, 'Loading...')
+    );
+  }
+
+  if (state.error) {
+    return React.createElement('div', { className: 'flex flex-col justify-center items-center h-screen' },
+      React.createElement('p', { className: 'text-red-600 text-lg mb-4' }, `Error: ${state.error}`),
+      React.createElement(Button, {
+        label: 'Retry',
+        onClick: handleRetry,
+        style: 'primary',
+      })
+    );
+  }
+
+  return React.createElement('div', { className: 'container mx-auto p-4' },
+    React.createElement('h1', { className: 'text-2xl font-bold mb-4' }, 'My Awesome App'),
+    React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' },
+      state.data.map((item: any) =>
+        React.createElement(Card, {
+          key: item.id,
+          title: item.title,
+          description: item.description,
+          imageUrl: item.imageUrl,
+          actions: [
+            React.createElement(Button, {
+              label: 'View',
+              onClick: () => console.log(`View ${item.title}`),
+              style: 'secondary',
+            }),
+            React.createElement(Button, {
+              label: `Buy - ${formatCurrency(item.price)}`,
+              onClick: () => console.log(`Buy ${item.title}`),
+              style: 'primary',
+            }),
+          ],
+        })
+      )
+    )
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root')!);
+root.render(React.createElement(App));
