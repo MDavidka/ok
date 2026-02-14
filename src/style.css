@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: #64ffda;
+    --color-secondary: #a8b2d1;
+    --color-accent: #f97316;
+    --color-bg: #0a192f;
+    --color-bg-secondary: #112240;
+    --color-text: #ccd6f6;
+    --color-text-light: #a8b2d1;
+    --font-heading: 'Inter', sans-serif;
+    --font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  body {
+    @apply bg-color-bg text-color-text font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-semibold;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  a {
+    @apply text-color-primary hover:text-color-accent transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24;
+  }
+
+  .btn-primary {
+    @apply bg-color-primary text-color-bg font-semibold py-2 px-4 rounded hover:bg-color-accent transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply border border-color-primary text-color-primary font-semibold py-2 px-4 rounded hover:bg-color-bg-secondary transition-colors duration-200;
+  }
+}
