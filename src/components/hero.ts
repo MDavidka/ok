@@ -7,17 +7,25 @@ export function renderHero(container: HTMLElement): void {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div>
             <h1 class="text-4xl md:text-5xl font-bold mb-4">
-              Hello, I'm John Doe
+              Hi, I'm [Your Name]
             </h1>
             <p class="text-lg mb-6">
-              I'm a passionate web developer specializing in modern JavaScript frameworks and building scalable web applications.
+              I'm a passionate frontend developer specializing in creating
+              modern and user-friendly web applications.
             </p>
-            <a href="#projects" class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <a
+              href="#"
+              class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
               View My Work
             </a>
           </div>
           <div>
-            <img src="https://via.placeholder.com/500" alt="Profile Picture" class="rounded-lg shadow-md">
+            <img
+              src="https://via.placeholder.com/500"
+              alt="Your Image"
+              class="rounded-lg shadow-md"
+            />
           </div>
         </div>
       </div>

@@ -1,21 +1,22 @@
 # Modern Portfolio Website
 
-This project is a modern, minimalist portfolio website built with Vite, TypeScript, and Tailwind CSS. It is designed to be deployed on Cloudflare Pages for optimal performance and scalability.
+This project is a modern, minimalist portfolio website built with Vite, TypeScript, and Tailwind CSS. It is designed to be deployed to Cloudflare Pages for optimal performance and scalability.
 
 ## Features
 
-*   **Modern Design:** Clean and professional design with a dark theme.
-*   **Responsive Layout:** Fully responsive design that adapts to different screen sizes.
-*   **Fast Performance:** Built with Vite for fast development and optimized production builds.
-*   **TypeScript:** Type-safe code with TypeScript.
-*   **Tailwind CSS:** Utility-first CSS framework for rapid development and consistent styling.
-*   **Cloudflare Pages Deployment:** Easy deployment to Cloudflare Pages.
+*   **Modern Design:** Clean and professional design with a focus on readability and user experience.
+*   **Dark Mode:** Implemented with Tailwind CSS for a sleek and accessible experience.
+*   **Responsive Layout:** Optimized for various screen sizes, ensuring a consistent experience across devices.
+*   **TypeScript:** Developed with TypeScript for type safety and maintainability.
+*   **Vite:** Utilizes Vite for fast development and optimized production builds.
+*   **Tailwind CSS:** Styled with Tailwind CSS for rapid and consistent styling.
+*   **Cloudflare Pages Ready:** Designed to be easily deployed to Cloudflare Pages.
 
 ## Technologies Used
 
-*   **Vite:** A fast build tool and development server.
-*   **TypeScript:** A typed superset of JavaScript.
-*   **Tailwind CSS:** A utility-first CSS framework.
+*   Vite
+*   TypeScript
+*   Tailwind CSS
 
 ## Project Structure
 
@@ -32,8 +33,9 @@ project/
 │       ├── footer.ts
 │       ├── hero.ts
 │       ├── about.ts
+│       ├── project-card.ts
 │       ├── projects.ts
-│       └── contact.ts
+│       └── contact-form.ts
 ├── public/
 ├── package.json
 ├── tsconfig.json
@@ -81,7 +83,7 @@ project/
     yarn dev
     ```
 
-    This will start the Vite development server and open the website in your browser.
+    This will start the Vite development server, and you can view the website in your browser at `http://localhost:5173`.
 
 ### Building for Production
 
@@ -98,14 +100,18 @@ project/
 ### Deployment to Cloudflare Pages
 
 1.  Connect your Cloudflare account to your Git repository.
-2.  Configure Cloudflare Pages to build the project from the `dist` directory.
+2.  Configure Cloudflare Pages to build from the `dist` directory.
 3.  Deploy your website.
 
 ## Customization
 
-*   **Styling:** Customize the website's appearance by modifying the `src/style.css` file. This file contains CSS custom properties and global Tailwind styles.
-*   **Components:** Modify the components in the `src/components` directory to change the content and structure of the website.
-*   **Configuration:** Update the `src/types.ts` file to modify site-wide configurations.
+*   **Styling:** Modify the `src/style.css` file to customize the design system and global styles. Tailwind CSS utility classes are used throughout the project for component-specific styling.
+*   **Components:** Edit the files in the `src/components/` directory to modify the content and structure of individual components.
+*   **Configuration:** Update the `src/types.ts` file to modify shared types and interfaces.
+
+## Contributing
+
+Contributions are welcome! Please submit a pull request with your changes.
 
 ## License
 

@@ -15,10 +15,10 @@ export interface Project {
   description: string;
   image: string;
   link: string;
-  tags: string[];
+  github?: string;
 }
 
-export interface ContactForm {
+export interface ContactFormData {
   name: string;
   email: string;
   message: string;

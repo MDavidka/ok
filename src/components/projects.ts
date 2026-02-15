@@ -1,33 +1,13 @@
 import { Project } from '../types';
 
-const projectsData: Project[] = [
-  {
-    title: 'Project 1',
-    description: 'A brief description of project 1.',
-    imageUrl: 'https://via.placeholder.com/400x300',
-    liveUrl: '#',
-    githubUrl: '#'
-  },
-  {
-    title: 'Project 2',
-    description: 'A brief description of project 2.',
-    imageUrl: 'https://via.placeholder.com/400x300',
-    liveUrl: '#',
-    githubUrl: '#'
-  },
-  {
-    title: 'Project 3',
-    description: 'A brief description of project 3.',
-    imageUrl: 'https://via.placeholder.com/400x300',
-    liveUrl: '#',
-    githubUrl: '#'
-  }
-];
+interface ProjectsProps {
+  projects: Project[];
+}
 
-export function renderProjects(container: HTMLElement): void {
+export function renderProjects(container: HTMLElement, props: ProjectsProps): void {
   const projectsSection = document.createElement('section');
   projectsSection.id = 'projects';
-  projectsSection.className = 'py-12 bg-gray-900 text-white';
+  projectsSection.className = 'py-16 bg-gray-900 text-white';
 
   const containerDiv = document.createElement('div');
   containerDiv.className = 'container mx-auto px-4';
@@ -41,45 +21,36 @@ export function renderProjects(container: HTMLElement): void {
   const projectsGrid = document.createElement('div');
   projectsGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8';
 
-  projectsData.forEach(project => {
+  props.projects.forEach(project => {
     const projectCard = document.createElement('div');
-    projectCard.className = 'rounded-lg shadow-md overflow-hidden bg-gray-800';
+    projectCard.className = 'bg-gray-800 rounded-lg shadow-md overflow-hidden';
 
     const image = document.createElement('img');
     image.src = project.imageUrl;
-    image.alt = project.title;
+    image.alt = project.name;
     image.className = 'w-full h-48 object-cover';
 
     const content = document.createElement('div');
     content.className = 'p-4';
 
-    const projectTitle = document.createElement('h3');
-    projectTitle.className = 'text-xl font-semibold mb-2';
-    projectTitle.textContent = project.title;
+    const projectName = document.createElement('h3');
+    projectName.className = 'text-xl font-semibold mb-2';
+    projectName.textContent = project.name;
 
     const description = document.createElement('p');
-    description.className = 'text-gray-300 mb-4';
+    description.className = 'text-gray-400 mb-4';
     description.textContent = project.description;
 
-    const links = document.createElement('div');
-    links.className = 'flex justify-between';
+    const link = document.createElement('a');
+    link.href = project.link;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.className = 'inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded';
+    link.textContent = 'View Project';
 
-    const liveLink = document.createElement('a');
-    liveLink.href = project.liveUrl;
-    liveLink.textContent = 'Live Demo';
-    liveLink.className = 'text-blue-500 hover:text-blue-400';
-
-    const githubLink = document.createElement('a');
-    githubLink.href = project.githubUrl;
-    githubLink.textContent = 'GitHub';
-    githubLink.className = 'text-blue-500 hover:text-blue-400';
-
-    links.appendChild(liveLink);
-    links.appendChild(githubLink);
-
-    content.appendChild(projectTitle);
+    content.appendChild(projectName);
     content.appendChild(description);
-    content.appendChild(links);
+    content.appendChild(link);
 
     projectCard.appendChild(image);
     projectCard.appendChild(content);

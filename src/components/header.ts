@@ -9,7 +9,7 @@ export function renderHeader(container: HTMLElement, navItems: NavItem[]): void 
 
   const logo = document.createElement('a');
   logo.href = '#';
-  logo.textContent = 'Portfolio';
+  logo.textContent = 'My Portfolio';
   logo.className = 'text-2xl font-bold';
 
   nav.appendChild(logo);
@@ -22,7 +22,7 @@ export function renderHeader(container: HTMLElement, navItems: NavItem[]): void 
     const link = document.createElement('a');
     link.href = item.href;
     link.textContent = item.label;
-    link.className = 'hover:text-zinc-300 transition-colors duration-200';
+    link.className = 'hover:text-zinc-400 transition-colors duration-200';
     listItem.appendChild(link);
     navList.appendChild(listItem);
   });

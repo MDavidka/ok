@@ -4,7 +4,7 @@ import { renderFooter } from './components/footer'
 import { renderHero } from './components/hero'
 import { renderAbout } from './components/about'
 import { renderProjects } from './components/projects'
-import { renderContact } from './components/contact'
+import { renderContactForm } from './components/contact-form'
 
 document.addEventListener('DOMContentLoaded', () => {
   const app = document.querySelector<HTMLDivElement>('#app')
@@ -19,10 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const mainContainer = document.createElement('main')
   const footerContainer = document.createElement('footer')
 
-  // Add Tailwind classes for layout
-  headerContainer.classList.add('sticky', 'top-0', 'z-50', 'bg-zinc-900', 'bg-opacity-75', 'backdrop-blur', 'shadow-md')
-  mainContainer.classList.add('container', 'mx-auto', 'py-8', 'px-4', 'md:px-6')
-  footerContainer.classList.add('bg-zinc-900', 'text-zinc-400', 'py-6', 'text-center')
+  mainContainer.classList.add('container', 'mx-auto', 'py-8')
 
   // Append containers to the app
   app.appendChild(headerContainer)
@@ -31,9 +28,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Render components into their respective containers
   renderHeader(headerContainer)
-  renderHero(mainContainer)
-  renderAbout(mainContainer)
-  renderProjects(mainContainer)
-  renderContact(mainContainer)
+
+  // Create sections within the main container
+  const heroSection = document.createElement('section')
+  heroSection.id = 'hero'
+  mainContainer.appendChild(heroSection)
+  renderHero(heroSection)
+
+  const aboutSection = document.createElement('section')
+  aboutSection.id = 'about'
+  mainContainer.appendChild(aboutSection)
+  renderAbout(aboutSection)
+
+  const projectsSection = document.createElement('section')
+  projectsSection.id = 'projects'
+  mainContainer.appendChild(projectsSection)
+  renderProjects(projectsSection)
+
+  const contactSection = document.createElement('section')
+  contactSection.id = 'contact'
+  mainContainer.appendChild(contactSection)
+  renderContactForm(contactSection)
+
   renderFooter(footerContainer)
 })

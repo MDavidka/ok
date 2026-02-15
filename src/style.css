@@ -6,9 +6,9 @@
   :root {
     --color-primary: #64ffda;
     --color-secondary: #a8b2d1;
-    --color-accent: #f97316;
+    --color-accent: #f0db4f;
     --color-bg: #0a192f;
-    --color-bg-secondary: #112240;
+    --color-bg-secondary: #172a45;
     --color-text: #ccd6f6;
     --color-text-light: #a8b2d1;
     --font-heading: 'Inter', sans-serif;
@@ -23,33 +23,12 @@
     @apply font-heading font-semibold;
   }
 
-  h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl;
-  }
-
-  h2 {
-    @apply text-3xl md:text-4xl;
-  }
-
-  h3 {
-    @apply text-2xl md:text-3xl;
-  }
-
   a {
     @apply text-color-primary hover:text-color-accent transition-colors duration-200;
   }
 }
 
-@layer components {
-  .section-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24;
-  }
-
-  .btn-primary {
-    @apply bg-color-primary text-color-bg font-semibold py-2 px-4 rounded hover:bg-color-accent transition-colors duration-200;
-  }
-
-  .btn-secondary {
-    @apply border border-color-primary text-color-primary font-semibold py-2 px-4 rounded hover:bg-color-bg-secondary transition-colors duration-200;
-  }
+/* Example component styles (can be moved to component files if needed) */
+.btn-primary {
+  @apply bg-color-primary text-color-bg font-semibold py-2 px-4 rounded hover:bg-color-accent transition-colors duration-200;
 }
