@@ -1,34 +1,30 @@
-import '../style.css';
+import '../style.css'; // Import global styles
+import { SiteConfig } from '../types';
 
-export function renderHero(container: HTMLElement): void {
-  container.innerHTML = `
-    <section class="bg-gray-900 text-white py-20">
-      <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div>
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">
-              Hi, I'm [Your Name]
-            </h1>
-            <p class="text-lg mb-6">
-              I'm a passionate frontend developer specializing in creating
-              modern and user-friendly web applications.
-            </p>
-            <a
-              href="#"
-              class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              View My Work
-            </a>
-          </div>
-          <div>
-            <img
-              src="https://via.placeholder.com/500"
-              alt="Your Image"
-              class="rounded-lg shadow-md"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  `;
+export function renderHero(container: HTMLElement, config: SiteConfig): void {
+  const heroSection = document.createElement('section');
+  heroSection.className = 'py-20 md:py-32 bg-color-bg';
+
+  const heroContent = document.createElement('div');
+  heroContent.className = 'container mx-auto px-4 text-center';
+
+  const title = document.createElement('h1');
+  title.className = 'text-4xl md:text-5xl lg:text-6xl font-bold text-color-text mb-4';
+  title.textContent = `Hi, I'm ${config.author}.`;
+
+  const subtitle = document.createElement('p');
+  subtitle.className = 'text-color-secondary text-lg md:text-xl lg:text-2xl mb-8';
+  subtitle.textContent = config.description;
+
+  const button = document.createElement('a');
+  button.href = '#projects';
+  button.className = 'btn-primary';
+  button.textContent = 'View my work';
+
+  heroContent.appendChild(title);
+  heroContent.appendChild(subtitle);
+  heroContent.appendChild(button);
+
+  heroSection.appendChild(heroContent);
+  container.appendChild(heroSection);
 }

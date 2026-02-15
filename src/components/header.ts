@@ -1,18 +1,17 @@
+import '../style.css'; // Import global styles
 import { NavItem } from '../types';
 
 export function renderHeader(container: HTMLElement, navItems: NavItem[]): void {
   const header = document.createElement('header');
-  header.className = 'bg-zinc-900 text-white py-4 shadow-md sticky top-0 z-50';
+  header.className = 'bg-color-bg py-4 shadow-md';
 
   const nav = document.createElement('nav');
-  nav.className = 'container mx-auto flex items-center justify-between';
+  nav.className = 'container mx-auto px-4 flex items-center justify-between';
 
   const logo = document.createElement('a');
-  logo.href = '#';
-  logo.textContent = 'My Portfolio';
-  logo.className = 'text-2xl font-bold';
-
-  nav.appendChild(logo);
+  logo.href = '/';
+  logo.className = 'text-color-primary text-lg font-bold';
+  logo.textContent = 'My Simple Site';
 
   const navList = document.createElement('ul');
   navList.className = 'flex space-x-6';
@@ -21,12 +20,13 @@ export function renderHeader(container: HTMLElement, navItems: NavItem[]): void 
     const listItem = document.createElement('li');
     const link = document.createElement('a');
     link.href = item.href;
+    link.className = 'text-color-text hover:text-color-primary';
     link.textContent = item.label;
-    link.className = 'hover:text-zinc-400 transition-colors duration-200';
     listItem.appendChild(link);
     navList.appendChild(listItem);
   });
 
+  nav.appendChild(logo);
   nav.appendChild(navList);
   header.appendChild(nav);
   container.appendChild(header);

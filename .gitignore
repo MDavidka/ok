@@ -2,7 +2,12 @@ node_modules/
 dist/
 *.log
 .DS_Store
-Thumbs.db
-/.vscode/
+tmp/
 .env
-.env.*
+.env.*.local
+.local
+/output
+.vercel
+.idea
+.vscode
+*.swp
