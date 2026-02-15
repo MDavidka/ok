@@ -1,10 +1,22 @@
 export interface SiteConfig {
-  author: string;
+  title: string;
   description: string;
-  title?: string;
+  author: string;
 }
 
 export interface NavItem {
   label: string;
   href: string;
+}
+
+export interface ButtonProps {
+  label: string;
+  onClick?: () => void;
+  variant?: 'primary' | 'secondary';
+}
+
+export interface WelcomeMessageProps {
+  name: string;
+  title: string;
+  description: string;
 }

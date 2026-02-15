@@ -4,14 +4,15 @@
 
 @layer base {
   :root {
-    --color-primary: #3490dc;
-    --color-secondary: #9561e2;
-    --color-accent: #f39c12;
-    --color-bg: #fff;
-    --color-text: #222;
-    --color-text-light: #666;
+    --color-primary: #2563eb; /* Indigo-500 */
+    --color-secondary: #6b7280; /* Gray-500 */
+    --color-accent: #ea580c; /* Orange-500 */
+    --color-bg: #f9fafb; /* Gray-50 */
+    --color-text: #1e293b; /* Gray-800 */
+    --color-text-light: #4b5563; /* Gray-600 */
     --font-heading: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --animation-duration: 0.75s;
   }
 
   body {
@@ -19,12 +20,26 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading font-semibold;
+    @apply font-heading font-bold;
   }
 }
 
-@layer components {
-  .btn-primary {
-    @apply bg-color-primary text-white font-semibold py-2 px-4 rounded hover:bg-color-secondary transition-colors duration-200;
-  }
+/* Example component styles (can be moved to component files if needed) */
+.wave {
+  animation-name: wave-animation;
+  animation-duration: var(--animation-duration);
+  animation-iteration-count: infinite;
+  transform-origin: 70% 70%;
+  display: inline-block;
+}
+
+@keyframes wave-animation {
+  0% { transform: rotate( 0.0deg) }
+  10% { transform: rotate(14.0deg) }
+  20% { transform: rotate(-8.0deg) }
+  30% { transform: rotate(14.0deg) }
+  40% { transform: rotate(-4.0deg) }
+  50% { transform: rotate(10.0deg) }
+  60% { transform: rotate( 0.0deg) }
+  100% { transform: rotate( 0.0deg) }
 }
