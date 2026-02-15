@@ -1,22 +1,23 @@
-# Simple Modern Website with Wave Animation
+# Modern Portfolio Website
 
-This project is a simple, modern website built with Vite, TypeScript, and Tailwind CSS. It features a welcome message and a wave animation. It is designed to be deployed to Cloudflare Pages.
+This project is a modern portfolio website built with Vite, TypeScript, and Tailwind CSS. It features a dark theme and is designed to showcase projects, skills, and contact information. It is designed to be deployed to Cloudflare Pages.
 
 ## Features
 
-*   **Modern Design:** Clean and minimalist design using Tailwind CSS.
-*   **Wave Animation:** A subtle wave animation to add visual interest.
+*   **Modern Design:** Clean and minimalist design using Tailwind CSS with a dark theme.
 *   **Responsive Layout:** Designed for optimal viewing on various screen sizes.
 *   **TypeScript:** Written in TypeScript for type safety and maintainability.
 *   **Vite:** Fast build times and excellent development experience with Vite.
 *   **Cloudflare Pages Ready:** Optimized for deployment on Cloudflare Pages.
 *   **Dark Mode First:** Styles are designed with dark mode as the primary theme.
+*   **Sections:** Hero, About, Projects, Contact
 
 ## Technologies Used
 
 *   **Vite:** A fast build tool for modern web development.
 *   **TypeScript:** A superset of JavaScript that adds static typing.
 *   **Tailwind CSS:** A utility-first CSS framework.
+*   **GSAP:** Animation library
 
 ## Project Structure
 
@@ -31,9 +32,11 @@ project/
 │   └── components/
 │       ├── header.ts
 │       ├── footer.ts
-│       ├── welcomeMessage.ts
-│       ├── waveAnimation.ts
-│       ├── button.ts
+│       ├── hero.ts
+│       ├── about.ts
+│       ├── project-card.ts
+│       ├── project-list.ts
+│       ├── contact-form.ts
 │       └── layout.ts
 ├── public/
 ├── package.json

@@ -1,43 +1,67 @@
 import './style.css'
 import { renderHeader } from './components/header';
 import { renderFooter } from './components/footer';
-import { renderWelcomeMessage } from './components/welcomeMessage';
-import { renderWaveAnimation } from './components/waveAnimation';
-import { renderLayout } from './components/layout';
+import { renderHero } from './components/hero';
+import { renderAbout } from './components/about';
+import { renderProjectList } from './components/project-list';
+import { renderContactForm } from './components/contact-form';
+import { SiteConfig, NavItem } from './types';
 
 document.addEventListener('DOMContentLoaded', () => {
   const app = document.querySelector<HTMLDivElement>('#app');
-
   if (!app) {
     console.error('Root element with id "app" not found.');
     return;
   }
 
-  // Render the layout
-  const layout = renderLayout();
-  app.appendChild(layout);
+  const siteConfig: SiteConfig = {
+    title: 'My Portfolio',
+    description: 'A showcase of my work and skills.',
+    author: 'Your Name',
+  };
 
-  // Get the main content area from the layout
-  const mainContent = layout.querySelector<HTMLElement>('#main-content');
+  const navItems: NavItem[] = [
+    { label: 'About', href: '#about' },
+    { label: 'Projects', href: '#projects' },
+    { label: 'Contact', href: '#contact' },
+  ];
 
-  if (!mainContent) {
-    console.error('Main content area with id "main-content" not found.');
-    return;
-  }
+  // Create container for all content
+  const container = document.createElement('div');
+  container.classList.add('container', 'mx-auto', 'p-4');
+  app.appendChild(container);
 
-  // Render the header
-  const header = renderHeader();
-  layout.insertBefore(header, mainContent); // Insert header before main content
+  // Render Header
+  const headerContainer = document.createElement('header');
+  container.appendChild(headerContainer);
+  renderHeader(headerContainer, navItems);
 
-  // Render the welcome message
-  const welcomeMessage = renderWelcomeMessage();
-  mainContent.appendChild(welcomeMessage);
+  // Render Hero Section
+  const heroContainer = document.createElement('section');
+  heroContainer.id = 'hero';
+  container.appendChild(heroContainer);
+  renderHero(heroContainer);
 
-  // Render the wave animation
-  const waveAnimation = renderWaveAnimation();
-  mainContent.appendChild(waveAnimation);
+  // Render About Section
+  const aboutContainer = document.createElement('section');
+  aboutContainer.id = 'about';
+  container.appendChild(aboutContainer);
+  renderAbout(aboutContainer);
 
-  // Render the footer
-  const footer = renderFooter();
-  layout.appendChild(footer); // Append footer after main content
+  // Render Projects Section
+  const projectsContainer = document.createElement('section');
+  projectsContainer.id = 'projects';
+  container.appendChild(projectsContainer);
+  renderProjectList(projectsContainer);
+
+  // Render Contact Form
+  const contactContainer = document.createElement('section');
+  contactContainer.id = 'contact';
+  container.appendChild(contactContainer);
+  renderContactForm(contactContainer);
+
+  // Render Footer
+  const footerContainer = document.createElement('footer');
+  container.appendChild(footerContainer);
+  renderFooter(footerContainer, siteConfig);
 });
