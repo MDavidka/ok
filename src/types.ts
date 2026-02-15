@@ -2,7 +2,6 @@ export interface SiteConfig {
   title: string;
   description: string;
   author: string;
-  url: string;
 }
 
 export interface NavItem {
@@ -10,30 +9,28 @@ export interface NavItem {
   href: string;
 }
 
-export interface FeatureItem {
-  title: string;
-  description: string;
-  icon?: string; // e.g., a Tailwind class for an icon
-}
-
-export interface PricingPlan {
+export interface MenuItem {
+  id: number;
   name: string;
+  description: string;
   price: number;
-  currency: string;
-  features: string[];
-  isRecommended?: boolean;
-  buttonText: string;
+  image: string;
+  category: 'appetizer' | 'main' | 'dessert' | 'drink';
 }
 
-export interface FAQItem {
-  question: string;
-  answer: string;
+export interface Reservation {
+  name: string;
+  email: string;
+  phone: string;
+  date: string;
+  time: string;
+  guests: number;
+  message?: string;
 }
 
-export interface HeroProps {
-  title: string;
-  subtitle: string;
-  image?: string;
-  buttonText: string;
-  buttonLink: string;
+export interface Testimonial {
+  id: number;
+  name: string;
+  text: string;
+  rating: number;
 }

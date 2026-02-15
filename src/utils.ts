@@ -1,34 +1,32 @@
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { NavItem } from './types';
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+export function classNames(...classes: string[]): string {
+  return classes.filter(Boolean).join(' ');
 }
 
-export function formatCurrency(
-  amount: number,
-  currency: string = 'USD',
-  locale: string = 'en-US'
-): string {
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currency,
-  }).format(amount);
+export function formatDate(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
+  return date.toLocaleDateString(undefined, options);
 }
 
-export function debounce<T extends (...args: any[]) => void>(
-  func: T,
-  delay: number
-): T {
-  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+export function formatTime(date: Date): string {
+    const options: Intl.DateTimeFormatOptions = {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+    };
+    return date.toLocaleTimeString(undefined, options);
+}
 
-  return function debounced(...args: Parameters<T>): void {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-
-    timeoutId = setTimeout(() => {
-      func(...args);
-    }, delay);
-  } as T;
+export function generateNavigation(config: { baseUrl: string }): NavItem[] {
+  return [
+    { label: 'Home', href: config.baseUrl + '/' },
+    { label: 'Menu', href: config.baseUrl + '/menu' },
+    { label: 'Reservations', href: config.baseUrl + '/reservations' },
+    { label: 'Contact', href: config.baseUrl + '/contact' },
+  ];
 }

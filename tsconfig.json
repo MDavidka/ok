@@ -9,8 +9,7 @@
     "esModuleInterop": true,
     "useDefineForClassFields": true,
     "noEmit": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
+    "types": ["vite/client"]
   },
   "include": ["src"]
 }
