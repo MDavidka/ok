@@ -29,3 +29,11 @@ export interface FAQItem {
   question: string;
   answer: string;
 }
+
+export interface HeroProps {
+  title: string;
+  subtitle: string;
+  image?: string;
+  buttonText: string;
+  buttonLink: string;
+}
