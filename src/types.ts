@@ -2,6 +2,7 @@ export interface SiteConfig {
   title: string;
   description: string;
   author: string;
+  url: string;
 }
 
 export interface NavItem {
@@ -9,48 +10,22 @@ export interface NavItem {
   href: string;
 }
 
-export interface ButtonProps {
-  label: string;
-  onClick?: () => void;
-  variant?: 'primary' | 'secondary';
-}
-
-export interface WelcomeMessageProps {
-  name: string;
+export interface FeatureItem {
   title: string;
   description: string;
+  icon?: string; // e.g., a Tailwind class for an icon
 }
 
-export interface HeroProps {
+export interface PricingPlan {
   name: string;
-  title: string;
-  description: string;
-  image?: string;
+  price: number;
+  currency: string;
+  features: string[];
+  isRecommended?: boolean;
+  buttonText: string;
 }
 
-export interface AboutProps {
-  bio: string;
-  skills: string[];
-}
-
-export interface Project {
-  title: string;
-  description: string;
-  image: string;
-  link?: string;
-  github?: string;
-}
-
-export interface ProjectCardProps {
-  project: Project;
-}
-
-export interface ContactFormProps {
-  onSubmit: (data: ContactFormData) => void;
-}
-
-export interface ContactFormData {
-  name: string;
-  email: string;
-  message: string;
+export interface FAQItem {
+  question: string;
+  answer: string;
 }
