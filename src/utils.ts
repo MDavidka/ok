@@ -4,29 +4,13 @@ export function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(' ');
 }
 
-export function formatDate(date: Date): string {
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  };
-  return date.toLocaleDateString(undefined, options);
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-export function formatTime(date: Date): string {
-    const options: Intl.DateTimeFormatOptions = {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-    };
-    return date.toLocaleTimeString(undefined, options);
-}
-
-export function generateNavigation(config: { baseUrl: string }): NavItem[] {
-  return [
-    { label: 'Home', href: config.baseUrl + '/' },
-    { label: 'Menu', href: config.baseUrl + '/menu' },
-    { label: 'Reservations', href: config.baseUrl + '/reservations' },
-    { label: 'Contact', href: config.baseUrl + '/contact' },
-  ];
-}
+export const navigation: NavItem[] = [
+  { name: 'About', href: '#about' },
+  { name: 'Projects', href: '#projects' },
+  { name: 'Contact', href: '#contact' },
+];

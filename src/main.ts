@@ -1,52 +1,36 @@
 import './style.css'
 import { renderHeader } from './components/header';
 import { renderFooter } from './components/footer';
-import { renderMenu } from './components/menu';
-import { renderReservationForm } from './components/reservationForm';
-import { renderTestimonials } from './components/testimonials';
 import { renderHero } from './components/hero';
+import { renderAbout } from './components/about';
+import { renderProjects } from './components/projects';
+import { renderContactForm } from './components/contact-form';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const headerContainer = document.getElementById('header');
-  const footerContainer = document.getElementById('footer');
-  const menuContainer = document.getElementById('menu');
-  const reservationFormContainer = document.getElementById('reservationForm');
-  const testimonialsContainer = document.getElementById('testimonials');
-  const heroContainer = document.getElementById('hero');
+  const app = document.querySelector<HTMLDivElement>('#app');
 
-  if (headerContainer) {
-    renderHeader(headerContainer);
-  } else {
-    console.error('Header container not found');
+  if (!app) {
+    console.error('Root element with id "app" not found.');
+    return;
   }
 
-  if (footerContainer) {
-    renderFooter(footerContainer);
-  } else {
-    console.error('Footer container not found');
-  }
+  // Create container elements
+  const headerContainer = document.createElement('header');
+  const mainContainer = document.createElement('main');
+  const footerContainer = document.createElement('footer');
 
-  if (menuContainer) {
-    renderMenu(menuContainer);
-  } else {
-    console.error('Menu container not found');
-  }
+  mainContainer.classList.add('container', 'mx-auto', 'py-8');
 
-  if (reservationFormContainer) {
-    renderReservationForm(reservationFormContainer);
-  } else {
-    console.error('Reservation form container not found');
-  }
+  // Append containers to the app
+  app.appendChild(headerContainer);
+  app.appendChild(mainContainer);
+  app.appendChild(footerContainer);
 
-  if (testimonialsContainer) {
-    renderTestimonials(testimonialsContainer);
-  } else {
-    console.error('Testimonials container not found');
-  }
-
-  if (heroContainer) {
-    renderHero(heroContainer);
-  } else {
-    console.error('Hero container not found');
-  }
+  // Render components into their respective containers
+  renderHeader(headerContainer);
+  renderHero(mainContainer);
+  renderAbout(mainContainer);
+  renderProjects(mainContainer);
+  renderContactForm(mainContainer);
+  renderFooter(footerContainer);
 });

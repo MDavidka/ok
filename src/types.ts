@@ -2,35 +2,25 @@ export interface SiteConfig {
   title: string;
   description: string;
   author: string;
+  navItems: NavItem[];
 }
 
 export interface NavItem {
-  label: string;
+  title: string;
   href: string;
+  disabled?: boolean;
 }
 
-export interface MenuItem {
-  id: number;
-  name: string;
+export interface Project {
+  title: string;
   description: string;
-  price: number;
   image: string;
-  category: 'appetizer' | 'main' | 'dessert' | 'drink';
+  link: string;
+  github?: string;
 }
 
-export interface Reservation {
+export interface ContactForm {
   name: string;
   email: string;
-  phone: string;
-  date: string;
-  time: string;
-  guests: number;
-  message?: string;
-}
-
-export interface Testimonial {
-  id: number;
-  name: string;
-  text: string;
-  rating: number;
+  message: string;
 }
