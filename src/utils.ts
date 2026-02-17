@@ -9,6 +9,12 @@ export function formatDate(dateString: string): string {
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
+export function validateEmail(email: string): boolean {
+  // Basic email validation regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 export const navigation: NavItem[] = [
   { name: 'About', href: '#about' },
   { name: 'Projects', href: '#projects' },
