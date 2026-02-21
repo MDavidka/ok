@@ -3,12 +3,12 @@ export interface SiteConfig {
   description: string;
   author: string;
   navItems: NavItem[];
+  footerText: string;
 }
 
 export interface NavItem {
-  title: string;
+  label: string;
   href: string;
-  disabled?: boolean;
 }
 
 export interface Project {
@@ -16,10 +16,10 @@ export interface Project {
   description: string;
   image: string;
   link: string;
-  github?: string;
+  tags: string[];
 }
 
-export interface ContactForm {
+export interface ContactFormData {
   name: string;
   email: string;
   message: string;

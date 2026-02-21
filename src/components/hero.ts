@@ -1,6 +1,11 @@
 import { HeroData } from '../types';
 
 export function renderHero(container: HTMLElement, data: HeroData): void {
+  if (!container) {
+    console.error('Hero container not found');
+    return;
+  }
+
   container.innerHTML = `
     <section class="bg-gray-900 text-white py-20">
       <div class="container mx-auto px-4">
@@ -8,7 +13,7 @@ export function renderHero(container: HTMLElement, data: HeroData): void {
           <div>
             <h1 class="text-4xl md:text-5xl font-bold mb-4">${data.title}</h1>
             <p class="text-lg mb-8">${data.subtitle}</p>
-            <a href="${data.ctaLink}" class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">${data.ctaText}</a>
+            <a href="${data.ctaLink}" class="inline-block bg-accent hover:bg-accent-dark text-bg font-bold py-2 px-4 rounded">${data.ctaText}</a>
           </div>
           <div>
             <img src="${data.image}" alt="${data.altText}" class="rounded-lg shadow-md">
@@ -17,4 +22,13 @@ export function renderHero(container: HTMLElement, data: HeroData): void {
       </div>
     </section>
   `;
+}
+
+export function initHero(containerId: string, data: HeroData): void {
+  const container = document.getElementById(containerId);
+  if (container) {
+    renderHero(container, data);
+  } else {
+    console.error(`Hero container with id "${containerId}" not found`);
+  }
 }

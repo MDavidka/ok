@@ -9,9 +9,6 @@
     "esModuleInterop": true,
     "useDefineForClassFields": true,
     "noEmit": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "resolveJsonModule": true,
     "types": ["vite/client"]
   },
   "include": ["src"]

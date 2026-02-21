@@ -1,35 +1,52 @@
 import { About } from '../types';
 
-const aboutData: About = {
-  heading: 'About Me',
-  content: `I am a passionate software engineer with experience in building web applications.
-            I enjoy working with new technologies and solving challenging problems.`,
-  imageUrl: 'https://via.placeholder.com/300', // Replace with your actual image URL
-  skills: ['TypeScript', 'React', 'Tailwind CSS', 'Node.js', 'Vite']
-};
+export function renderAbout(container: HTMLElement, aboutData: About): void {
+  if (!container) {
+    console.error('About container not found');
+    return;
+  }
 
-export function renderAbout(container: HTMLElement): void {
   const aboutSection = document.createElement('section');
   aboutSection.id = 'about';
-  aboutSection.className = 'py-16 bg-gray-900 text-white';
+  aboutSection.className = 'py-12 dark:bg-gray-800 dark:text-white';
 
-  aboutSection.innerHTML = `
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-8 text-center">${aboutData.heading}</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <img src="${aboutData.imageUrl}" alt="About Me" class="rounded-lg shadow-md">
-        </div>
-        <div>
-          <p class="text-lg mb-4">${aboutData.content}</p>
-          <h3 class="text-xl font-semibold mb-2">Skills</h3>
-          <ul class="list-disc list-inside">
-            ${aboutData.skills.map(skill => `<li>${skill}</li>`).join('')}
-          </ul>
-        </div>
-      </div>
-    </div>
-  `;
+  const containerDiv = document.createElement('div');
+  containerDiv.className = 'container mx-auto px-4';
 
+  const title = document.createElement('h2');
+  title.className = 'text-3xl font-bold mb-6 text-center';
+  title.textContent = 'About Me';
+
+  const content = document.createElement('div');
+  content.className = 'md:flex md:items-center md:justify-center';
+
+  const imageContainer = document.createElement('div');
+  imageContainer.className = 'md:w-1/3 mb-4 md:mb-0';
+
+  const image = document.createElement('img');
+  image.src = aboutData.imageSrc;
+  image.alt = 'About Me';
+  image.className = 'rounded-full shadow-md mx-auto block';
+  image.style.maxWidth = '200px';
+  image.style.maxHeight = '200px';
+
+  imageContainer.appendChild(image);
+
+  const textContainer = document.createElement('div');
+  textContainer.className = 'md:w-2/3';
+
+  const description = document.createElement('p');
+  description.className = 'text-lg leading-relaxed';
+  description.textContent = aboutData.description;
+
+  textContainer.appendChild(description);
+
+  content.appendChild(imageContainer);
+  content.appendChild(textContainer);
+
+  containerDiv.appendChild(title);
+  containerDiv.appendChild(content);
+
+  aboutSection.appendChild(containerDiv);
   container.appendChild(aboutSection);
 }

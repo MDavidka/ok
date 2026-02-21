@@ -2,15 +2,15 @@ import './style.css'
 import { renderHeader } from './components/header';
 import { renderFooter } from './components/footer';
 import { renderHero } from './components/hero';
+import { renderProjectList } from './components/projectList';
 import { renderAbout } from './components/about';
-import { renderProjects } from './components/projects';
-import { renderContactForm } from './components/contact-form';
+import { renderContactForm } from './components/contactForm';
 
-document.addEventListener('DOMContentLoaded', () => {
+function initApp(): void {
   const app = document.querySelector<HTMLDivElement>('#app');
 
   if (!app) {
-    console.error('Root element with id "app" not found.');
+    console.error('App container not found!');
     return;
   }
 
@@ -26,11 +26,36 @@ document.addEventListener('DOMContentLoaded', () => {
   app.appendChild(mainContainer);
   app.appendChild(footerContainer);
 
-  // Render components into their respective containers
+  // Render components
   renderHeader(headerContainer);
-  renderHero(mainContainer);
-  renderAbout(mainContainer);
-  renderProjects(mainContainer);
-  renderContactForm(mainContainer);
+
+  // Create sections within the main container
+  const heroSection = document.createElement('section');
+  heroSection.id = 'hero';
+  heroSection.classList.add('mb-12');
+
+  const projectsSection = document.createElement('section');
+  projectsSection.id = 'projects';
+  projectsSection.classList.add('mb-12');
+
+  const aboutSection = document.createElement('section');
+  aboutSection.id = 'about';
+  aboutSection.classList.add('mb-12');
+
+  const contactSection = document.createElement('section');
+  contactSection.id = 'contact';
+
+  mainContainer.appendChild(heroSection);
+  mainContainer.appendChild(projectsSection);
+  mainContainer.appendChild(aboutSection);
+  mainContainer.appendChild(contactSection);
+
+  renderHero(heroSection);
+  renderProjectList(projectsSection);
+  renderAbout(aboutSection);
+  renderContactForm(contactSection);
+
   renderFooter(footerContainer);
-});
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
