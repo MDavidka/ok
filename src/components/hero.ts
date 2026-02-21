@@ -12,7 +12,7 @@ export function renderHero(container: HTMLElement, data: HeroData): void {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div>
             <h1 class="text-4xl md:text-5xl font-bold mb-4">${data.title}</h1>
-            <p class="text-lg mb-8">${data.subtitle}</p>
+            <p class="text-lg mb-6">${data.subtitle}</p>
             <a href="${data.ctaLink}" class="inline-block bg-accent hover:bg-accent-dark text-bg font-bold py-2 px-4 rounded">${data.ctaText}</a>
           </div>
           <div>
@@ -24,11 +24,9 @@ export function renderHero(container: HTMLElement, data: HeroData): void {
   `;
 }
 
-export function initHero(containerId: string, data: HeroData): void {
-  const container = document.getElementById(containerId);
-  if (container) {
-    renderHero(container, data);
-  } else {
-    console.error(`Hero container with id "${containerId}" not found`);
-  }
+export function initHero(): void {
+  // You can add any initialization logic here if needed.
+  // For example, you might want to fetch the hero data from an API.
+  // For now, we'll just log a message to the console.
+  console.log('Hero component initialized');
 }

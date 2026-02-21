@@ -6,17 +6,15 @@ export function renderFooter(config: SiteConfig, container: HTMLElement): void {
     return;
   }
 
-  const footerContent = `
-    <footer class="bg-gray-800 text-gray-300 py-6">
+  container.innerHTML = `
+    <footer class="bg-gray-900 text-gray-300 py-6">
       <div class="container mx-auto text-center">
         <p>&copy; ${new Date().getFullYear()} ${config.author}. All rights reserved.</p>
         <p class="mt-2">
-          <a href="${config.social.linkedin}" target="_blank" class="hover:text-white mr-4">LinkedIn</a>
-          <a href="${config.social.github}" target="_blank" class="hover:text-white">GitHub</a>
+          <a href="${config.social.linkedin}" target="_blank" rel="noopener noreferrer" class="hover:text-white">LinkedIn</a> | 
+          <a href="${config.social.github}" target="_blank" rel="noopener noreferrer" class="hover:text-white">GitHub</a>
         </p>
       </div>
     </footer>
   `;
-
-  container.innerHTML = footerContent;
 }

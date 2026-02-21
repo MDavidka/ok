@@ -3,7 +3,6 @@ export interface SiteConfig {
   description: string;
   author: string;
   navItems: NavItem[];
-  footerText: string;
 }
 
 export interface NavItem {
@@ -17,10 +16,4 @@ export interface Project {
   image: string;
   link: string;
   tags: string[];
-}
-
-export interface ContactFormData {
-  name: string;
-  email: string;
-  message: string;
 }

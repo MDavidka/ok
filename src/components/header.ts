@@ -7,8 +7,8 @@ export function renderHeader(container: HTMLElement, navItems: NavItem[]): void 
   }
 
   container.innerHTML = `
-    <header class="bg-gray-900 text-white py-4">
-      <div class="container mx-auto flex items-center justify-between">
+    <header class="bg-gray-900 text-white py-4 shadow-md">
+      <div class="container mx-auto px-4 flex items-center justify-between">
         <a href="#" class="text-2xl font-bold">Portfolio</a>
         <nav>
           <ul class="flex space-x-6">

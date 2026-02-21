@@ -6,7 +6,7 @@
   :root {
     --color-primary: #64ffda;
     --color-secondary: #a8b2d1;
-    --color-accent: #f97316;
+    --color-accent: #f0db4f;
     --color-bg: #0a192f;
     --color-bg-secondary: #112240;
     --color-text: #ccd6f6;
@@ -20,19 +20,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading font-semibold;
-  }
-
-  h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl;
-  }
-
-  h2 {
-    @apply text-3xl md:text-4xl;
-  }
-
-  h3 {
-    @apply text-2xl md:text-3xl;
+    @apply font-heading font-bold;
   }
 
   a {
@@ -40,13 +28,12 @@
   }
 }
 
-/* Example component styles (can be expanded upon) */
 @layer components {
-  .btn-primary {
-    @apply bg-color-primary text-color-bg font-semibold py-2 px-4 rounded hover:bg-color-accent hover:text-white transition-colors duration-200;
+  .section-title {
+    @apply text-2xl font-semibold mb-6 text-color-text;
   }
 
-  .section-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20;
+  .btn-primary {
+    @apply bg-color-primary text-color-bg font-semibold py-2 px-4 rounded hover:bg-color-accent transition-colors duration-200;
   }
 }

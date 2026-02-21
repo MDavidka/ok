@@ -2,60 +2,41 @@ import './style.css'
 import { renderHeader } from './components/header';
 import { renderFooter } from './components/footer';
 import { renderHero } from './components/hero';
-import { renderProjectList } from './components/projectList';
 import { renderAbout } from './components/about';
-import { renderContactForm } from './components/contactForm';
+import { renderProjects } from './components/projects';
+import { renderContactForm } from './components/contact-form';
 
-function initApp(): void {
-  const app = document.querySelector<HTMLDivElement>('#app');
+function init() {
+  const headerContainer = document.querySelector<HTMLElement>('#header');
+  const footerContainer = document.querySelector<HTMLElement>('#footer');
+  const heroContainer = document.querySelector<HTMLElement>('#hero');
+  const aboutContainer = document.querySelector<HTMLElement>('#about');
+  const projectsContainer = document.querySelector<HTMLElement>('#projects');
+  const contactContainer = document.querySelector<HTMLElement>('#contact');
 
-  if (!app) {
-    console.error('App container not found!');
-    return;
+  if (headerContainer) {
+    renderHeader(headerContainer);
   }
 
-  // Create container elements
-  const headerContainer = document.createElement('header');
-  const mainContainer = document.createElement('main');
-  const footerContainer = document.createElement('footer');
+  if (footerContainer) {
+    renderFooter(footerContainer);
+  }
 
-  mainContainer.classList.add('container', 'mx-auto', 'py-8');
+  if (heroContainer) {
+    renderHero(heroContainer);
+  }
 
-  // Append containers to the app
-  app.appendChild(headerContainer);
-  app.appendChild(mainContainer);
-  app.appendChild(footerContainer);
+  if (aboutContainer) {
+    renderAbout(aboutContainer);
+  }
 
-  // Render components
-  renderHeader(headerContainer);
+  if (projectsContainer) {
+    renderProjects(projectsContainer);
+  }
 
-  // Create sections within the main container
-  const heroSection = document.createElement('section');
-  heroSection.id = 'hero';
-  heroSection.classList.add('mb-12');
-
-  const projectsSection = document.createElement('section');
-  projectsSection.id = 'projects';
-  projectsSection.classList.add('mb-12');
-
-  const aboutSection = document.createElement('section');
-  aboutSection.id = 'about';
-  aboutSection.classList.add('mb-12');
-
-  const contactSection = document.createElement('section');
-  contactSection.id = 'contact';
-
-  mainContainer.appendChild(heroSection);
-  mainContainer.appendChild(projectsSection);
-  mainContainer.appendChild(aboutSection);
-  mainContainer.appendChild(contactSection);
-
-  renderHero(heroSection);
-  renderProjectList(projectsSection);
-  renderAbout(aboutSection);
-  renderContactForm(contactSection);
-
-  renderFooter(footerContainer);
+  if (contactContainer) {
+    renderContactForm(contactContainer);
+  }
 }
 
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('DOMContentLoaded', init);
