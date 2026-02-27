@@ -1,40 +1,32 @@
 import { Project } from '../types';
 
-export function renderProjectCard(project: Project): HTMLElement {
+export function renderProjectCard(project: Project, container: HTMLElement): void {
+  if (!container) {
+    console.error('Project card container not found');
+    return;
+  }
+
   const card = document.createElement('div');
-  card.className = 'bg-gray-800 rounded-lg shadow-md overflow-hidden flex flex-col';
-
-  const image = document.createElement('img');
-  image.src = project.imageUrl;
-  image.alt = project.name;
-  image.className = 'w-full h-48 object-cover';
-
-  const content = document.createElement('div');
-  content.className = 'p-4 flex flex-col flex-grow';
+  card.className = 'bg-gray-800 rounded-lg shadow-md p-6 hover:scale-105 transition-transform duration-200';
 
   const title = document.createElement('h3');
-  title.textContent = project.name;
   title.className = 'text-xl font-semibold text-white mb-2';
+  title.textContent = project.title;
 
   const description = document.createElement('p');
+  description.className = 'text-gray-400 mb-4';
   description.textContent = project.description;
-  description.className = 'text-gray-400 text-base flex-grow';
-
-  const linkContainer = document.createElement('div');
-  linkContainer.className = 'mt-4';
 
   const link = document.createElement('a');
+  link.className = 'text-blue-500 hover:text-blue-400 font-medium';
   link.href = project.link;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
   link.textContent = 'View Project';
-  link.className = 'inline-block bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded';
 
-  linkContainer.appendChild(link);
-  content.appendChild(title);
-  content.appendChild(description);
-  content.appendChild(linkContainer);
+  card.appendChild(title);
+  card.appendChild(description);
+  card.appendChild(link);
 
-  card.appendChild(image);
-  card.appendChild(content);
-
-  return card;
+  container.appendChild(card);
 }

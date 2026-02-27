@@ -1,23 +1,47 @@
-import { NavItem } from '../types';
+import { NavItem, ComponentProps } from '../types';
 
-export function renderHeader(container: HTMLElement, navItems: NavItem[]): void {
-  if (!container) {
-    console.error('Header container not found');
-    return;
-  }
+interface HeaderProps extends ComponentProps {
+  navItems: NavItem[];
+  siteName: string;
+}
 
-  container.innerHTML = `
-    <header class="bg-gray-900 text-white py-4 shadow-md">
-      <div class="container mx-auto px-4 flex items-center justify-between">
-        <a href="#" class="text-2xl font-bold">Portfolio</a>
-        <nav>
-          <ul class="flex space-x-6">
-            ${navItems.map(item => `
-              <li><a href="${item.href}" class="hover:text-gray-300">${item.label}</a></li>
-            `).join('')}
-          </ul>
-        </nav>
-      </div>
-    </header>
-  `;
+export function Header({ navItems, siteName, className }: HeaderProps): HTMLElement {
+  const header = document.createElement('header');
+  header.className = `bg-color-secondary text-color-text py-4 ${className || ''}`;
+
+  const container = document.createElement('div');
+  container.className = 'container mx-auto flex items-center justify-between';
+
+  const title = document.createElement('a');
+  title.href = '/';
+  title.textContent = siteName;
+  title.className = 'text-xl font-bold text-color-primary';
+
+  const nav = document.createElement('nav');
+
+  const ul = document.createElement('ul');
+  ul.className = 'flex space-x-6';
+
+  navItems.forEach(item => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = item.href;
+    a.textContent = item.label;
+    a.className = 'hover:text-color-accent';
+    li.appendChild(a);
+    ul.appendChild(li);
+  });
+
+  nav.appendChild(ul);
+
+  container.appendChild(title);
+  container.appendChild(nav);
+  header.appendChild(container);
+
+  return header;
+}
+
+export function renderHeader(container: HTMLElement, props: HeaderProps): void {
+  const headerElement = Header(props);
+  container.appendChild(headerElement);
 }

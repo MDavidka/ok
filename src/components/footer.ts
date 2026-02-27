@@ -1,20 +1,21 @@
-import { SiteConfig } from '../types';
+import { ComponentProps } from '../types';
 
-export function renderFooter(config: SiteConfig, container: HTMLElement): void {
+export function Footer(container: HTMLElement, props?: ComponentProps): void {
   if (!container) {
-    console.error('Footer container not found');
+    console.error("Footer container not found");
     return;
   }
 
-  container.innerHTML = `
-    <footer class="bg-gray-900 text-gray-300 py-6">
-      <div class="container mx-auto text-center">
-        <p>&copy; ${new Date().getFullYear()} ${config.author}. All rights reserved.</p>
-        <p class="mt-2">
-          <a href="${config.social.linkedin}" target="_blank" rel="noopener noreferrer" class="hover:text-white">LinkedIn</a> | 
-          <a href="${config.social.github}" target="_blank" rel="noopener noreferrer" class="hover:text-white">GitHub</a>
-        </p>
-      </div>
-    </footer>
-  `;
+  const footer = document.createElement('footer');
+  footer.className = `bg-color-secondary text-color-muted py-4 ${props?.className || ''}`;
+
+  const innerContainer = document.createElement('div');
+  innerContainer.className = 'container mx-auto text-center';
+
+  const copyright = document.createElement('p');
+  copyright.textContent = `© ${new Date().getFullYear()} High-End Reservation System. All rights reserved.`;
+
+  innerContainer.appendChild(copyright);
+  footer.appendChild(innerContainer);
+  container.appendChild(footer);
 }

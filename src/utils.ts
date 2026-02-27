@@ -1,26 +1,21 @@
-export function debounce<T extends (...args: any[]) => any>(
-  func: T,
-  delay: number
-): (...args: Parameters<T>) => void {
-  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+import { TimeSlot } from './types';
 
-  return function (...args: Parameters<T>) {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-
-    timeoutId = setTimeout(() => {
-      func(...args);
-    }, delay);
+export function formatDate(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   };
+  return date.toLocaleDateString(undefined, options);
 }
 
-export function isElementInViewport(el: HTMLElement): boolean {
-  const rect = el.getBoundingClientRect();
-  return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  );
+export function generateTimeSlots(startTime: number, endTime: number, interval: number): TimeSlot[] {
+  const timeSlots: TimeSlot[] = [];
+  for (let i = startTime; i < endTime; i += interval) {
+    const hours = Math.floor(i / 60);
+    const minutes = i % 60;
+    const time = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    timeSlots.push({ time, available: true });
+  }
+  return timeSlots;
 }
