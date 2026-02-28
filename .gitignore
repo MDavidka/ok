@@ -1,7 +1,16 @@
+# Node.js
 node_modules/
+
+# Build
 dist/
-*.log
 .DS_Store
+
+# Logs
+*.log
+*.swp
+*.cache
+.idea
+.vscode
+
+# System files
 Thumbs.db
-.env
-.env.*

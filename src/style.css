@@ -6,17 +6,18 @@
 @layer base {
   html {
     font-family: system-ui, sans-serif;
+    @apply antialiased;
   }
 }
 
 :root {
-  --color-primary: #007bff; /* Example primary color */
-  --color-secondary: #6c757d; /* Example secondary color */
-  --color-accent: #ffc107; /* Example accent color */
-  --color-bg: #f8f9fa; /* Light background */
-  --color-text: #343a40; /* Dark text */
-  --color-muted: #6c757d; /* Muted text */
-  --color-border: #dee2e6; /* Light border */
+  --color-primary: #66b3ff; /* Light blue */
+  --color-secondary: #a7b1ba; /* Light gray */
+  --color-accent: #ffc107; /* Yellow */
+  --color-bg: #121212; /* Dark gray */
+  --color-text: #f8f9fa; /* White */
+  --color-muted: #a7b1ba; /* Light gray */
+  --color-border: #343a40; /* Darker gray */
 
   --font-heading: 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -32,19 +33,8 @@
   --spacing-xl: 2rem;
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-primary: #66b3ff;
-    --color-secondary: #a7b1ba;
-    --color-bg: #212529;
-    --color-text: #f8f9fa;
-    --color-border: #495057;
-  }
-}
-
 body {
-  @apply bg-color-bg text-color-text font-body antialiased;
+  @apply bg-[var(--color-bg)] text-[var(--color-text)] font-body;
   margin: 0;
   padding: 0;
 }
@@ -55,27 +45,42 @@ h3,
 h4,
 h5,
 h6 {
-  @apply font-heading font-bold;
-  color: var(--color-primary);
+  @apply font-heading font-bold text-[var(--color-primary)];
 }
 
 a {
-  @apply text-color-primary hover:text-color-accent;
+  @apply text-[var(--color-primary)] hover:text-[var(--color-accent)] transition-colors duration-200;
 }
 
 .btn {
-  @apply inline-block rounded-md px-4 py-2 font-semibold text-white bg-color-primary hover:bg-color-accent focus:outline-none focus:ring-2 focus:ring-color-primary focus:ring-opacity-50 transition-colors duration-200;
+  @apply inline-block rounded-[var(--radius-md)] px-4 py-2 font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-opacity-50 transition-colors duration-200;
 }
 
 .card {
-  @apply bg-white rounded-md shadow-md p-4;
+  @apply bg-[var(--color-border)] rounded-[var(--radius-md)] shadow-md p-4;
 }
 
 /* Example component styles (can be moved to separate files later) */
 .header {
-  @apply bg-white shadow-md py-4;
+  @apply bg-[var(--color-bg)] shadow-md py-4;
 }
 
 .footer {
-  @apply bg-gray-100 py-4 text-center text-gray-500;
+  @apply bg-[var(--color-bg)] py-4 text-center text-[var(--color-muted)] border-t border-[var(--color-border)];
+}
+
+/* Additional global styles */
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Form styles */
+input[type="text"],
+input[type="email"],
+textarea {
+  @apply w-full px-3 py-2 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)] transition-colors duration-200;
+}
+
+label {
+  @apply block text-[var(--color-text)] text-sm font-bold mb-2;
 }

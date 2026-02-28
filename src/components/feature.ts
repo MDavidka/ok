@@ -1,33 +1,22 @@
-// src/components/feature.ts
 import { ComponentProps } from '../types';
 
-interface FeatureProps extends ComponentProps {
+export interface FeatureProps extends ComponentProps {
   title: string;
   description: string;
-  icon?: string; // Optional icon (e.g., path to an SVG)
+  icon?: string; // URL or SVG string
 }
 
-export function Feature({ title, description, icon, className }: FeatureProps) {
-  const featureElement = document.createElement('div');
-  featureElement.className = `feature ${className || ''} flex flex-col items-center p-4 rounded shadow-md bg-color-secondary`;
+export function Feature(props: FeatureProps): string {
+  return `
+    <div class="feature ${props.className || ''} p-6 rounded-[var(--radius-md)] shadow-md bg-[var(--color-border)]">
+      ${props.icon ? `<div class="mb-4">${props.icon}</div>` : ''}
+      <h3 class="text-xl font-bold mb-2 text-[var(--color-primary)]">${props.title}</h3>
+      <p class="text-[var(--color-muted)]">${props.description}</p>
+    </div>
+  `;
+}
 
-  if (icon) {
-    const iconElement = document.createElement('img');
-    iconElement.src = icon;
-    iconElement.alt = title + ' icon';
-    iconElement.className = 'h-12 w-12 mb-2'; // Adjust size as needed
-    featureElement.appendChild(iconElement);
-  }
-
-  const titleElement = document.createElement('h3');
-  titleElement.textContent = title;
-  titleElement.className = 'text-xl font-bold mb-2 text-color-primary';
-  featureElement.appendChild(titleElement);
-
-  const descriptionElement = document.createElement('p');
-  descriptionElement.textContent = description;
-  descriptionElement.className = 'text-color-text text-center';
-  featureElement.appendChild(descriptionElement);
-
-  return featureElement;
+export function renderFeature(props: FeatureProps, container: HTMLElement): void {
+  const featureHTML = Feature(props);
+  container.innerHTML += featureHTML;
 }
