@@ -1,86 +1,34 @@
-/* src/style.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  html {
-    font-family: system-ui, sans-serif;
-    @apply antialiased;
-  }
-}
-
 :root {
-  --color-primary: #66b3ff; /* Light blue */
-  --color-secondary: #a7b1ba; /* Light gray */
-  --color-accent: #ffc107; /* Yellow */
-  --color-bg: #121212; /* Dark gray */
-  --color-text: #f8f9fa; /* White */
-  --color-muted: #a7b1ba; /* Light gray */
-  --color-border: #343a40; /* Darker gray */
-
-  --font-heading: 'Inter', sans-serif;
-  --font-body: 'Inter', sans-serif;
-
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-
-  --spacing-xs: 0.25rem;
+  --color-primary: #3490dc;
+  --color-secondary: #6574cd;
+  --color-accent: #f6993f;
+  --color-bg: #edf2f7;
+  --color-text: #2d3748;
+  --color-muted: #718096;
+  --font-heading: sans-serif;
+  --font-body: sans-serif;
+  --radius: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
 }
 
 body {
-  @apply bg-[var(--color-bg)] text-[var(--color-text)] font-body;
-  margin: 0;
-  padding: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  @apply font-heading font-bold text-[var(--color-primary)];
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s forwards;
 }
 
-a {
-  @apply text-[var(--color-primary)] hover:text-[var(--color-accent)] transition-colors duration-200;
-}
-
-.btn {
-  @apply inline-block rounded-[var(--radius-md)] px-4 py-2 font-semibold text-white bg-[var(--color-primary)] hover:bg-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-opacity-50 transition-colors duration-200;
-}
-
-.card {
-  @apply bg-[var(--color-border)] rounded-[var(--radius-md)] shadow-md p-4;
-}
-
-/* Example component styles (can be moved to separate files later) */
-.header {
-  @apply bg-[var(--color-bg)] shadow-md py-4;
-}
-
-.footer {
-  @apply bg-[var(--color-bg)] py-4 text-center text-[var(--color-muted)] border-t border-[var(--color-border)];
-}
-
-/* Additional global styles */
-.container {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-}
-
-/* Form styles */
-input[type="text"],
-input[type="email"],
-textarea {
-  @apply w-full px-3 py-2 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)] transition-colors duration-200;
-}
-
-label {
-  @apply block text-[var(--color-text)] text-sm font-bold mb-2;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

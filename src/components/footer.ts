@@ -1,22 +1,12 @@
 import { ComponentProps } from '../types';
 
-interface FooterProps extends ComponentProps {
-  copyright?: string;
-}
+interface FooterProps extends ComponentProps {}
 
 export function Footer(props: FooterProps): string {
-  const currentYear = new Date().getFullYear();
-  const copyrightText = props.copyright || `© ${currentYear} High-End Reservations. All rights reserved.`;
-
+  const { className } = props;
   return `
-    <footer class="footer ${props.className || ''}">
-      <div class="container">
-        <p>${copyrightText}</p>
-      </div>
+    <footer class="${className}">
+      <p class="text-center text-color-muted">© 2024</p>
     </footer>
   `;
-}
-
-export function renderFooter(container: HTMLElement, props: FooterProps): void {
-  container.innerHTML = Footer(props);
 }
