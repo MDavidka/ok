@@ -1,12 +1,10 @@
 import { ComponentProps } from '../types';
+import { classNames } from '../utils';
 
-interface FooterProps extends ComponentProps {}
-
-export function Footer(props: FooterProps): string {
-  const { className } = props;
+export function Footer({ className }: ComponentProps) {
   return `
-    <footer class="${className}">
-      <p class="text-center text-color-muted">© 2024</p>
+    <footer class="${classNames('bg-color-bg border-t border-color-muted py-6 text-center text-color-muted', className)}">
+      <p>&copy; ${new Date().getFullYear()} GitHub Intro. All rights reserved.</p>
     </footer>
   `;
 }

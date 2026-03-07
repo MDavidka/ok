@@ -1,12 +1,9 @@
-import { SiteConfig } from './types';
+import { ComponentProps } from './types';
 
-export function getSiteConfig(): SiteConfig {
-  return {
-    title: 'Welcome!',
-    description: 'A simple welcome website built with Vite and TypeScript.',
-  };
+export function classNames(...classes: (string | undefined | null)[]): string {
+  return classes.filter(Boolean).join(' ');
 }
 
-export function cn(...classes: (string | boolean | undefined)[]): string {
-  return classes.filter(Boolean).join(' ');
+export function createProps(className: string | undefined): ComponentProps {
+  return { className };
 }

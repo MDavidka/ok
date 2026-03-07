@@ -3,32 +3,27 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #3490dc;
-  --color-secondary: #6574cd;
-  --color-accent: #f6993f;
-  --color-bg: #edf2f7;
-  --color-text: #2d3748;
-  --color-muted: #718096;
+  --color-primary: #1e40af;
+  --color-secondary: #3b82f6;
+  --color-accent: #bae6ff;
+  --color-bg: #f0f9ff;
+  --color-text: #0f172a;
+  --color-muted: #64748b;
+
   --font-heading: sans-serif;
   --font-body: sans-serif;
-  --radius: 0.25rem;
+
+  --radius: 0.5rem;
+
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
 }
 
 body {
-  background-color: var(--color-bg);
-  color: var(--color-text);
   font-family: var(--font-body);
-}
-
-.fade-in {
-  opacity: 0;
-  animation: fadeIn 1s forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  margin: 0;
+  padding: 0;
 }
