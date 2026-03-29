@@ -1,62 +1,68 @@
 import { ComponentProps } from '../types';
 import { classNames } from '../utils';
 
-export function Hero({ className }: ComponentProps = {}): string {
-  return `
-    <section class="${classNames('relative pt-24 pb-32 overflow-hidden', className)}">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-[var(--color-text)]">
-          Embrace the <span class="text-[var(--color-primary)]">Unexpected</span>
+export interface HeroProps extends ComponentProps {
+  title?: string;
+  description?: string;
+}
+
+/**
+ * Renders the Hero section into the provided container.
+ * 
+ * @param container - The DOM element to mount the hero section into.
+ * @param props - Optional properties to customize the hero section.
+ */
+export function renderHero(container: HTMLElement, props?: HeroProps): void {
+  // Default content for the "random thing" (QuantumMug)
+  const title = props?.title || 'The <span class="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]">QuantumMug</span>';
+  const description = props?.description || "Experience your coffee in multiple states simultaneously. It's hot, it's cold, and it's perfectly brewed until you observe it.";
+
+  // Inject HTML structure
+  container.innerHTML = `
+    <section class="${classNames('relative flex flex-col items-center justify-center min-h-screen px-4 py-24 text-center overflow-hidden', props?.className)}">
+      <!-- Decorative background element -->
+      <div class="absolute inset-0 z-0 pointer-events-none flex items-center justify-center opacity-10">
+        <div class="w-96 h-96 rounded-full blur-3xl bg-[var(--color-primary)]"></div>
+      </div>
+
+      <div class="relative z-10 max-w-3xl mx-auto space-y-8">
+        <div class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-full bg-[var(--color-secondary)]/20 text-[var(--color-text)] border border-[var(--color-secondary)]/30 mb-4 shadow-sm">
+          ✨ Introducing the future of beverages
+        </div>
+        
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-balance">
+          ${title}
         </h1>
         
-        <p class="mt-4 max-w-2xl mx-auto text-xl text-[var(--color-muted)] mb-10 leading-relaxed">
-          Break free from the mundane. Randomify injects a little bit of chaos, spontaneity, and fun into your everyday routine.
+        <p class="text-lg md:text-xl max-w-2xl mx-auto text-balance leading-relaxed text-[var(--color-muted)]">
+          ${description}
         </p>
         
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <button 
-            id="hero-cta" 
-            class="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-white bg-[var(--color-primary)] rounded-[var(--radius)] hover:bg-[var(--color-secondary)] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-          >
-            Generate Random Activity
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+          <button id="hero-cta" class="px-8 py-4 text-lg font-semibold text-white transition-all duration-200 rounded-full bg-[var(--color-primary)] hover:opacity-90 hover:scale-105 shadow-lg shadow-[var(--color-primary)]/30 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2">
+            Pre-order Now
           </button>
-          <a 
-            href="#features" 
-            class="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-[var(--color-primary)] bg-white border-2 border-[var(--color-primary)] rounded-[var(--radius)] hover:bg-[var(--color-bg)] transition-colors duration-200"
-          >
+          <a href="#" id="hero-secondary-cta" class="px-8 py-4 text-lg font-medium transition-colors duration-200 rounded-full hover:bg-gray-200/50 focus:outline-none focus:ring-2 focus:ring-gray-200">
             Learn More
           </a>
         </div>
       </div>
-
-      <!-- Decorative background elements -->
-      <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-full max-w-7xl h-full overflow-hidden -z-10 pointer-events-none">
-        <div class="absolute -top-24 -left-24 w-96 h-96 bg-[var(--color-accent)] rounded-full mix-blend-multiply filter blur-3xl opacity-60"></div>
-        <div class="absolute top-32 -right-24 w-96 h-96 bg-[var(--color-secondary)] rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-      </div>
     </section>
   `;
-}
 
-export function initHero(): void {
-  const cta = document.getElementById('hero-cta');
-  
-  if (!cta) return;
+  // Attach event listeners safely
+  const ctaButton = container.querySelector('#hero-cta');
+  if (ctaButton) {
+    ctaButton.addEventListener('click', () => {
+      alert('Quantum state collapsed! Your mug is now definitely hot. ☕');
+    });
+  }
 
-  cta.addEventListener('click', () => {
-    const activities = [
-      "Take a 15-minute walk in a random direction.",
-      "Call a friend you haven't spoken to in a year.",
-      "Try cooking a recipe with ingredients you already have.",
-      "Listen to a genre of music you normally hate.",
-      "Learn how to say 'Hello' in 5 new languages.",
-      "Draw a picture of the object closest to your left hand.",
-      "Do 20 jumping jacks right now."
-    ];
-    
-    const randomActivity = activities[Math.floor(Math.random() * activities.length)];
-    
-    // Simple alert for the "random" functionality
-    alert(`🎲 Your random activity:\n\n${randomActivity}`);
-  });
+  const secondaryCta = container.querySelector('#hero-secondary-cta');
+  if (secondaryCta) {
+    secondaryCta.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert('The QuantumMug exists in a superposition of all possible mugs. That is all you need to know.');
+    });
+  }
 }

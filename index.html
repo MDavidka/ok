@@ -2,18 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎲</text></svg>" />
+    <!-- Simple inline SVG favicon to prevent 404 errors -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Randomify | Embrace the Unexpected</title>
-    <meta name="description" content="A simple landing page for generating random activities and embracing spontaneity." />
+    <title>QuantumMug | The Future of Beverages</title>
+    <meta name="description" content="Experience your coffee in multiple states simultaneously. It's hot, it's cold, and it's perfectly brewed until you observe it." />
     
-    <!-- Tailwind CSS via CDN for rapid styling (as requested by constraints) -->
+    <!-- Tailwind CSS CDN included as per project requirements -->
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="antialiased min-h-screen flex flex-col">
-    <div id="app" class="flex-grow flex flex-col w-full"></div>
+  <body>
+    <!-- Root element where the Vite application will be mounted -->
+    <div id="app"></div>
     
-    <!-- Vite Entry Point -->
+    <!-- Main application entry point -->
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

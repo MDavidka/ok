@@ -1,48 +1,38 @@
-# Randomify - Embrace the Unexpected 🎲
+# QuantumMug Landing Page
 
-A playful, modern, and energetic landing page built to celebrate randomness. This project is a lightning-fast Single Page Application (SPA) designed with a clean, minimalist aesthetic and vibrant colors.
+A lightning-fast, minimal landing page for the revolutionary **QuantumMug** — the only mug that lets you experience your coffee in multiple states simultaneously. 
 
-## 🚀 Features
+Built with a focus on performance, simplicity, and modern web standards using **Vite**, **Vanilla TypeScript**, and **Tailwind CSS**. Designed to be instantly deployable to **Cloudflare Pages**.
 
-- **Modern Minimalist Design:** Clean, breathable layouts with a playful vibe.
-- **Responsive:** Mobile-first approach ensuring it looks great on all devices.
-- **Component-Based Architecture:** Modular TypeScript components for Header, Hero, Features, and Footer.
-- **High Performance:** Built with Vite and Vanilla TypeScript for maximum speed and minimal overhead.
-- **Tailwind CSS:** Utility-first styling with a custom design system (CSS variables).
+## 🚀 Tech Stack
 
-## 🛠️ Tech Stack
+*   **Framework:** [Vite](https://vitejs.dev/) (Vanilla TS)
+*   **Language:** [TypeScript](https://www.typescriptlang.org/) (Strict typing)
+*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) (Utility-first, custom design system tokens)
+*   **Deployment:** Optimized for [Cloudflare Pages](https://pages.cloudflare.com/)
 
-- **Framework:** [Vite](https://vitejs.dev/)
-- **Language:** [TypeScript](https://www.typescriptlang.org/) (Strict typing)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-- **Deployment:** Ready for [Cloudflare Pages](https://pages.cloudflare.com/)
-
-## 📂 Project Structure
+## 📦 Project Structure
 
 ```text
 project/
 ├── index.html          # Main HTML entry point
 ├── src/
-│   ├── main.ts         # Application entry point (orchestrator)
-│   ├── types.ts        # Shared TypeScript interfaces & types
-│   ├── utils.ts        # Shared helper functions
-│   ├── style.css       # Design-system tokens & global Tailwind styles
-│   └── components/     # UI Components
-│       ├── header.ts
-│       ├── hero.ts
-│       ├── features.ts
-│       └── footer.ts
+│   ├── main.ts         # Application orchestrator & entry point
+│   ├── types.ts        # Shared TypeScript interfaces
+│   ├── utils.ts        # Reusable helper functions
+│   ├── style.css       # Tailwind directives & global CSS variables
+│   └── components/     # UI Components (Hero, Header, Features, Footer)
+├── public/             # Static assets
 ├── package.json        # Dependencies and scripts
-├── tsconfig.json       # TypeScript configuration
-└── vite.config.ts      # Vite build configuration
+├── tsconfig.json       # TypeScript compiler configuration
+└── vite.config.ts      # Vite bundler configuration
 ```
 
-## 🚦 Getting Started
+## 🛠️ Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- npm (or pnpm/yarn)
+Ensure you have [Node.js](https://nodejs.org/) (v18+ recommended) installed on your machine.
 
 ### Installation
 
@@ -53,15 +43,15 @@ project/
 npm install
 ```
 
-### Development Server
+### Development
 
-Start the local development server with Hot Module Replacement (HMR):
+Start the local Vite development server with Hot Module Replacement (HMR):
 
 ```bash
 npm run dev
 ```
 
-Open your browser and navigate to `http://localhost:5173`.
+The application will be available at `http://localhost:5173`.
 
 ### Building for Production
 
@@ -71,35 +61,46 @@ To create a production-ready build:
 npm run build
 ```
 
-The compiled assets will be generated in the `dist/` directory.
+This will compile the TypeScript, process the Tailwind CSS, and output the optimized static files into the `dist/` directory.
+
+### Preview Production Build
+
+To preview the built assets locally before deploying:
+
+```bash
+npm run preview
+```
 
 ### Type Checking
 
-To run TypeScript compiler checks without emitting files:
+To run the TypeScript compiler and check for type errors without emitting files:
 
 ```bash
 npm run check
 ```
 
-## ☁️ Deployment
+## 🎨 Design System
 
-This project is optimized for deployment on **Cloudflare Pages**.
+The project uses a custom design system built on top of Tailwind CSS. Global design tokens (colors, typography, spacing) are defined as CSS Custom Properties in `src/style.css`. 
 
-1. Push your code to a GitHub/GitLab repository.
+*   **Primary:** Vibrant Purple (`#8b5cf6`)
+*   **Secondary:** Cheerful Yellow (`#fbbf24`)
+*   **Accent:** Hot Pink (`#ec4899`)
+*   **Typography:** Inter / System UI
+
+## ☁️ Deployment (Cloudflare Pages)
+
+This project is pre-configured for seamless deployment to Cloudflare Pages.
+
+1. Push your code to a GitHub or GitLab repository.
 2. Log in to the Cloudflare Dashboard and navigate to **Pages**.
 3. Create a new project and connect your repository.
 4. Configure the build settings:
-   - **Framework preset:** Vite
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
+   *   **Framework preset:** `Vite`
+   *   **Build command:** `npm run build`
+   *   **Build output directory:** `dist`
 5. Click **Save and Deploy**.
 
-## 🎨 Design System
+## 📄 License
 
-The project uses a custom design system defined in `src/style.css` using CSS variables. These variables are mapped to Tailwind utility classes for consistent styling across the application.
-
-- **Primary:** Vibrant Purple (`#8B5CF6`)
-- **Secondary:** Cheerful Yellow (`#FBBF24`)
-- **Accent:** Hot Pink (`#EC4899`)
-- **Background:** Off-white (`#F9FAFB`)
-- **Text:** Dark Slate (`#1E293B`)
+This project is private and proprietary.

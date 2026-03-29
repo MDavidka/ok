@@ -1,20 +1,20 @@
 import { ComponentProps } from './types';
 
 /**
- * Merges multiple class names into a single string, filtering out falsy values.
- * Useful for conditionally applying Tailwind CSS classes.
+ * Conditionally joins class names together.
+ * Useful for Tailwind CSS class manipulation.
  * 
  * @param classes - An array of class names or falsy values
- * @returns A space-separated string of valid class names
+ * @returns A single string of space-separated class names
  */
 export function classNames(...classes: (string | undefined | null | false)[]): string {
   return classes.filter(Boolean).join(' ');
 }
 
 /**
- * Helper to create standard component props.
+ * Creates a base ComponentProps object.
  * 
- * @param className - Optional CSS class name string
+ * @param className - Optional CSS class name
  * @returns A ComponentProps object
  */
 export function createProps(className?: string): ComponentProps {
@@ -22,11 +22,10 @@ export function createProps(className?: string): ComponentProps {
 }
 
 /**
- * Returns a random item from the provided array.
- * Fits perfectly with the "Randomify" theme!
+ * Returns a random item from an array.
  * 
- * @param items - An array of items of type T
- * @returns A single random item of type T, or undefined if the array is empty/invalid
+ * @param items - The array to pick from
+ * @returns A random item from the array, or undefined if the array is empty
  */
 export function getRandomItem<T>(items: T[]): T | undefined {
   if (!Array.isArray(items) || items.length === 0) {

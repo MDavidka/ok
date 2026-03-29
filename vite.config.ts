@@ -4,9 +4,13 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    sourcemap: true,
   },
   server: {
-    port: 3000,
+    port: 5173,
     open: true,
+  },
+  preview: {
+    port: 4173,
   },
 });
