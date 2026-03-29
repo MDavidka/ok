@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Randomify Playful Theme Colors */
+  --color-primary: #8b5cf6;   /* Vibrant Purple */
+  --color-secondary: #fbbf24; /* Cheerful Yellow */
+  --color-accent: #ec4899;    /* Hot Pink */
+  --color-bg: #f9fafb;        /* Off-white */
+  --color-text: #1e293b;      /* Dark Slate */
+  --color-muted: #64748b;     /* Muted Slate */
+
+  /* Typography */
+  --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Borders & Radius */
+  --radius: 1rem; /* Soft, playful rounded corners */
+
+  /* Spacing Tokens */
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Custom utility to apply our CSS variables easily if needed outside arbitrary values */
+  .bg-primary { background-color: var(--color-primary); }
+  .bg-secondary { background-color: var(--color-secondary); }
+  .bg-accent { background-color: var(--color-accent); }
+  
+  .text-primary { color: var(--color-primary); }
+  .text-secondary { color: var(--color-secondary); }
+  .text-accent { color: var(--color-accent); }
+}

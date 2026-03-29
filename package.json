@@ -1,0 +1,21 @@
+{
+  "name": "randomify-landing-page",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A playful landing page for Randomify.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.4.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vite": "^5.1.3",
+    "@types/node": "^20.11.16"
+  }
+}
