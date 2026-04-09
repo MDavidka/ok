@@ -1,93 +1,97 @@
-# 🌿 Verdant Aura
+# 🍪 Cookie Clicker
 
-Verdant Aura is a premium, high-performance e-commerce platform for indoor plant enthusiasts. Built with a focus on minimalist design and botanical elegance, it provides a seamless shopping experience from discovery to checkout.
+A modern, high-performance incremental game built with Vanilla TypeScript, Vite, and Tailwind CSS. 
 
-## 🚀 Tech Stack
+This project demonstrates how to build a robust, state-driven web application without a heavy frontend framework. It features a custom game loop, real-time DOM updates, particle animations, and persistent local storage.
 
-- **Framework:** [Vite](https://vitejs.dev/) (Vanilla TypeScript)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-- **Language:** [TypeScript](https://www.typescript.org/) (Strict Mode)
-- **Design System:** Custom "Evergreen Minimalist" tokens
-- **Deployment:** Optimized for [Cloudflare Pages](https://pages.cloudflare.com/)
+## ✨ Features
 
-## 🛠️ Project Structure
+*   **Custom Game Engine:** Uses `requestAnimationFrame` for a smooth, high-performance game loop that calculates passive income (Cookies Per Second) accurately using delta time.
+*   **Dynamic Economy:** Upgrade costs scale dynamically based on the number of items owned.
+*   **Interactive UI:** Satisfying click animations and floating "+1" text particles spawned dynamically on interaction.
+*   **Persistent State:** Automatically saves your progress to the browser's `localStorage` every 30 seconds, and allows manual saving/loading.
+*   **Responsive Design:** A split-screen layout on desktop that gracefully collapses into a stacked view on mobile devices, styled entirely with Tailwind CSS.
+*   **Zero Dependencies (Frontend):** Built with pure Vanilla TypeScript and DOM manipulation for maximum performance and minimal bundle size.
 
-```text
-project/
-├── index.html          # Main entry point & SEO metadata
-├── src/
-│   ├── main.ts         # Application orchestrator & Mesh Router
-│   ├── types.ts        # Shared TypeScript interfaces
-│   ├── utils.ts        # Cart logic & helper functions
-│   ├── style.css       # Design system & Tailwind directives
-│   └── components/     # Modular UI components
-│       ├── header.ts
-│       ├── footer.ts
-│       ├── product-card.ts
-│       ├── cart-overlay.ts
-│       ├── home.ts
-│       └── shop.ts
-├── public/             # Static assets (images, icons)
-├── package.json        # Dependencies & scripts
-├── tsconfig.json       # TypeScript configuration
-├── vite.config.ts      # Vite build settings
-└── README.md           # Project documentation
-```
+## 🛠️ Tech Stack
 
-## 🏗️ Architecture Overview
+*   **Build Tool:** [Vite](https://vitejs.dev/)
+*   **Language:** [TypeScript](https://www.typescriptlang.org/) (Strict Mode)
+*   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+*   **Deployment:** Ready for [Cloudflare Pages](https://pages.cloudflare.com/)
 
-### Mesh Routing
-This application uses a custom "Mesh Routing" system implemented in `src/main.ts`. Instead of a heavy framework router, it intercepts navigation events and dynamically re-renders components into the `#main-content` container. This ensures near-instant page transitions and a true Single Page Application (SPA) feel with zero framework overhead.
-
-### State Management
-- **Cart State:** Managed in `src/utils.ts` using a reactive pattern. It persists to `localStorage` to ensure user selections are saved across sessions.
-- **UI State:** Component-level visibility (like the Cart Overlay) is handled via DOM event listeners and custom `CustomEvent` dispatches.
-
-### Design System
-The "Evergreen Minimalist" system uses a sophisticated palette:
-- **Primary:** `#064e3b` (Deep Forest Green)
-- **Secondary:** `#f0fdf4` (Soft Mint Mist)
-- **Accent:** `#c2410c` (Terracotta Orange)
-- **Typography:** Playfair Display (Headings) & Inter (Body)
-
-## 🚦 Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
+
+Ensure you have [Node.js](https://nodejs.org/) (v18+ recommended) and `npm` installed.
 
 ### Installation
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
 
-### Development
-Start the local development server with Hot Module Replacement (HMR):
+1. Clone the repository and navigate to the project directory.
+2. Install the dependencies:
+
+```bash
+npm install
+```
+
+### Development Server
+
+Start the Vite development server with Hot Module Replacement (HMR):
+
 ```bash
 npm run dev
 ```
 
-### Production Build
-Generate a highly optimized production bundle in the `dist/` folder:
+Open your browser and navigate to `http://localhost:5173` (or the port specified in your terminal).
+
+### Building for Production
+
+To create a production-ready build:
+
 ```bash
 npm run build
 ```
 
-### Type Checking
-Run the TypeScript compiler in no-emit mode to verify type safety:
+This will compile the TypeScript, process the Tailwind CSS, and output the optimized static assets into the `dist/` directory.
+
+You can preview the production build locally using:
+
 ```bash
-npm run check
+npm run preview
 ```
 
-## 🌐 Deployment
+## 📂 Project Structure
 
-This project is configured for easy deployment to **Cloudflare Pages**:
+```text
+project/
+├── index.html              # Main HTML entry point
+├── src/
+│   ├── main.ts             # Game initialization and main game loop
+│   ├── types.ts            # Shared TypeScript interfaces (GameState, Upgrade, etc.)
+│   ├── utils.ts            # Helper functions (math, formatting, save/load)
+│   ├── style.css           # Global styles, Tailwind directives, and CSS animations
+│   └── components/         # Modular UI components
+│       ├── header.ts       # Top navigation and save controls
+│       ├── cookieArea.ts   # The main clickable cookie and particle effects
+│       ├── scoreBoard.ts   # Displays current cookies and CPS
+│       └── upgradeStore.ts # Renders available upgrades and handles purchases
+├── package.json            # Project metadata and scripts
+├── tsconfig.json           # TypeScript configuration
+└── vite.config.ts          # Vite bundler configuration
+```
+
+## ☁️ Deployment
+
+This project is designed to be deployed as a static site. It is perfectly suited for **Cloudflare Pages**, Vercel, Netlify, or GitHub Pages.
+
+**For Cloudflare Pages:**
 1. Connect your GitHub repository to Cloudflare Pages.
-2. Set the **Build command** to `npm run build`.
-3. Set the **Output directory** to `dist`.
-4. Deploy!
+2. Set the **Framework preset** to `None` or `Vite`.
+3. Set the **Build command** to `npm run build`.
+4. Set the **Build output directory** to `dist`.
+5. Deploy!
 
-## 📄 License
-MIT © Verdant Aura
+## 📝 License
+
+This project is open-source and available under the MIT License.

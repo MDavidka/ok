@@ -1,93 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <!-- Primary Meta Tags -->
-  <title>Verdant Aura | Premium Indoor Plants & Botanical Care</title>
-  <meta name="title" content="Verdant Aura | Premium Indoor Plants & Botanical Care" />
-  <meta name="description" content="Verdant Aura delivers hand-picked, healthy plants directly to your doorstep. Transform your living space into a sanctuary with our curated botanical collection." />
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Tailwind Configuration -->
-  <script>
-    tailwind.config = {
-      darkMode: 'media',
-      theme: {
-        extend: {
-          colors: {
-            primary: {
-              DEFAULT: '#064e3b',
-              light: '#065f46',
-            },
-            secondary: '#f0fdf4',
-            accent: '#c2410c',
-            obsidian: '#111827',
-          },
-          fontFamily: {
-            heading: ['Playfair Display', 'serif'],
-            sans: ['Inter', 'sans-serif'],
-          },
-          borderRadius: {
-            'xl': '0.75rem',
-            '2xl': '1rem',
-          },
-          animation: {
-            'slow-zoom': 'zoom 20s infinite alternate',
-          },
-          keyframes: {
-            zoom: {
-              '0%': { transform: 'scale(1)' },
-              '100%': { transform: 'scale(1.1)' },
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <!-- Fallback Styles for FOUC (Flash of Unstyled Content) -->
-  <style>
-    [v-cloak] { display: none; }
-    #app { min-height: 100vh; display: flex; flex-direction: column; }
-    body { margin: 0; background-color: #ffffff; }
-    @media (prefers-color-scheme: dark) {
-      body { background-color: #0a0a0a; }
-    }
-  </style>
-</head>
-<body class="antialiased text-slate-900 dark:text-slate-50 selection:bg-emerald-100 selection:text-emerald-900">
-  
-  <!-- Main Application Root -->
-  <div id="app">
-    <!-- 
-      The application content is dynamically injected here by src/main.ts.
-      This includes the Header, Main Content (via Mesh Routing), and Footer.
-    -->
-    <div class="flex items-center justify-center min-h-screen">
-      <div class="flex flex-col items-center gap-4">
-        <div class="w-12 h-12 border-4 border-emerald-900/20 border-t-emerald-900 rounded-full animate-spin"></div>
-        <p class="text-emerald-900 font-medium animate-pulse">Cultivating your experience...</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Application Entry Point -->
-  <script type="module" src="/src/main.ts"></script>
-
-  <!-- Accessibility: Skip to Content -->
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-emerald-900 focus:text-white focus:rounded-lg">
-    Skip to content
-  </a>
-
-</body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Fun cookie emoji favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍪</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cookie Clicker</title>
+    
+    <!-- Google Fonts: Quicksand (Heading) & Inter (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <!-- The Vite app will mount here -->
+    <div id="app"></div>
+    
+    <!-- Main Entry Point -->
+    <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>

@@ -1,147 +1,235 @@
 import './style.css';
-import { RoutePath } from './types';
-import { renderHeader } from './components/header';
-import { renderFooter } from './components/footer';
-import { renderCartOverlay } from './components/cart-overlay';
-import { renderHome } from './components/home';
-import { renderShop } from './components/shop';
+import { GameState, Upgrade, GameComponent } from './types';
+import { 
+    calculateTotalCps, 
+    saveGame, 
+    loadGame, 
+    clearSave, 
+    createInitialGameState 
+} from './utils';
+import { createHeader } from './components/header';
+import { createCookieArea } from './components/cookieArea';
+import { createScoreBoard } from './components/scoreBoard';
+import { createUpgradeStore } from './components/upgradeStore';
+
+// Master list of all available upgrades in the game
+const AVAILABLE_UPGRADES: Upgrade[] = [
+    { 
+        id: 'cursor', 
+        name: 'Auto-Clicker', 
+        description: 'Automatically clicks the cookie for you.', 
+        baseCost: 15, 
+        baseCps: 0.1, 
+        icon: '🖱️' 
+    },
+    { 
+        id: 'grandma', 
+        name: 'Grandma', 
+        description: 'A nice grandma to bake more cookies.', 
+        baseCost: 100, 
+        baseCps: 1, 
+        icon: '👵' 
+    },
+    { 
+        id: 'farm', 
+        name: 'Cookie Farm', 
+        description: 'Grows cookie plants from cookie seeds.', 
+        baseCost: 1100, 
+        baseCps: 8, 
+        icon: '🌱' 
+    },
+    { 
+        id: 'mine', 
+        name: 'Cookie Mine', 
+        description: 'Mines out cookie dough and chocolate chips.', 
+        baseCost: 12000, 
+        baseCps: 47, 
+        icon: '⛏️' 
+    },
+    { 
+        id: 'factory', 
+        name: 'Factory', 
+        description: 'Produces large quantities of cookies.', 
+        baseCost: 130000, 
+        baseCps: 260, 
+        icon: '🏭' 
+    },
+    { 
+        id: 'bank', 
+        name: 'Bank', 
+        description: 'Generates cookies from interest.', 
+        baseCost: 1400000, 
+        baseCps: 1400, 
+        icon: '🏦' 
+    }
+];
 
 /**
- * Verdant Aura - Main Entry Point
- * 
- * This file initializes the application, sets up the mesh router,
- * and manages the lifecycle of global components (Header, Footer, Cart).
+ * Main initialization function that sets up the game state,
+ * mounts all UI components, and starts the game loop.
  */
-
-class App {
-  private appRoot: HTMLElement;
-  private mainContent: HTMLElement;
-
-  constructor() {
-    const root = document.getElementById('app');
-    if (!root) {
-      throw new Error('Verdant Aura: Root element #app not found in index.html');
+export function init(): void {
+    const app = document.getElementById('app');
+    if (!app) {
+        console.error('Root element #app not found. Cannot initialize game.');
+        return;
     }
-    this.appRoot = root;
+
+    // --- State Initialization ---
+    let state: GameState = loadGame() || createInitialGameState();
+    let currentCps: number = calculateTotalCps(state.upgrades, AVAILABLE_UPGRADES);
+
+    // --- Component Instantiation ---
     
-    // Create main content container
-    this.mainContent = document.createElement('main');
-    this.mainContent.id = 'main-content';
-    this.mainContent.className = 'flex-grow';
-  }
+    const headerComponent: GameComponent = createHeader(
+        () => {
+            saveGame(state);
+            // Optional: Show a brief toast notification here
+        },
+        () => {
+            const loadedState = loadGame();
+            if (loadedState) {
+                state = loadedState;
+                updateCps();
+                updateAllComponents();
+            }
+        },
+        () => {
+            if (window.confirm('Are you sure you want to wipe your save? This cannot be undone.')) {
+                clearSave();
+                state = createInitialGameState();
+                updateCps();
+                updateAllComponents();
+            }
+        }
+    );
 
-  /**
-   * Initialize the application
-   */
-  public init(): void {
-    // 1. Render Persistent Layout Components
-    renderHeader(this.appRoot);
-    this.appRoot.appendChild(this.mainContent);
-    renderFooter(this.appRoot);
-    
-    // 2. Initialize Overlays (Cart, Search, etc.)
-    renderCartOverlay(this.appRoot);
+    const scoreBoardComponent: GameComponent = createScoreBoard();
 
-    // 3. Setup Routing
-    this.setupRouter();
-
-    // 4. Initial Route Handling
-    this.handleRoute(window.location.pathname as RoutePath);
-
-    console.log('Verdant Aura: Application initialized successfully.');
-  }
-
-  /**
-   * Sets up listeners for URL changes
-   */
-  private setupRouter(): void {
-    // Listen for browser back/forward buttons
-    window.addEventListener('popstate', () => {
-      this.handleRoute(window.location.pathname as RoutePath);
+    const cookieAreaComponent: GameComponent = createCookieArea(() => {
+        // Handle manual click
+        state.cookies += state.clickPower;
+        state.totalCookiesEarned += state.clickPower;
+        state.clickCount += 1;
+        
+        // Update UI immediately for responsiveness
+        scoreBoardComponent.update(state, currentCps);
+        upgradeStoreComponent.update(state);
     });
 
-    // Listen for custom navigation events dispatched by utils.navigateTo
-    window.addEventListener('navigation-changed', ((e: CustomEvent) => {
-      const path = e.detail.path as RoutePath;
-      this.handleRoute(path);
-      
-      // Scroll to top on navigation
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }) as EventListener);
-  }
+    const upgradeStoreComponent: GameComponent = createUpgradeStore(
+        AVAILABLE_UPGRADES, 
+        (upgradeId: string, cost: number) => {
+            // Handle purchase
+            if (state.cookies >= cost) {
+                state.cookies -= cost;
+                state.upgrades[upgradeId] = (state.upgrades[upgradeId] || 0) + 1;
+                
+                updateCps();
+                updateAllComponents();
+            }
+        }
+    );
 
-  /**
-   * Orchestrates component rendering based on the current path
-   */
-  private handleRoute(path: RoutePath | string): void {
-    // Clear current content
-    this.mainContent.innerHTML = '';
+    // --- Helper Functions ---
 
-    // Route Mapping
-    switch (path) {
-      case '/':
-        renderHome(this.mainContent);
-        document.title = 'Verdant Aura | Premium Indoor Plants & Botanical Care';
-        break;
-
-      case '/shop':
-        renderShop(this.mainContent);
-        document.title = 'Shop All Plants | Verdant Aura';
-        break;
-
-      case '/care':
-        this.renderPlaceholder('Care Guides', 'Our expert botanical care guides are being cultivated. Check back soon for tips on keeping your greenery thriving.');
-        document.title = 'Plant Care Guides | Verdant Aura';
-        break;
-
-      case '/checkout':
-        this.renderPlaceholder('Checkout', 'Secure checkout is currently being integrated. Please explore our shop in the meantime.');
-        document.title = 'Checkout | Verdant Aura';
-        break;
-
-      default:
-        // Fallback to Home for unknown routes
-        renderHome(this.mainContent);
-        document.title = 'Verdant Aura';
-        break;
+    function updateCps(): void {
+        currentCps = calculateTotalCps(state.upgrades, AVAILABLE_UPGRADES);
     }
-  }
 
-  /**
-   * Renders a simple placeholder for routes not yet fully implemented
-   */
-  private renderPlaceholder(title: string, message: string): void {
-    const section = document.createElement('section');
-    section.className = 'section-container flex flex-col items-center justify-center min-h-[60vh] text-center animate-fade-in';
-    section.innerHTML = `
-      <div class="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mb-8">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-      </div>
-      <h1 class="text-4xl font-bold text-emerald-950 font-heading mb-4">${title}</h1>
-      <p class="text-gray-500 max-w-md mx-auto mb-10 leading-relaxed">
-        ${message}
-      </p>
-      <button id="back-to-shop" class="btn-primary">
-        Return to Shop
-      </button>
-    `;
+    function updateAllComponents(): void {
+        if (headerComponent.update) headerComponent.update(state);
+        if (cookieAreaComponent.update) cookieAreaComponent.update(state);
+        scoreBoardComponent.update(state, currentCps);
+        upgradeStoreComponent.update(state);
+    }
 
-    this.mainContent.appendChild(section);
+    // --- Layout Construction ---
+    
+    // Clear any existing content
+    app.innerHTML = '';
 
-    section.querySelector('#back-to-shop')?.addEventListener('click', () => {
-      // We use the custom event approach for navigation
-      window.dispatchEvent(new CustomEvent('navigation-changed', { 
-        detail: { path: '/shop' } 
-      }));
-      window.history.pushState({}, '', '/shop');
-    });
-  }
+    const layout = document.createElement('div');
+    layout.className = 'min-h-screen flex flex-col bg-[var(--color-bg)] text-[var(--color-text)] font-body selection:bg-[var(--color-primary)] selection:text-white';
+
+    const headerContainer = document.createElement('header');
+    layout.appendChild(headerContainer);
+
+    const mainContainer = document.createElement('main');
+    mainContainer.className = 'flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto w-full';
+
+    // Left Column: Score and Cookie
+    const leftCol = document.createElement('div');
+    leftCol.className = 'lg:col-span-7 xl:col-span-8 flex flex-col gap-6 items-center justify-start pt-4';
+
+    const scoreContainer = document.createElement('div');
+    scoreContainer.className = 'w-full';
+    leftCol.appendChild(scoreContainer);
+
+    const cookieContainer = document.createElement('div');
+    cookieContainer.className = 'w-full flex-1 flex items-center justify-center min-h-[400px]';
+    leftCol.appendChild(cookieContainer);
+
+    // Right Column: Upgrades Store
+    const rightCol = document.createElement('div');
+    // On desktop, make the store sticky and scrollable
+    rightCol.className = 'lg:col-span-5 xl:col-span-4 flex flex-col h-[600px] lg:h-[calc(100vh-8rem)] lg:sticky lg:top-24';
+
+    mainContainer.appendChild(leftCol);
+    mainContainer.appendChild(rightCol);
+    layout.appendChild(mainContainer);
+    app.appendChild(layout);
+
+    // --- Mount Components ---
+    
+    headerComponent.render(headerContainer);
+    scoreBoardComponent.render(scoreContainer);
+    cookieAreaComponent.render(cookieContainer);
+    upgradeStoreComponent.render(rightCol);
+
+    // Initial UI sync
+    updateAllComponents();
+
+    // --- Game Loop ---
+    
+    let lastTime = performance.now();
+    let autoSaveTimer = 0;
+    const AUTO_SAVE_INTERVAL = 30; // seconds
+
+    function gameLoop(currentTime: number): void {
+        // Calculate delta time in seconds
+        const deltaTime = (currentTime - lastTime) / 1000;
+        lastTime = currentTime;
+
+        // Add passive cookie generation
+        if (currentCps > 0) {
+            const earned = currentCps * deltaTime;
+            state.cookies += earned;
+            state.totalCookiesEarned += earned;
+            
+            // Update UI
+            scoreBoardComponent.update(state, currentCps);
+            upgradeStoreComponent.update(state);
+        }
+
+        // Handle Auto-save
+        autoSaveTimer += deltaTime;
+        if (autoSaveTimer >= AUTO_SAVE_INTERVAL) {
+            saveGame(state);
+            autoSaveTimer = 0;
+        }
+
+        // Request next frame
+        requestAnimationFrame(gameLoop);
+    }
+
+    // Start the loop
+    requestAnimationFrame(gameLoop);
 }
 
-// Initialize the application when the DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  const app = new App();
-  app.init();
-});
+// Bootstrap the application safely
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
