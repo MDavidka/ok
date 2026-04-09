@@ -1,97 +1,89 @@
 # 🍪 Cookie Clicker
 
-A modern, high-performance incremental game built with Vanilla TypeScript, Vite, and Tailwind CSS. 
-
-This project demonstrates how to build a robust, state-driven web application without a heavy frontend framework. It features a custom game loop, real-time DOM updates, particle animations, and persistent local storage.
+A modern, fast, and addictive incremental game built with Vite, TypeScript, and Tailwind CSS. 
+Bake cookies, buy upgrades, and compete against players worldwide on the Global Leaderboard!
 
 ## ✨ Features
 
-*   **Custom Game Engine:** Uses `requestAnimationFrame` for a smooth, high-performance game loop that calculates passive income (Cookies Per Second) accurately using delta time.
-*   **Dynamic Economy:** Upgrade costs scale dynamically based on the number of items owned.
-*   **Interactive UI:** Satisfying click animations and floating "+1" text particles spawned dynamically on interaction.
-*   **Persistent State:** Automatically saves your progress to the browser's `localStorage` every 30 seconds, and allows manual saving/loading.
-*   **Responsive Design:** A split-screen layout on desktop that gracefully collapses into a stacked view on mobile devices, styled entirely with Tailwind CSS.
-*   **Zero Dependencies (Frontend):** Built with pure Vanilla TypeScript and DOM manipulation for maximum performance and minimal bundle size.
+- **Classic Incremental Gameplay:** Click the giant cookie to earn cookies.
+- **Upgrades & Automation:** Buy Cursors, Grandmas, Farms, and more to increase your Cookies Per Second (CPS).
+- **Offline Progress:** Come back later and see how many cookies your bakery produced while you were away (capped at 24 hours).
+- **Global Leaderboard:** Submit your high score and see how you rank against other bakers globally.
+- **Responsive Design:** Play seamlessly on desktop, tablet, or mobile devices.
+- **Modern Tech Stack:** Built for speed and maintainability using Vanilla TypeScript and Vite.
 
-## 🛠️ Tech Stack
+## 🚀 Quick Start (Local Development)
 
-*   **Build Tool:** [Vite](https://vitejs.dev/)
-*   **Language:** [TypeScript](https://www.typescriptlang.org/) (Strict Mode)
-*   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-*   **Deployment:** Ready for [Cloudflare Pages](https://pages.cloudflare.com/)
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-## 🚀 Getting Started
+2. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
 
-### Prerequisites
+3. **Open your browser:**
+   Navigate to `http://localhost:5173` to start baking!
 
-Ensure you have [Node.js](https://nodejs.org/) (v18+ recommended) and `npm` installed.
+## 🗄️ Database Setup (Global Leaderboard)
 
-### Installation
+To enable the Global Leaderboard functionality, this project uses the **MongoDB Atlas Data API**. You need to set up a free MongoDB cluster and connect it to the game.
 
-1. Clone the repository and navigate to the project directory.
-2. Install the dependencies:
+### Step 1: Create a MongoDB Atlas Cluster
+1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and sign up/log in.
+2. Create a new **Free Tier (M0)** cluster.
+3. Once the cluster is provisioned, click **Browse Collections** and create a new Database and Collection:
+   - **Database Name:** `cookie_clicker`
+   - **Collection Name:** `leaderboard`
 
-```bash
-npm install
+### Step 2: Enable the Data API
+1. In the left sidebar of your MongoDB Atlas dashboard, under **Services**, click on **Data API**.
+2. Click **Enable the Data API**.
+3. Select your cluster and click **Enable**.
+4. Copy your **URL Endpoint** (you will need this later).
+
+### Step 3: Create an API Key
+1. On the Data API page, go to the **API Keys** tab.
+2. Click **Generate API Key**.
+3. Give it a name (e.g., "Cookie Clicker App") and click **Generate API Key**.
+4. **Copy the API Key immediately** (it will only be shown once).
+
+### Step 4: Connect the Game
+Open the `src/db.ts` file in your project and update the configuration constants with the values you just obtained:
+
+```typescript
+// src/db.ts
+export const MONGO_ENDPOINT = 'YOUR_URL_ENDPOINT_HERE';
+export const MONGO_API_KEY = 'YOUR_API_KEY_HERE';
+export const DATA_SOURCE = 'Cluster0'; // Change if your cluster name is different
+export const DATABASE_NAME = 'cookie_clicker';
+export const COLLECTION_LEADERBOARD = 'leaderboard';
 ```
 
-### Development Server
+*Note: Because this is a client-side only application deployed to Cloudflare Pages, the API key is exposed to the client. For a true production environment, you should wrap the MongoDB Data API calls in Cloudflare Workers or another serverless function to hide the API key.*
 
-Start the Vite development server with Hot Module Replacement (HMR):
+## 🛠️ Building for Production
 
-```bash
-npm run dev
-```
-
-Open your browser and navigate to `http://localhost:5173` (or the port specified in your terminal).
-
-### Building for Production
-
-To create a production-ready build:
+To build the project for production (e.g., deploying to Cloudflare Pages):
 
 ```bash
 npm run build
 ```
 
-This will compile the TypeScript, process the Tailwind CSS, and output the optimized static assets into the `dist/` directory.
+This will generate a `dist/` directory containing the optimized, minified static files ready for deployment.
 
-You can preview the production build locally using:
+## 🌐 Deployment (Cloudflare Pages)
 
-```bash
-npm run preview
-```
+1. Push your code to a GitHub or GitLab repository.
+2. Log in to the [Cloudflare Dashboard](https://dash.cloudflare.com/).
+3. Go to **Workers & Pages** -> **Create application** -> **Pages** -> **Connect to Git**.
+4. Select your repository.
+5. Configure the build settings:
+   - **Framework preset:** `Vite`
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+6. Click **Save and Deploy**.
 
-## 📂 Project Structure
-
-```text
-project/
-├── index.html              # Main HTML entry point
-├── src/
-│   ├── main.ts             # Game initialization and main game loop
-│   ├── types.ts            # Shared TypeScript interfaces (GameState, Upgrade, etc.)
-│   ├── utils.ts            # Helper functions (math, formatting, save/load)
-│   ├── style.css           # Global styles, Tailwind directives, and CSS animations
-│   └── components/         # Modular UI components
-│       ├── header.ts       # Top navigation and save controls
-│       ├── cookieArea.ts   # The main clickable cookie and particle effects
-│       ├── scoreBoard.ts   # Displays current cookies and CPS
-│       └── upgradeStore.ts # Renders available upgrades and handles purchases
-├── package.json            # Project metadata and scripts
-├── tsconfig.json           # TypeScript configuration
-└── vite.config.ts          # Vite bundler configuration
-```
-
-## ☁️ Deployment
-
-This project is designed to be deployed as a static site. It is perfectly suited for **Cloudflare Pages**, Vercel, Netlify, or GitHub Pages.
-
-**For Cloudflare Pages:**
-1. Connect your GitHub repository to Cloudflare Pages.
-2. Set the **Framework preset** to `None` or `Vite`.
-3. Set the **Build command** to `npm run build`.
-4. Set the **Build output directory** to `dist`.
-5. Deploy!
-
-## 📝 License
-
-This project is open-source and available under the MIT License.
+Happy Baking! 🍪

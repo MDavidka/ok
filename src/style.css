@@ -4,19 +4,19 @@
 
 @layer base {
   :root {
-    /* Color Palette: Warm, doughy, chocolatey */
-    --color-bg: #fdf8f5; /* Warm doughy beige */
-    --color-surface: #ffffff;
-    --color-surface-hover: #f3e8e0;
-    --color-text: #4a3b32; /* Rich chocolate brown */
-    --color-text-muted: #8c7b70;
-    --color-primary: #d4813b; /* Baked cookie color */
-    --color-primary-hover: #b86b2d;
-    --color-secondary: #6b4c3a; /* Dark chocolate */
-    --color-accent: #f5b041; /* Golden chip */
-    
-    /* Typography */
-    --font-heading: 'Quicksand', system-ui, -apple-system, sans-serif;
+    /* Design System Tokens */
+    --color-primary: #8b4513; /* Deep cookie brown */
+    --color-primary-dark: #5c2e0b;
+    --color-secondary: #f59e0b; /* Golden yellow */
+    --color-accent: #fbbf24; /* Bright yellow */
+    --color-bg: #fdf8f5; /* Warm pastel background */
+    --color-text: #431407; /* Very dark brown for high contrast */
+    --color-text-muted: #78350f; /* Softer brown for secondary text */
+    --color-surface: #ffffff; /* White for cards and panels */
+    --color-surface-hover: #fffbeb; /* Light amber for hover states */
+    --color-border: #fcd34d; /* Soft gold for borders */
+
+    --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
     --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
@@ -24,84 +24,79 @@
     background-color: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-body);
-    /* Prevent text selection on rapid clicking */
-    user-select: none; 
+    /* Prevent text selection during rapid clicking */
+    user-select: none;
     -webkit-user-select: none;
     overflow-x: hidden;
+    margin: 0;
+    padding: 0;
   }
 
-  h1, h2, h3, h4, h5, h6, .font-heading {
+  h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: 700;
   }
 }
 
-@layer components {
-  .btn-primary {
-    @apply bg-[var(--color-primary)] text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-[var(--color-primary-hover)] transition-colors active:scale-95;
-  }
-  
-  .panel {
-    @apply bg-[var(--color-surface)] rounded-2xl shadow-lg border border-[var(--color-surface-hover)];
-  }
-}
-
 @layer utilities {
-  /* The main cookie clicker button */
-  .cookie-btn {
-    transition: transform 0.05s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    cursor: pointer;
-    filter: drop-shadow(0 15px 25px rgba(107, 76, 58, 0.25));
-    touch-action: manipulation; /* Prevents double-tap zoom on mobile */
-    user-select: none;
-    -webkit-user-drag: none;
-  }
-
-  .cookie-btn:active {
-    transform: scale(0.92);
-    filter: drop-shadow(0 5px 10px rgba(107, 76, 58, 0.4));
-  }
-
-  /* Floating text animation for clicks */
-  .floating-text {
-    position: absolute;
-    pointer-events: none;
-    font-family: var(--font-heading);
-    font-weight: 800;
-    font-size: 1.5rem;
-    color: var(--color-text);
-    text-shadow: 0 2px 4px rgba(255, 255, 255, 0.9), 0 0 10px rgba(255, 255, 255, 0.5);
+  /* Custom utility classes for game animations */
+  .animate-float-up {
     animation: floatUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    z-index: 50;
-    transform: translate(-50%, -50%);
   }
 
-  /* Affordable upgrade animation */
-  .upgrade-affordable {
-    animation: subtlePulse 2s infinite;
-    cursor: pointer;
+  .animate-cookie-click {
+    animation: cookieClick 0.08s ease-in-out;
   }
-  
-  .upgrade-unaffordable {
-    opacity: 0.6;
-    filter: grayscale(0.8);
-    cursor: not-allowed;
+
+  .animate-cookie-pulse {
+    animation: cookiePulse 3s infinite ease-in-out;
+  }
+
+  /* Hide scrollbar for a cleaner UI while maintaining scroll functionality */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
+/* Keyframe Definitions */
 @keyframes floatUp {
   0% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translateY(0) scale(1);
+  }
+  20% {
+    transform: translateY(-20px) scale(1.2);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -120px) scale(1.5);
+    transform: translateY(-120px) scale(1.5);
   }
 }
 
-@keyframes subtlePulse {
-  0% { box-shadow: 0 0 0 0 rgba(212, 129, 59, 0.4); }
-  70% { box-shadow: 0 0 0 8px rgba(212, 129, 59, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(212, 129, 59, 0); }
+@keyframes cookieClick {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.92);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes cookiePulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

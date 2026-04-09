@@ -1,235 +1,99 @@
 import './style.css';
-import { GameState, Upgrade, GameComponent } from './types';
-import { 
-    calculateTotalCps, 
-    saveGame, 
-    loadGame, 
-    clearSave, 
-    createInitialGameState 
-} from './utils';
-import { createHeader } from './components/header';
-import { createCookieArea } from './components/cookieArea';
-import { createScoreBoard } from './components/scoreBoard';
-import { createUpgradeStore } from './components/upgradeStore';
-
-// Master list of all available upgrades in the game
-const AVAILABLE_UPGRADES: Upgrade[] = [
-    { 
-        id: 'cursor', 
-        name: 'Auto-Clicker', 
-        description: 'Automatically clicks the cookie for you.', 
-        baseCost: 15, 
-        baseCps: 0.1, 
-        icon: '🖱️' 
-    },
-    { 
-        id: 'grandma', 
-        name: 'Grandma', 
-        description: 'A nice grandma to bake more cookies.', 
-        baseCost: 100, 
-        baseCps: 1, 
-        icon: '👵' 
-    },
-    { 
-        id: 'farm', 
-        name: 'Cookie Farm', 
-        description: 'Grows cookie plants from cookie seeds.', 
-        baseCost: 1100, 
-        baseCps: 8, 
-        icon: '🌱' 
-    },
-    { 
-        id: 'mine', 
-        name: 'Cookie Mine', 
-        description: 'Mines out cookie dough and chocolate chips.', 
-        baseCost: 12000, 
-        baseCps: 47, 
-        icon: '⛏️' 
-    },
-    { 
-        id: 'factory', 
-        name: 'Factory', 
-        description: 'Produces large quantities of cookies.', 
-        baseCost: 130000, 
-        baseCps: 260, 
-        icon: '🏭' 
-    },
-    { 
-        id: 'bank', 
-        name: 'Bank', 
-        description: 'Generates cookies from interest.', 
-        baseCost: 1400000, 
-        baseCps: 1400, 
-        icon: '🏦' 
-    }
-];
+import { GameManager, UPGRADES } from './components/game-manager';
+import { initShop } from './components/shop';
+import { initLeaderboard } from './components/leaderboard';
+import { initHeader } from './components/header';
+import { initCookie } from './components/cookie';
 
 /**
- * Main initialization function that sets up the game state,
- * mounts all UI components, and starts the game loop.
+ * Bootstraps the application, sets up the DOM layout, 
+ * initializes the game state, and mounts all components.
  */
-export function init(): void {
+function bootstrap() {
     const app = document.getElementById('app');
     if (!app) {
-        console.error('Root element #app not found. Cannot initialize game.');
-        return;
+        throw new Error('Root element #app not found. Ensure index.html contains <div id="app"></div>');
     }
 
-    // --- State Initialization ---
-    let state: GameState = loadGame() || createInitialGameState();
-    let currentCps: number = calculateTotalCps(state.upgrades, AVAILABLE_UPGRADES);
+    // 1. Setup Main Layout
+    // Using a mobile-first stacked layout that transitions to a side-by-side grid on large screens.
+    app.innerHTML = `
+        <div class="min-h-screen flex flex-col bg-orange-50/50 text-gray-900 font-sans selection:bg-orange-200">
+            <!-- Header Area -->
+            <div id="header-container" class="sticky top-0 z-50"></div>
+            
+            <!-- Main Game Area -->
+            <main class="flex-1 container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-5rem)]">
+                
+                <!-- Left Column: Cookie Interaction -->
+                <section id="cookie-container" class="w-full lg:w-5/12 flex flex-col relative min-h-[400px] lg:min-h-0 bg-white/40 rounded-3xl shadow-sm border border-white/60 p-4 backdrop-blur-sm">
+                    <!-- Cookie component will mount here -->
+                </section>
+                
+                <!-- Right Column: Shop & Leaderboard -->
+                <section class="w-full lg:w-7/12 flex flex-col md:flex-row gap-6 lg:overflow-hidden">
+                    <!-- Shop Panel -->
+                    <div id="shop-container" class="flex-1 w-full h-[500px] md:h-auto"></div>
+                    
+                    <!-- Leaderboard Panel -->
+                    <div id="leaderboard-container" class="flex-1 w-full h-[500px] md:h-auto"></div>
+                </section>
+                
+            </main>
+        </div>
+    `;
 
-    // --- Component Instantiation ---
+    // 2. Grab Container References
+    const headerContainer = document.getElementById('header-container');
+    const cookieContainer = document.getElementById('cookie-container');
+    const shopContainer = document.getElementById('shop-container');
+    const leaderboardContainer = document.getElementById('leaderboard-container');
+
+    if (!headerContainer || !cookieContainer || !shopContainer || !leaderboardContainer) {
+        throw new Error('Failed to initialize layout containers. DOM structure may be corrupted.');
+    }
+
+    // 3. Initialize Core Game Manager
+    const game = new GameManager();
+
+    // 4. Mount Components
     
-    const headerComponent: GameComponent = createHeader(
-        () => {
-            saveGame(state);
-            // Optional: Show a brief toast notification here
-        },
-        () => {
-            const loadedState = loadGame();
-            if (loadedState) {
-                state = loadedState;
-                updateCps();
-                updateAllComponents();
-            }
-        },
-        () => {
-            if (window.confirm('Are you sure you want to wipe your save? This cannot be undone.')) {
-                clearSave();
-                state = createInitialGameState();
-                updateCps();
-                updateAllComponents();
-            }
-        }
-    );
+    // Mount Header
+    initHeader(headerContainer);
 
-    const scoreBoardComponent: GameComponent = createScoreBoard();
-
-    const cookieAreaComponent: GameComponent = createCookieArea(() => {
-        // Handle manual click
-        state.cookies += state.clickPower;
-        state.totalCookiesEarned += state.clickPower;
-        state.clickCount += 1;
-        
-        // Update UI immediately for responsiveness
-        scoreBoardComponent.update(state, currentCps);
-        upgradeStoreComponent.update(state);
+    // Mount Cookie Area
+    // We pass a callback for when the cookie is clicked
+    const updateCookieUI = initCookie(cookieContainer, () => {
+        game.clickCookie();
     });
 
-    const upgradeStoreComponent: GameComponent = createUpgradeStore(
-        AVAILABLE_UPGRADES, 
-        (upgradeId: string, cost: number) => {
-            // Handle purchase
-            if (state.cookies >= cost) {
-                state.cookies -= cost;
-                state.upgrades[upgradeId] = (state.upgrades[upgradeId] || 0) + 1;
-                
-                updateCps();
-                updateAllComponents();
-            }
+    // Mount Shop
+    // We pass the available upgrades and a callback for purchasing
+    const updateShopUI = initShop(shopContainer, UPGRADES, (upgradeId: string) => {
+        game.buyUpgrade(upgradeId);
+    });
+
+    // Mount Leaderboard
+    // We pass a getter so the leaderboard can fetch the current score when submitting
+    initLeaderboard(leaderboardContainer, () => {
+        return Math.floor(game.getState().cookies);
+    });
+
+    // 5. Subscribe UI to Game State Updates
+    // The GameManager calls this callback every frame (or tick)
+    game.subscribe((state) => {
+        if (typeof updateCookieUI === 'function') {
+            updateCookieUI(state);
         }
-    );
-
-    // --- Helper Functions ---
-
-    function updateCps(): void {
-        currentCps = calculateTotalCps(state.upgrades, AVAILABLE_UPGRADES);
-    }
-
-    function updateAllComponents(): void {
-        if (headerComponent.update) headerComponent.update(state);
-        if (cookieAreaComponent.update) cookieAreaComponent.update(state);
-        scoreBoardComponent.update(state, currentCps);
-        upgradeStoreComponent.update(state);
-    }
-
-    // --- Layout Construction ---
-    
-    // Clear any existing content
-    app.innerHTML = '';
-
-    const layout = document.createElement('div');
-    layout.className = 'min-h-screen flex flex-col bg-[var(--color-bg)] text-[var(--color-text)] font-body selection:bg-[var(--color-primary)] selection:text-white';
-
-    const headerContainer = document.createElement('header');
-    layout.appendChild(headerContainer);
-
-    const mainContainer = document.createElement('main');
-    mainContainer.className = 'flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto w-full';
-
-    // Left Column: Score and Cookie
-    const leftCol = document.createElement('div');
-    leftCol.className = 'lg:col-span-7 xl:col-span-8 flex flex-col gap-6 items-center justify-start pt-4';
-
-    const scoreContainer = document.createElement('div');
-    scoreContainer.className = 'w-full';
-    leftCol.appendChild(scoreContainer);
-
-    const cookieContainer = document.createElement('div');
-    cookieContainer.className = 'w-full flex-1 flex items-center justify-center min-h-[400px]';
-    leftCol.appendChild(cookieContainer);
-
-    // Right Column: Upgrades Store
-    const rightCol = document.createElement('div');
-    // On desktop, make the store sticky and scrollable
-    rightCol.className = 'lg:col-span-5 xl:col-span-4 flex flex-col h-[600px] lg:h-[calc(100vh-8rem)] lg:sticky lg:top-24';
-
-    mainContainer.appendChild(leftCol);
-    mainContainer.appendChild(rightCol);
-    layout.appendChild(mainContainer);
-    app.appendChild(layout);
-
-    // --- Mount Components ---
-    
-    headerComponent.render(headerContainer);
-    scoreBoardComponent.render(scoreContainer);
-    cookieAreaComponent.render(cookieContainer);
-    upgradeStoreComponent.render(rightCol);
-
-    // Initial UI sync
-    updateAllComponents();
-
-    // --- Game Loop ---
-    
-    let lastTime = performance.now();
-    let autoSaveTimer = 0;
-    const AUTO_SAVE_INTERVAL = 30; // seconds
-
-    function gameLoop(currentTime: number): void {
-        // Calculate delta time in seconds
-        const deltaTime = (currentTime - lastTime) / 1000;
-        lastTime = currentTime;
-
-        // Add passive cookie generation
-        if (currentCps > 0) {
-            const earned = currentCps * deltaTime;
-            state.cookies += earned;
-            state.totalCookiesEarned += earned;
-            
-            // Update UI
-            scoreBoardComponent.update(state, currentCps);
-            upgradeStoreComponent.update(state);
+        if (typeof updateShopUI === 'function') {
+            updateShopUI(state);
         }
-
-        // Handle Auto-save
-        autoSaveTimer += deltaTime;
-        if (autoSaveTimer >= AUTO_SAVE_INTERVAL) {
-            saveGame(state);
-            autoSaveTimer = 0;
-        }
-
-        // Request next frame
-        requestAnimationFrame(gameLoop);
-    }
-
-    // Start the loop
-    requestAnimationFrame(gameLoop);
+    });
 }
 
-// Bootstrap the application safely
+// Ensure the DOM is fully loaded before bootstrapping
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', bootstrap);
 } else {
-    init();
+    bootstrap();
 }

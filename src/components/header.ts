@@ -1,91 +1,127 @@
-import { GameState, GameComponent } from '../types';
+import { NavItem } from '../types';
+import { createElement } from '../utils';
+
+const NAV_ITEMS: NavItem[] = [
+  { label: 'Game', href: '#game', icon: '🍪' },
+  { label: 'Shop', href: '#shop', icon: '🛒' },
+  { label: 'Leaderboard', href: '#leaderboard', icon: '🏆' }
+];
 
 /**
- * Creates the header component containing the game title and global controls.
+ * Renders the main application header with navigation tabs.
+ * Handles active state styling based on the current URL hash.
  * 
- * @param onForceSave Callback triggered when the user clicks the Save button
- * @param onHardReset Callback triggered when the user confirms a hard reset
- * @returns A GameComponent instance
+ * @param container The DOM element to append the header to.
  */
-export function createHeader(
-    onForceSave: () => void,
-    onHardReset: () => void
-): GameComponent {
-    let statusText: HTMLElement | null = null;
+export function renderHeader(container: HTMLElement): void {
+  // Create the main header wrapper
+  const header = createElement('header', {
+    classes: [
+      'bg-[var(--color-surface)]', 
+      'border-b', 
+      'border-[var(--color-border)]', 
+      'sticky', 
+      'top-0', 
+      'z-50', 
+      'shadow-sm'
+    ]
+  });
 
-    return {
-        render(container: HTMLElement): void {
-            const header = document.createElement('header');
-            header.className = 'flex justify-between items-center p-3 md:p-4 bg-[var(--color-surface)] shadow-sm border-b border-[var(--color-surface-hover)] sticky top-0 z-40';
+  // Create the inner container for layout
+  const navContainer = createElement('div', {
+    classes: [
+      'max-w-6xl', 
+      'mx-auto', 
+      'px-4', 
+      'h-16', 
+      'flex', 
+      'items-center', 
+      'justify-between'
+    ]
+  });
 
-            // Left side: Logo and Title
-            const titleGroup = document.createElement('div');
-            titleGroup.className = 'flex items-center gap-2 md:gap-3';
+  // Create the Logo / Title area
+  const logo = createElement('div', {
+    classes: [
+      'text-xl', 
+      'sm:text-2xl', 
+      'font-bold', 
+      'text-[var(--color-primary)]', 
+      'flex', 
+      'items-center', 
+      'gap-2', 
+      'cursor-pointer',
+      'select-none'
+    ],
+    html: `<span>🍪</span><span>Cookie Clicker</span>`
+  });
 
-            const logo = document.createElement('div');
-            logo.textContent = '🍪';
-            logo.className = 'text-2xl md:text-3xl drop-shadow-sm select-none';
+  // Clicking the logo returns to the game
+  logo.addEventListener('click', () => {
+    window.location.hash = '#game';
+  });
 
-            const title = document.createElement('h1');
-            title.textContent = 'Cookie Clicker';
-            title.className = 'text-lg md:text-2xl font-heading font-bold text-[var(--color-text)] tracking-tight select-none';
+  // Create the navigation menu
+  const nav = createElement('nav', {
+    classes: ['flex', 'gap-1', 'sm:gap-2']
+  });
 
-            titleGroup.appendChild(logo);
-            titleGroup.appendChild(title);
+  // Store references to the link elements to update their active states later
+  const navLinks: Record<string, HTMLAnchorElement> = {};
 
-            // Right side: Controls
-            const controlsGroup = document.createElement('div');
-            controlsGroup.className = 'flex items-center gap-2 md:gap-4';
+  NAV_ITEMS.forEach(item => {
+    const link = createElement('a', {
+      classes: [
+        'px-3', 
+        'py-2', 
+        'rounded-md', 
+        'text-sm', 
+        'font-medium', 
+        'transition-colors',
+        'flex', 
+        'items-center', 
+        'gap-1', 
+        'sm:gap-2', 
+        'select-none',
+        'cursor-pointer'
+      ],
+      attributes: { href: item.href },
+      html: `<span class="text-lg">${item.icon}</span><span class="hidden sm:inline">${item.label}</span>`
+    });
 
-            // Save confirmation toast text
-            statusText = document.createElement('span');
-            statusText.className = 'text-xs font-bold text-[var(--color-primary)] hidden md:inline-block transition-opacity duration-500 opacity-0 pointer-events-none';
-            statusText.textContent = 'Game Saved!';
+    nav.appendChild(link);
+    navLinks[item.href] = link as HTMLAnchorElement;
+  });
 
-            // Manual Save Button
-            const saveBtn = document.createElement('button');
-            saveBtn.textContent = 'Save';
-            saveBtn.className = 'btn-primary text-xs md:text-sm py-1.5 px-3 md:px-4';
-            saveBtn.title = 'Manually save your progress';
-            saveBtn.addEventListener('click', () => {
-                onForceSave();
-                
-                // Show toast notification
-                if (statusText) {
-                    statusText.style.opacity = '1';
-                    setTimeout(() => {
-                        if (statusText) statusText.style.opacity = '0';
-                    }, 2000);
-                }
-            });
+  // Assemble the DOM structure
+  navContainer.appendChild(logo);
+  navContainer.appendChild(nav);
+  header.appendChild(navContainer);
+  container.appendChild(header);
 
-            // Hard Reset Button
-            const resetBtn = document.createElement('button');
-            resetBtn.textContent = 'Reset';
-            resetBtn.className = 'bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800 font-bold py-1.5 px-3 md:px-4 rounded-lg shadow-sm transition-colors active:scale-95 text-xs md:text-sm border border-red-200';
-            resetBtn.title = 'Wipe all progress and start over';
-            resetBtn.addEventListener('click', () => {
-                const confirmed = window.confirm(
-                    'Are you sure you want to wipe your save?\n\nThis will reset ALL your cookies and upgrades. This action CANNOT be undone!'
-                );
-                if (confirmed) {
-                    onHardReset();
-                }
-            });
+  /**
+   * Updates the visual state of the navigation tabs based on the current URL hash.
+   */
+  const updateActiveTab = () => {
+    // Default to #game if no hash is present
+    const currentHash = window.location.hash || '#game';
+    
+    Object.entries(navLinks).forEach(([href, linkEl]) => {
+      if (href === currentHash) {
+        // Active state styles
+        linkEl.classList.add('bg-[var(--color-primary)]', 'text-[var(--color-surface)]');
+        linkEl.classList.remove('text-[var(--color-text-muted)]', 'hover:bg-[var(--color-surface-hover)]', 'hover:text-[var(--color-primary)]');
+      } else {
+        // Inactive state styles
+        linkEl.classList.remove('bg-[var(--color-primary)]', 'text-[var(--color-surface)]');
+        linkEl.classList.add('text-[var(--color-text-muted)]', 'hover:bg-[var(--color-surface-hover)]', 'hover:text-[var(--color-primary)]');
+      }
+    });
+  };
 
-            controlsGroup.appendChild(statusText);
-            controlsGroup.appendChild(saveBtn);
-            controlsGroup.appendChild(resetBtn);
-
-            header.appendChild(titleGroup);
-            header.appendChild(controlsGroup);
-
-            container.appendChild(header);
-        },
-        
-        update(_state: GameState, _currentCps: number): void {
-            // The header doesn't currently need to re-render on every game tick.
-            // If we wanted to show a "Last saved X mins ago" timer, we would update it here.
-        }
-    };
+  // Listen for navigation changes to update the active tab
+  window.addEventListener('hashchange', updateActiveTab);
+  
+  // Set the initial active tab on render
+  updateActiveTab();
 }
