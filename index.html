@@ -1,23 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍪</text></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="description" content="An addictive Cookie Clicker game built with Vite, TypeScript, and Tailwind CSS." />
-    <title>Cookie Clicker</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="antialiased text-gray-900 bg-orange-50 selection:bg-orange-200 overflow-x-hidden">
-    <noscript>
-      <div class="p-4 bg-red-100 text-red-800 text-center font-bold">
-        You need to enable JavaScript to run this app.
-      </div>
-    </noscript>
-    
-    <!-- The Vite app will be mounted here by src/main.ts -->
-    <div id="app"></div>
-    
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cookie Clicker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+  <div id="cookie-container" class="mb-8"></div>
+  <div id="stats-container" class="mb-8"></div>
+  <div id="upgrade-container"></div>
+  
+  <script type="module" src="/src/main.ts"></script>
+</body>
 </html>
