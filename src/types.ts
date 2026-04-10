@@ -1,17 +1,32 @@
-export interface GameState {
-  cookieCount: number;
-  clickValue: number;
-  autoClickValue: number;
-  autoClickInterval: number;
-  upgrades: Upgrade[];
-  lastSaveTime: number;
-}
-
 export interface Upgrade {
   id: string;
   name: string;
+  baseCost: number;
+  baseCps: number;
+  owned: number;
+}
+
+export interface GameState {
+  cookies: number;
+  totalCookiesEarned: number;
+  cookiesPerSecond: number;
+  upgrades: Record<string, Upgrade>;
+  lastUpdated: number;
+}
+
+export interface LeaderboardEntry {
+  username: string;
+  score: number;
+  timestamp: number;
+}
+
+export interface SiteConfig {
+  title: string;
   description: string;
-  cost: number;
-  effect: (gameState: GameState) => void;
-  isUnlocked: boolean;
+  version: string;
+}
+
+export interface NavItem {
+  label: string;
+  href: string;
 }

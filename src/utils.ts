@@ -1,60 +1,59 @@
-export * from './types';
+import { GameState } from './types';
 
-export function saveGameStateToLocalStorage(gameState: GameState): void {
+/**
+ * Formats large numbers into human-readable strings (e.g., 1.2M, 3.4B)
+ */
+export function formatNumber(num: number): string {
+  if (num < 1000) return Math.floor(num).toString();
+  
+  const units = ['', 'k', 'M', 'B', 'T', 'Qa', 'Qi'];
+  const i = Math.floor(Math.log10(num) / 3);
+  const val = (num / Math.pow(1000, i)).toFixed(1);
+  
+  return `${val}${units[i] || ''}`;
+}
+
+/**
+ * Saves the game state to localStorage
+ */
+export function saveGame(state: GameState): void {
   try {
-    localStorage.setItem('cookieClickerGameState', JSON.stringify(gameState));
-  } catch (error) {
-    console.error('Failed to save game state to localStorage:', error);
+    localStorage.setItem('cookie-clicker-save', JSON.stringify({
+      ...state,
+      lastUpdated: Date.now()
+    }));
+  } catch (e) {
+    console.error('Failed to save game:', e);
   }
 }
 
-export function loadGameStateFromLocalStorage(): GameState | null {
+/**
+ * Loads the game state from localStorage
+ */
+export function loadGame(): GameState | null {
   try {
-    const savedState = localStorage.getItem('cookieClickerGameState');
-    if (!savedState) return null;
-    return JSON.parse(savedState) as GameState;
-  } catch (error) {
-    console.error('Failed to load game state from localStorage:', error);
+    const saved = localStorage.getItem('cookie-clicker-save');
+    return saved ? JSON.parse(saved) : null;
+  } catch (e) {
+    console.error('Failed to load game:', e);
     return null;
   }
 }
 
-export function formatNumber(value: number): string {
-  if (value >= 1_000_000_000) {
-    return (value / 1_000_000_000).toFixed(1) + 'B';
-  }
-  if (value >= 1_000_000) {
-    return (value / 1_000_000).toFixed(1) + 'M';
-  }
-  if (value >= 1_000) {
-    return (value / 1_000).toFixed(1) + 'K';
-  }
-  return value.toString();
-}
-
-export function formatCurrency(value: number): string {
-  return value.toLocaleString('en-US', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  });
-}
-
-export function formatTime(seconds: number): string {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = Math.floor(seconds % 60);
-  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-}
-
-export function throttle<T extends (...args: any[]) => void>(
-  func: T,
-  limit: number
-): (...args: Parameters<T>) => void {
-  let inThrottle: boolean;
-  return function (this: ThisParameterType<T>, ...args: Parameters<T>): void {
-    if (!inThrottle) {
-      func.apply(this, args);
-      inThrottle = true;
-      setTimeout(() => (inThrottle = false), limit);
-    }
-  };
+/**
+ * Creates a floating text element for click feedback
+ */
+export function createFloatingText(x: number, y: number, text: string): void {
+  const el = document.createElement('div');
+  el.className = 'floating-text';
+  el.style.left = `${x}px`;
+  el.style.top = `${y}px`;
+  el.textContent = text;
+  
+  document.body.appendChild(el);
+  
+  // Remove element after animation completes
+  setTimeout(() => {
+    el.remove();
+  }, 1000);
 }

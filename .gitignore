@@ -1,20 +1,32 @@
+# dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# testing
+coverage/
+
+# production
 dist/
+dist-ssr/
+*.local
+
+# build artifacts
 *.log
-.env
-.env.local
-.env.*.local
-*.DS_Store
-*.swp
-*.swo
-*.swn
-*.bak
-*.tmp
-*.bak~
-*.tmp~
-*.orig
-*.rej
-*.lock
-yarn-error.log
 npm-debug.log*
-pnp*.log
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db

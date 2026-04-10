@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cookie Clicker</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
-  <div id="cookie-container" class="mb-8"></div>
-  <div id="stats-container" class="mb-8"></div>
-  <div id="upgrade-container"></div>
-  
-  <script type="module" src="/src/main.ts"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cookie Clicker Pro</title>
+    <meta name="description" content="A high-performance incremental cookie clicker game built with Vite and Tailwind." />
+    
+    <!-- Tailwind CSS via CDN for rapid development/deployment -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Main Application Container -->
+    <div id="app"></div>
+
+    <!-- Entry Point -->
+    <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>

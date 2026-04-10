@@ -1,109 +1,99 @@
 import './style.css';
-import { GameState, Upgrade } from './types';
-import { saveGameStateToLocalStorage, loadGameStateFromLocalStorage } from './utils';
-import { renderCookie, updateCookieDisplay } from './components/Cookie';
-import { renderUpgradeList, updateUpgradeList } from './components/UpgradeList';
-import { renderStatsDisplay, updateStatsDisplay } from './components/StatsDisplay';
+import { GameState } from './types';
+import { saveGame, loadGame } from './utils';
+import { renderCookie, updateCookieDisplay } from './components/cookie';
+import { renderScore, updateScoreDisplay } from './components/score';
+import { renderUpgrades, updateUpgradeStore, calculateCost } from './components/upgrades';
+import { renderLeaderboard } from './components/leaderboard';
 
-// Initialize game state
-let gameState: GameState = {
-  cookieCount: 0,
-  clickValue: 1,
-  autoClickValue: 0,
-  autoClickInterval: 1000,
-  upgrades: [
-    {
-      id: 'click-power',
-      name: 'Click Power',
-      description: 'Increase the value of each click',
-      cost: 10,
-      isUnlocked: true,
-      effect: (gameState: GameState) => {
-        gameState.clickValue += 1;
-      }
-    },
-    {
-      id: 'auto-clicker',
-      name: 'Auto Clicker',
-      description: 'Generate cookies automatically every second',
-      cost: 50,
-      isUnlocked: true,
-      effect: (gameState: GameState) => {
-        gameState.autoClickValue += 1;
-      }
-    },
-    {
-      id: 'double-click',
-      name: 'Double Click',
-      description: 'Double the value of each click',
-      cost: 200,
-      isUnlocked: false,
-      effect: (gameState: GameState) => {
-        gameState.clickValue *= 2;
-      }
-    },
-    {
-      id: 'triple-click',
-      name: 'Triple Click',
-      description: 'Triple the value of each click',
-      cost: 1000,
-      isUnlocked: false,
-      effect: (gameState: GameState) => {
-        gameState.clickValue *= 3;
-      }
-    }
-  ],
-  lastSaveTime: Date.now()
+// Initial Game State
+const initialState: GameState = {
+  cookies: 0,
+  cookiesPerSecond: 0,
+  upgrades: {
+    cursor: { id: 'cursor', name: 'Auto-Clicker', baseCost: 15, baseCps: 0.1, owned: 0 },
+    oven: { id: 'oven', name: 'Grandma\'s Oven', baseCost: 100, baseCps: 1, owned: 0 },
+    factory: { id: 'factory', name: 'Cookie Factory', baseCost: 1100, baseCps: 8, owned: 0 },
+  }
 };
 
-// Load saved game state from localStorage
-const savedState = loadGameStateFromLocalStorage();
-if (savedState) {
-  gameState = savedState;
-}
+let gameState: GameState = loadGame() || initialState;
 
-// Get DOM elements
-const cookieContainer = document.getElementById('cookie-container') as HTMLElement;
-const upgradeContainer = document.getElementById('upgrade-container') as HTMLElement;
-const statsContainer = document.getElementById('stats-container') as HTMLElement;
-
-// Initialize the game
-function initGame() {
-  // Render initial game state
-  renderCookie(cookieContainer, gameState, () => {
-    // Handle cookie click
-    gameState.cookieCount += gameState.clickValue;
-    updateCookieDisplay(cookieContainer, gameState);
-    updateStatsDisplay(statsContainer, gameState);
-    saveGameStateToLocalStorage(gameState);
-  });
-
-  renderUpgradeList(upgradeContainer, gameState, (upgradeId: string) => {
-    // Handle upgrade click
-    const upgrade = gameState.upgrades.find(u => u.id === upgradeId);
-    if (upgrade && gameState.cookieCount >= upgrade.cost) {
-      upgrade.effect(gameState);
-      gameState.cookieCount -= upgrade.cost;
-      upgrade.isUnlocked = false;
-      
-      // Update all displays
-      updateCookieDisplay(cookieContainer, gameState);
-      updateUpgradeList(upgradeContainer, gameState);
-      updateStatsDisplay(statsContainer, gameState);
-      saveGameStateToLocalStorage(gameState);
-    }
-  });
-
-  renderStatsDisplay(statsContainer, gameState);
+/**
+ * Main Game Loop
+ * Runs every 100ms to update passive income and UI
+ */
+function gameLoop() {
+  // Add passive income (100ms = 0.1s)
+  gameState.cookies += gameState.cookiesPerSecond / 10;
   
-  // Auto-click functionality
-  setInterval(() => {
-    gameState.cookieCount += gameState.autoClickValue;
-    updateCookieDisplay(cookieContainer, gameState);
-    updateStatsDisplay(statsContainer, gameState);
-    saveGameStateToLocalStorage(gameState);
-  }, gameState.autoClickInterval);
+  updateScoreDisplay(gameState);
+  updateUpgradeStore(gameState);
+  updateCookieDisplay(Math.floor(gameState.cookies));
+  
+  // Auto-save every 5 seconds (approx)
+  if (Math.random() < 0.02) {
+    saveGame(gameState);
+  }
 }
 
-// Run the game
-initGame();
+/**
+ * Handles purchasing upgrades
+ */
+function handlePurchase(upgradeId: string) {
+  const upgrade = gameState.upgrades[upgradeId];
+  const cost = calculateCost(upgrade);
+
+  if (gameState.cookies >= cost) {
+    gameState.cookies -= cost;
+    upgrade.owned += 1;
+    
+    // Recalculate CPS
+    gameState.cookiesPerSecond = Object.values(gameState.upgrades)
+      .reduce((acc, u) => acc + (u.owned * u.baseCps), 0);
+    
+    updateScoreDisplay(gameState);
+    updateUpgradeStore(gameState);
+    saveGame(gameState);
+  }
+}
+
+/**
+ * Initializes the application
+ */
+function init() {
+  const app = document.getElementById('app');
+  if (!app) return;
+
+  app.innerHTML = `
+    <div class="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] p-4 md:p-8">
+      <header class="mb-8 text-center">
+        <h1 class="text-4xl font-bold text-[var(--color-accent)]">Cookie Clicker</h1>
+      </header>
+      
+      <main class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <section id="score-section"></section>
+        <section id="cookie-section" class="flex justify-center items-center"></section>
+        <section id="upgrades-section" class="h-[500px]"></section>
+      </main>
+
+      <section id="leaderboard-section" class="max-w-2xl mx-auto mt-12"></section>
+    </div>
+  `;
+
+  // Render components
+  renderScore(document.getElementById('score-section')!, gameState);
+  renderCookie(document.getElementById('cookie-section')!, () => {
+    gameState.cookies += 1;
+    updateScoreDisplay(gameState);
+    updateUpgradeStore(gameState);
+  });
+  renderUpgrades(document.getElementById('upgrades-section')!, gameState, handlePurchase);
+  renderLeaderboard(document.getElementById('leaderboard-section')!, gameState.cookies);
+
+  // Start loop
+  setInterval(gameLoop, 100);
+}
+
+// Run init
+init();
