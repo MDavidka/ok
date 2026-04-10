@@ -1,200 +1,167 @@
 import { GameState } from '../types';
-import { createElement, formatNumber, randomInt } from '../utils';
+import { createElement, formatNumber } from '../utils';
 
-/**
- * Spawns a floating "+X" text element at the specified coordinates.
- * The element automatically removes itself after the animation completes.
- * 
- * @param x The viewport X coordinate
- * @param y The viewport Y coordinate
- * @param amount The number to display (e.g., click power)
- */
-function spawnFloatingText(x: number, y: number, amount: number): void {
-  const floatEl = createElement('div', {
-    classes: [
-      'fixed', 
-      'text-2xl', 
-      'md:text-3xl',
-      'font-bold', 
-      'text-[var(--color-accent)]', 
-      'pointer-events-none', 
-      'z-50', 
-      'animate-float-up',
-      'drop-shadow-md',
-      'select-none'
-    ],
-    text: `+${formatNumber(amount)}`
+interface CookieComponentProps {
+  gameState: GameState;
+  onCookieClick: (event: MouseEvent) => void;
+}
+
+export function renderCookieArea(
+  container: HTMLElement,
+  props: CookieComponentProps
+): void {
+  // Clear previous content
+  container.innerHTML = '';
+  
+  // Create cookie wrapper
+  const cookieWrapper = createElement('div', {
+    classes: ['flex', 'flex-col', 'items-center', 'justify-center', 'py-8']
   });
-
-  // Add slight randomness to the spawn position so rapid clicks don't perfectly overlap
-  const offsetX = randomInt(-30, 30);
-  const offsetY = randomInt(-30, 30);
   
-  floatEl.style.left = `${x + offsetX}px`;
-  floatEl.style.top = `${y + offsetY}px`;
+  // Create cookie count display
+  const cookieCount = createElement('div', {
+    classes: ['text-3xl', 'font-bold', 'mb-4', 'text-amber-900'],
+    text: `${formatNumber(props.gameState.cookies)} cookies`
+  });
+  cookieCount.id = 'cookie-count';
   
-  document.body.appendChild(floatEl);
-
-  // Remove the element from the DOM after the animation completes (1s as defined in style.css)
-  setTimeout(() => {
-    if (document.body.contains(floatEl)) {
-      document.body.removeChild(floatEl);
+  // Create cookie button
+  const cookieButton = createElement('button', {
+    classes: [
+      'relative',
+      'w-64',
+      'h-64',
+      'rounded-full',
+      'bg-amber-500',
+      'border-8',
+      'border-amber-600',
+      'shadow-lg',
+      'hover:shadow-xl',
+      'active:scale-95',
+      'transition-all',
+      'duration-75',
+      'focus:outline-none',
+      'animate-cookie-pulse'
+    ],
+    attributes: {
+      'aria-label': 'Click to bake cookies',
+      'type': 'button'
     }
-  }, 1000);
+  });
+  
+  // Add cookie texture
+  const cookieTexture = createElement('div', {
+    classes: [
+      'absolute',
+      'inset-0',
+      'rounded-full',
+      'bg-gradient-to-br',
+      'from-amber-400',
+      'to-amber-600',
+      'opacity-90'
+    ]
+  });
+  
+  // Add chocolate chips
+  const chipPositions = [
+    { top: '25%', left: '25%' },
+    { top: '40%', left: '60%' },
+    { top: '65%', left: '30%' },
+    { top: '70%', left: '70%' },
+    { top: '50%', left: '45%' },
+    { top: '30%', left: '75%' },
+    { top: '60%', left: '20%' },
+    { top: '20%', left: '40%' }
+  ];
+  
+  chipPositions.forEach(pos => {
+    const chip = createElement('div', {
+      classes: [
+        'absolute',
+        'w-4',
+        'h-4',
+        'rounded-full',
+        'bg-amber-900',
+        'opacity-80'
+      ],
+      attributes: {
+        style: `top: ${pos.top}; left: ${pos.left};`
+      }
+    });
+    cookieButton.appendChild(chip);
+  });
+  
+  // Add click event listener
+  cookieButton.addEventListener('click', props.onCookieClick);
+  
+  // Add visual feedback elements
+  const clickEffect = createElement('div', {
+    classes: [
+      'absolute',
+      'inset-0',
+      'rounded-full',
+      'bg-white',
+      'opacity-0',
+      'pointer-events-none'
+    ],
+    id: 'cookie-click-effect'
+  });
+  
+  // Assemble cookie button
+  cookieButton.appendChild(cookieTexture);
+  cookieButton.appendChild(clickEffect);
+  
+  // Create CPS display
+  const cpsDisplay = createElement('div', {
+    classes: ['mt-4', 'text-lg', 'text-amber-800'],
+    text: `${formatNumber(props.gameState.cps)} cookies per second`
+  });
+  cpsDisplay.id = 'cps-display';
+  
+  // Assemble component
+  cookieWrapper.appendChild(cookieCount);
+  cookieWrapper.appendChild(cookieButton);
+  cookieWrapper.appendChild(cpsDisplay);
+  container.appendChild(cookieWrapper);
 }
 
 /**
- * Renders the main cookie clicking area including the score, CPS, and the giant cookie.
- * 
- * @param container The DOM element to append the cookie area to.
- * @param onCookieClick Callback function triggered when the cookie is clicked.
- * @returns An object containing an `updateDisplay` method to refresh the UI with new state.
+ * Updates the cookie count display
  */
-export function renderCookieArea(
-  container: HTMLElement,
-  onCookieClick: () => void
-) {
-  // Keep a local reference to the latest state to know the click power for floating text
-  let currentState: GameState | null = null;
+export function updateCookieCount(gameState: GameState): void {
+  const cookieCountElement = document.getElementById('cookie-count');
+  if (cookieCountElement) {
+    cookieCountElement.textContent = `${formatNumber(gameState.cookies)} cookies`;
+  }
+}
 
-  // Main wrapper for the cookie section
-  const wrapper = createElement('section', {
-    classes: [
-      'flex', 
-      'flex-col', 
-      'items-center', 
-      'justify-center', 
-      'p-6', 
-      'w-full', 
-      'min-h-[60vh]',
-      'lg:min-h-[80vh]',
-      'relative'
-    ],
-    id: 'game'
-  });
+/**
+ * Updates the CPS display
+ */
+export function updateCpsDisplay(gameState: GameState): void {
+  const cpsDisplayElement = document.getElementById('cps-display');
+  if (cpsDisplayElement) {
+    cpsDisplayElement.textContent = `${formatNumber(gameState.cps)} cookies per second`;
+  }
+}
 
-  // Score Display
-  const scoreDisplay = createElement('h1', {
-    classes: [
-      'text-5xl', 
-      'md:text-7xl', 
-      'font-bold', 
-      'text-[var(--color-primary)]', 
-      'mb-2', 
-      'drop-shadow-sm',
-      'text-center',
-      'transition-all',
-      'duration-200'
-    ],
-    text: '0 cookies'
-  });
-
-  // Cookies Per Second (CPS) Display
-  const cpsDisplay = createElement('div', {
-    classes: [
-      'text-lg', 
-      'md:text-xl', 
-      'text-[var(--color-text-muted)]', 
-      'mb-12', 
-      'font-medium',
-      'bg-[var(--color-surface)]',
-      'px-4',
-      'py-1',
-      'rounded-full',
-      'shadow-sm',
-      'border',
-      'border-[var(--color-border)]'
-    ],
-    text: 'per second: 0'
-  });
-
-  // The Giant Clickable Cookie (Using a placeholder PNG as required)
-  const cookieImg = createElement('img', {
-    classes: [
-      'w-64', 
-      'h-64', 
-      'md:w-80', 
-      'md:h-80',
-      'rounded-full', 
-      'object-cover',
-      'shadow-[0_15px_40px_rgba(139,69,19,0.4)]',
-      'hover:scale-105', 
-      'transition-transform',
-      'animate-cookie-pulse', 
-      'cursor-pointer',
-      'select-none',
-      'active:scale-95' // Fallback for immediate visual feedback
-    ],
-    attributes: {
-      src: 'https://placehold.co/400x400/8b4513/fcd34d.png?text=COOKIE',
-      alt: 'Giant Clickable Cookie',
-      draggable: 'false'
-    }
-  });
-
-  // Handle Cookie Clicks
-  cookieImg.addEventListener('mousedown', (e: MouseEvent) => {
-    // Prevent default behavior (like dragging the image)
-    e.preventDefault();
-
-    // Trigger the game logic callback
-    onCookieClick();
-
-    // Reset and re-trigger the click animation
-    cookieImg.classList.remove('animate-cookie-pulse');
-    cookieImg.classList.remove('animate-cookie-click');
-    
-    // Force a browser reflow to restart the animation
-    void cookieImg.offsetWidth; 
-    
-    cookieImg.classList.add('animate-cookie-click');
-
-    // Restore the idle pulse animation after the click animation finishes
-    setTimeout(() => {
-      cookieImg.classList.remove('animate-cookie-click');
-      cookieImg.classList.add('animate-cookie-pulse');
-    }, 80); // 80ms matches the animation duration in style.css
-
-    // Spawn the floating "+1" text
-    if (currentState) {
-      spawnFloatingText(e.clientX, e.clientY, currentState.clickPower);
-    }
-  });
-
-  // Prevent context menu on right click to avoid interrupting rapid clicking
-  cookieImg.addEventListener('contextmenu', (e: MouseEvent) => {
-    e.preventDefault();
-  });
-
-  // Assemble the DOM
-  wrapper.appendChild(scoreDisplay);
-  wrapper.appendChild(cpsDisplay);
-  wrapper.appendChild(cookieImg);
-  container.appendChild(wrapper);
-
-  // Return an interface to allow the GameManager to update the UI
-  return {
-    /**
-     * Updates the score and CPS displays with the latest game state.
-     * @param state The current GameState
-     */
-    updateDisplay: (state: GameState) => {
-      currentState = state;
-      
-      // Format numbers for readability (e.g., 1.2M instead of 1200000)
-      const formattedCookies = formatNumber(Math.floor(state.cookies));
-      const formattedCps = formatNumber(state.cps);
-      
-      // Update text content only if it changed to minimize DOM updates
-      const newScoreText = `${formattedCookies} cookies`;
-      if (scoreDisplay.textContent !== newScoreText) {
-        scoreDisplay.textContent = newScoreText;
-      }
-
-      const newCpsText = `per second: ${formattedCps}`;
-      if (cpsDisplay.textContent !== newCpsText) {
-        cpsDisplay.textContent = newCpsText;
-      }
-    }
-  };
+/**
+ * Triggers the click animation effect
+ */
+export function triggerClickEffect(event: MouseEvent): void {
+  const clickEffect = document.getElementById('cookie-click-effect');
+  if (!clickEffect) return;
+  
+  // Position effect at click location
+  const rect = (event.target as HTMLElement).getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  
+  clickEffect.style.left = `${x}px`;
+  clickEffect.style.top = `${y}px`;
+  
+  // Reset animation
+  clickEffect.classList.remove('animate-cookie-click');
+  void clickEffect.offsetWidth; // Trigger reflow
+  clickEffect.classList.add('animate-cookie-click');
 }

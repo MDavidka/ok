@@ -1,28 +1,17 @@
-import { LeaderboardEntry } from './types';
-
-// ============================================================================
-// MongoDB Atlas Data API Configuration
-// Replace these placeholders with your actual MongoDB Atlas Data API details.
-// ============================================================================
-export const MONGO_ENDPOINT = 'ENDPOINT_HERE';
-export const MONGO_API_KEY = 'KEY_HERE';
+// Database configuration constants
+export const MONGO_ENDPOINT = 'YOUR_MONGODB_DATA_API_ENDPOINT';
+export const MONGO_API_KEY = 'YOUR_MONGODB_DATA_API_KEY';
 export const DATA_SOURCE = 'Cluster0';
-export const DATABASE_NAME = 'cookie_clicker_db';
+export const DATABASE_NAME = 'cookie_clicker';
 export const COLLECTION_LEADERBOARD = 'leaderboard';
+export const COLLECTION_ACHIEVEMENTS = 'achievements';
+export const COLLECTION_USERS = 'users';
 
 /**
- * Generic wrapper for MongoDB Atlas Data API requests.
- * @param action The API action (e.g., 'action/find', 'action/updateOne')
- * @param payload The request body payload
+ * Generic function to make requests to the MongoDB Data API
  */
-async function mongoFetch(action: string, payload: Record<string, any>) {
-  // Prevent actual fetch if placeholders are still in place
-  if (MONGO_ENDPOINT === 'ENDPOINT_HERE' || MONGO_API_KEY === 'KEY_HERE') {
-    console.warn('MongoDB Data API is not configured. Returning mock data.');
-    return null;
-  }
-
-  const url = `${MONGO_ENDPOINT}/${action}`;
+async function mongoRequest(action: string, data: Record<string, unknown>) {
+  const url = `${MONGO_ENDPOINT}/action/${action}`;
   
   const response = await fetch(url, {
     method: 'POST',
@@ -34,40 +23,30 @@ async function mongoFetch(action: string, payload: Record<string, any>) {
     body: JSON.stringify({
       dataSource: DATA_SOURCE,
       database: DATABASE_NAME,
-      collection: COLLECTION_LEADERBOARD,
-      ...payload,
-    }),
+      ...data
+    })
   });
 
   if (!response.ok) {
-    throw new Error(`MongoDB API Error: ${response.status} ${response.statusText}`);
+    throw new Error(`MongoDB request failed: ${response.statusText}`);
   }
 
   return response.json();
 }
 
 /**
- * Fetches the top players from the global leaderboard.
- * @param limit Maximum number of entries to return (default: 10)
- * @returns Array of LeaderboardEntry objects
+ * Get leaderboard entries sorted by score
  */
-export async function getLeaderboard(limit: number = 10): Promise<LeaderboardEntry[]> {
+export async function getLeaderboard(limit: number = 10): Promise<any[]> {
   try {
-    const data = await mongoFetch('action/find', {
-      sort: { score: -1 }, // Sort by score descending
-      limit: limit,
+    const result = await mongoRequest('find', {
+      collection: COLLECTION_LEADERBOARD,
+      filter: {},
+      sort: { score: -1 },
+      limit: limit
     });
-
-    // Return mock data if DB is not configured
-    if (!data) {
-      return [
-        { username: 'Grandma', score: 1000000, timestamp: Date.now() },
-        { username: 'CookieMonster', score: 500000, timestamp: Date.now() },
-        { username: 'BakerBob', score: 25000, timestamp: Date.now() },
-      ];
-    }
-
-    return data.documents as LeaderboardEntry[];
+    
+    return result.documents || [];
   } catch (error) {
     console.error('Failed to fetch leaderboard:', error);
     return [];
@@ -75,35 +54,127 @@ export async function getLeaderboard(limit: number = 10): Promise<LeaderboardEnt
 }
 
 /**
- * Submits a player's score to the global leaderboard.
- * Uses an upsert with $max to ensure we only keep their highest score.
- * @param username The player's display name
- * @param score The player's total cookies baked
- * @returns Boolean indicating success
+ * Submit a new score to the leaderboard
  */
 export async function submitScore(username: string, score: number): Promise<boolean> {
-  if (!username || username.trim() === '') return false;
-
   try {
-    const data = await mongoFetch('action/updateOne', {
-      filter: { username: username.trim() },
+    const result = await mongoRequest('insertOne', {
+      collection: COLLECTION_LEADERBOARD,
+      document: {
+        username,
+        score,
+        timestamp: new Date().getTime()
+      }
+    });
+    
+    return result.insertedId ? true : false;
+  } catch (error) {
+    console.error('Failed to submit score:', error);
+    return false;
+  }
+}
+
+/**
+ * Save user game state
+ */
+export async function saveUserState(userId: string, gameState: any): Promise<boolean> {
+  try {
+    // Try to update existing user state
+    const updateResult = await mongoRequest('updateOne', {
+      collection: COLLECTION_USERS,
+      filter: { userId },
       update: {
-        // Only update the score if the new score is higher
-        $max: { score: Math.floor(score) },
-        // Always update the timestamp when they submit
-        $set: { timestamp: Date.now() }
-      },
-      upsert: true, // Create a new document if the username doesn't exist
+        $set: {
+          gameState,
+          lastUpdated: new Date().getTime()
+        }
+      }
     });
 
-    if (!data) {
-      console.log(`Mock submission successful for ${username}: ${score}`);
-      return true;
+    // If no document was modified, insert a new one
+    if (updateResult.modifiedCount === 0) {
+      await mongoRequest('insertOne', {
+        collection: COLLECTION_USERS,
+        document: {
+          userId,
+          gameState,
+          createdAt: new Date().getTime(),
+          lastUpdated: new Date().getTime()
+        }
+      });
     }
 
     return true;
   } catch (error) {
-    console.error('Failed to submit score:', error);
+    console.error('Failed to save user state:', error);
+    return false;
+  }
+}
+
+/**
+ * Load user game state
+ */
+export async function loadUserState(userId: string): Promise<any | null> {
+  try {
+    const result = await mongoRequest('findOne', {
+      collection: COLLECTION_USERS,
+      filter: { userId }
+    });
+    
+    return result.document ? result.document.gameState : null;
+  } catch (error) {
+    console.error('Failed to load user state:', error);
+    return null;
+  }
+}
+
+/**
+ * Get all achievements
+ */
+export async function getAchievements(): Promise<any[]> {
+  try {
+    const result = await mongoRequest('find', {
+      collection: COLLECTION_ACHIEVEMENTS,
+      filter: {}
+    });
+    
+    return result.documents || [];
+  } catch (error) {
+    console.error('Failed to fetch achievements:', error);
+    return [];
+  }
+}
+
+/**
+ * Unlock an achievement for a user
+ */
+export async function unlockAchievement(userId: string, achievementId: string): Promise<boolean> {
+  try {
+    // First, verify the achievement exists
+    const achievementResult = await mongoRequest('findOne', {
+      collection: COLLECTION_ACHIEVEMENTS,
+      filter: { id: achievementId }
+    });
+
+    if (!achievementResult.document) {
+      console.error('Achievement not found:', achievementId);
+      return false;
+    }
+
+    // Add achievement to user's unlocked achievements
+    const updateResult = await mongoRequest('updateOne', {
+      collection: COLLECTION_USERS,
+      filter: { userId },
+      update: {
+        $addToSet: { unlockedAchievements: achievementId },
+        $setOnInsert: { userId }
+      },
+      upsert: true
+    });
+
+    return updateResult.upsertedId || updateResult.modifiedCount > 0;
+  } catch (error) {
+    console.error('Failed to unlock achievement:', error);
     return false;
   }
 }

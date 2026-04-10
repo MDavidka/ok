@@ -13,6 +13,12 @@ export interface GameState {
   clickPower: number;
   /** Record of purchased upgrades. Key is the upgrade ID, value is the quantity owned. */
   inventory: Record<string, number>;
+  /** List of achieved achievement IDs */
+  achievements: string[];
+  /** Current prestige level */
+  prestigeLevel: number;
+  /** Multiplier from prestige */
+  prestigeMultiplier: number;
   /** Unix timestamp of the last time the game was saved (used for offline progress) */
   lastSaveTime: number;
 }
@@ -35,6 +41,24 @@ export interface Upgrade {
   cpsIncrease: number;
   /** Emoji or image URL representing the upgrade */
   icon: string;
+}
+
+/**
+ * Definition of an achievement.
+ */
+export interface Achievement {
+  /** Unique identifier for the achievement */
+  id: string;
+  /** Display name of the achievement */
+  name: string;
+  /** Description of how to unlock the achievement */
+  description: string;
+  /** Condition to unlock the achievement */
+  condition: (state: GameState) => boolean;
+  /** Reward for unlocking the achievement (multiplier boost) */
+  reward: number;
+  /** Whether the achievement has been unlocked */
+  unlocked: boolean;
 }
 
 /**

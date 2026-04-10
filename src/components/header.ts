@@ -1,127 +1,94 @@
 import { NavItem } from '../types';
 import { createElement } from '../utils';
 
-const NAV_ITEMS: NavItem[] = [
-  { label: 'Game', href: '#game', icon: '🍪' },
-  { label: 'Shop', href: '#shop', icon: '🛒' },
-  { label: 'Leaderboard', href: '#leaderboard', icon: '🏆' }
-];
-
 /**
- * Renders the main application header with navigation tabs.
- * Handles active state styling based on the current URL hash.
- * 
- * @param container The DOM element to append the header to.
+ * Renders the main header/navigation bar for the cookie clicker game.
+ * @param container The parent element to append the header to
  */
 export function renderHeader(container: HTMLElement): void {
-  // Create the main header wrapper
+  // Clear any existing content
+  container.innerHTML = '';
+  
+  // Define navigation items
+  const navItems: NavItem[] = [
+    { label: 'Game', href: '#game', icon: '🍪' },
+    { label: 'Shop', href: '#shop', icon: '🛒' },
+    { label: 'Stats', href: '#stats', icon: '📊' },
+    { label: 'Achievements', href: '#achievements', icon: '🏆' },
+    { label: 'Prestige', href: '#prestige', icon: '✨' }
+  ];
+  
+  // Create header element
   const header = createElement('header', {
-    classes: [
-      'bg-[var(--color-surface)]', 
-      'border-b', 
-      'border-[var(--color-border)]', 
-      'sticky', 
-      'top-0', 
-      'z-50', 
-      'shadow-sm'
-    ]
+    classes: ['bg-amber-800', 'text-amber-50', 'shadow-lg']
   });
-
-  // Create the inner container for layout
-  const navContainer = createElement('div', {
-    classes: [
-      'max-w-6xl', 
-      'mx-auto', 
-      'px-4', 
-      'h-16', 
-      'flex', 
-      'items-center', 
-      'justify-between'
-    ]
-  });
-
-  // Create the Logo / Title area
-  const logo = createElement('div', {
-    classes: [
-      'text-xl', 
-      'sm:text-2xl', 
-      'font-bold', 
-      'text-[var(--color-primary)]', 
-      'flex', 
-      'items-center', 
-      'gap-2', 
-      'cursor-pointer',
-      'select-none'
-    ],
-    html: `<span>🍪</span><span>Cookie Clicker</span>`
-  });
-
-  // Clicking the logo returns to the game
-  logo.addEventListener('click', () => {
-    window.location.hash = '#game';
-  });
-
-  // Create the navigation menu
+  
+  // Create navigation container
   const nav = createElement('nav', {
-    classes: ['flex', 'gap-1', 'sm:gap-2']
+    classes: ['container', 'mx-auto', 'px-4', 'py-3']
   });
-
-  // Store references to the link elements to update their active states later
-  const navLinks: Record<string, HTMLAnchorElement> = {};
-
-  NAV_ITEMS.forEach(item => {
+  
+  // Create logo/title
+  const title = createElement('h1', {
+    classes: ['text-2xl', 'font-bold', 'mb-4', 'flex', 'items-center'],
+    html: '<span class="mr-2">🍪</span> Cookie Clicker'
+  });
+  
+  // Create navigation list
+  const navList = createElement('ul', {
+    classes: ['flex', 'space-x-1', 'md:space-x-4', 'overflow-x-auto', 'pb-2']
+  });
+  
+  // Add navigation items
+  navItems.forEach(item => {
+    const navItem = createElement('li');
     const link = createElement('a', {
       classes: [
-        'px-3', 
-        'py-2', 
-        'rounded-md', 
-        'text-sm', 
-        'font-medium', 
-        'transition-colors',
         'flex', 
         'items-center', 
-        'gap-1', 
-        'sm:gap-2', 
-        'select-none',
-        'cursor-pointer'
+        'px-3', 
+        'py-2', 
+        'rounded-lg',
+        'bg-amber-700',
+        'hover:bg-amber-600',
+        'transition-colors',
+        'whitespace-nowrap',
+        'text-sm',
+        'md:text-base'
       ],
-      attributes: { href: item.href },
-      html: `<span class="text-lg">${item.icon}</span><span class="hidden sm:inline">${item.label}</span>`
+      text: `${item.icon} ${item.label}`,
+      attributes: { href: item.href }
     });
-
-    nav.appendChild(link);
-    navLinks[item.href] = link as HTMLAnchorElement;
-  });
-
-  // Assemble the DOM structure
-  navContainer.appendChild(logo);
-  navContainer.appendChild(nav);
-  header.appendChild(navContainer);
-  container.appendChild(header);
-
-  /**
-   * Updates the visual state of the navigation tabs based on the current URL hash.
-   */
-  const updateActiveTab = () => {
-    // Default to #game if no hash is present
-    const currentHash = window.location.hash || '#game';
     
-    Object.entries(navLinks).forEach(([href, linkEl]) => {
-      if (href === currentHash) {
-        // Active state styles
-        linkEl.classList.add('bg-[var(--color-primary)]', 'text-[var(--color-surface)]');
-        linkEl.classList.remove('text-[var(--color-text-muted)]', 'hover:bg-[var(--color-surface-hover)]', 'hover:text-[var(--color-primary)]');
+    navItem.appendChild(link);
+    navList.appendChild(navItem);
+  });
+  
+  // Assemble the header
+  nav.appendChild(title);
+  nav.appendChild(navList);
+  header.appendChild(nav);
+  container.appendChild(header);
+  
+  // Add active state handling
+  const updateActiveLink = () => {
+    const hash = window.location.hash || '#game';
+    const links = navList.querySelectorAll('a');
+    
+    links.forEach(link => {
+      if (link.getAttribute('href') === hash) {
+        link.classList.add('bg-amber-500', 'text-amber-900');
+        link.classList.remove('bg-amber-700');
       } else {
-        // Inactive state styles
-        linkEl.classList.remove('bg-[var(--color-primary)]', 'text-[var(--color-surface)]');
-        linkEl.classList.add('text-[var(--color-text-muted)]', 'hover:bg-[var(--color-surface-hover)]', 'hover:text-[var(--color-primary)]');
+        link.classList.remove('bg-amber-500', 'text-amber-900');
+        link.classList.add('bg-amber-700');
       }
     });
   };
-
-  // Listen for navigation changes to update the active tab
-  window.addEventListener('hashchange', updateActiveTab);
   
-  // Set the initial active tab on render
-  updateActiveTab();
+  // Set initial active state
+  updateActiveLink();
+  
+  // Update active state on hash change
+  window.addEventListener('hashchange', updateActiveLink);
 }

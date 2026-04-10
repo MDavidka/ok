@@ -1,124 +1,142 @@
-import { GameState, Upgrade } from '../types';
-import { formatNumber } from '../utils';
+import { Upgrade, GameState } from '../types';
+import { formatNumber, createElement } from '../utils';
+import { UPGRADES } from './game-manager';
 
 /**
- * Calculates the current cost of an upgrade based on how many are already owned.
- * Uses the standard incremental game formula: BaseCost * (1.15 ^ Owned)
+ * Calculates the current cost of an upgrade based on how many the player owns.
+ * Uses exponential growth formula: baseCost * (costMultiplier ^ owned)
+ * @param baseCost Initial cost of the upgrade
+ * @param owned Number currently owned by the player
+ * @returns Current cost to purchase another unit
  */
 export function calculateCost(baseCost: number, owned: number): number {
-    return Math.ceil(baseCost * Math.pow(1.15, owned));
+  return Math.floor(baseCost * Math.pow(1.15, owned));
 }
 
 /**
- * Initializes the shop UI and returns an update function to be called in the game loop.
- * 
- * @param container The DOM element to mount the shop into
- * @param upgrades The list of available upgrades
- * @param onPurchase Callback fired when an upgrade is clicked
- * @returns A function to update the shop UI based on the current GameState
+ * Initializes and renders the shop component with all available upgrades.
+ * Handles purchase logic and dynamic updates to costs/quantities.
+ * @param container The HTMLElement to render the shop into
+ * @param gameState Reference to the current game state
+ * @param onPurchase Callback function to handle purchase effects
  */
 export function initShop(
-    container: HTMLElement,
-    upgrades: Upgrade[],
-    onPurchase: (upgradeId: string) => void
-) {
-    // Setup the main shop container
-    container.innerHTML = `
-        <div class="bg-white/80 backdrop-blur-md rounded-2xl p-4 md:p-6 shadow-xl border border-white/40 h-full flex flex-col max-h-[calc(100vh-6rem)]">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-2xl font-heading font-black text-text flex items-center gap-2">
-                    <span class="text-3xl drop-shadow-sm">🏪</span> Upgrades
-                </h2>
-            </div>
-            <div id="shop-items-container" class="flex-1 overflow-y-auto pr-2 space-y-3 pb-4">
-                <!-- Upgrade items will be injected here -->
-            </div>
-        </div>
-    `;
-
-    const itemsContainer = container.querySelector('#shop-items-container');
-    if (!itemsContainer) {
-        throw new Error('Shop items container not found in the DOM.');
-    }
-
-    // Create and append DOM elements for each upgrade
-    upgrades.forEach(upgrade => {
-        const btn = document.createElement('button');
-        btn.id = `upgrade-btn-${upgrade.id}`;
-        btn.className = `
-            w-full flex items-center justify-between p-3 md:p-4 bg-white rounded-xl shadow-sm 
-            border-2 border-transparent transition-all duration-200 group
-            disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50
-            hover:border-accent hover:shadow-md active:scale-[0.98]
-        `;
-        
-        btn.innerHTML = `
-            <div class="text-left flex-1 pr-4">
-                <h3 class="font-heading font-bold text-lg text-text leading-tight group-disabled:text-gray-500">
-                    ${upgrade.name}
-                </h3>
-                <p class="text-xs text-gray-500 mb-2 line-clamp-2">${upgrade.description}</p>
-                <div class="text-sm font-bold text-cookie flex items-center gap-1 bg-orange-50 inline-flex px-2 py-1 rounded-md group-disabled:bg-gray-100 group-disabled:text-gray-500">
-                    <span>🍪</span>
-                    <span id="cost-${upgrade.id}">${formatNumber(upgrade.baseCost)}</span>
-                </div>
-            </div>
-            <div class="text-right flex flex-col items-end justify-center min-w-[4rem]">
-                <div class="text-4xl font-heading font-black text-gray-200 leading-none tracking-tighter" id="owned-${upgrade.id}">
-                    0
-                </div>
-                <div class="text-xs font-bold text-accent mt-1 bg-yellow-50 px-2 py-0.5 rounded-full group-disabled:bg-gray-100 group-disabled:text-gray-400">
-                    +${formatNumber(upgrade.cps)} CPS
-                </div>
-            </div>
-        `;
-
-        // Attach purchase event listener
-        btn.addEventListener('click', () => {
-            // We don't deduct cookies here; we just signal the intent to purchase.
-            // The game manager will validate and apply the purchase.
-            onPurchase(upgrade.id);
-        });
-
-        itemsContainer.appendChild(btn);
+  container: HTMLElement,
+  gameState: GameState,
+  onPurchase: (upgrade: Upgrade) => void
+): void {
+  // Clear existing content
+  container.innerHTML = '';
+  
+  // Create shop header
+  const header = createElement('h2', {
+    classes: ['text-2xl', 'font-bold', 'mb-4', 'text-amber-900'],
+    text: '🏪 Shop'
+  });
+  container.appendChild(header);
+  
+  // Create shop grid
+  const grid = createElement('div', {
+    classes: ['grid', 'grid-cols-1', 'sm:grid-cols-2', 'lg:grid-cols-3', 'gap-4']
+  });
+  container.appendChild(grid);
+  
+  // Render each upgrade
+  UPGRADES.forEach(upgrade => {
+    const owned = gameState.inventory[upgrade.id] || 0;
+    const cost = calculateCost(upgrade.baseCost, owned);
+    
+    const card = createElement('div', {
+      classes: [
+        'bg-white', 
+        'rounded-lg', 
+        'shadow-md', 
+        'p-4', 
+        'border', 
+        'border-amber-200',
+        'hover:shadow-lg',
+        'transition-shadow'
+      ]
     });
-
-    /**
-     * Updates the shop UI (costs, owned amounts, and button disabled states).
-     * This should be called periodically by the game loop.
-     */
-    return function updateShop(state: GameState) {
-        upgrades.forEach(upgrade => {
-            const btn = container.querySelector(`#upgrade-btn-${upgrade.id}`) as HTMLButtonElement | null;
-            const costEl = container.querySelector(`#cost-${upgrade.id}`);
-            const ownedEl = container.querySelector(`#owned-${upgrade.id}`);
-
-            if (!btn || !costEl || !ownedEl) return;
-
-            const ownedCount = state.upgrades[upgrade.id] || 0;
-            const currentCost = calculateCost(upgrade.baseCost, ownedCount);
-
-            // Update displayed values
-            if (ownedEl.textContent !== ownedCount.toString()) {
-                ownedEl.textContent = ownedCount.toString();
-                // Add a subtle pop animation when a new item is bought
-                ownedEl.classList.add('scale-125', 'text-accent');
-                setTimeout(() => ownedEl.classList.remove('scale-125', 'text-accent'), 200);
-            }
-            
-            costEl.textContent = formatNumber(currentCost);
-
-            // Enable or disable the button based on affordability
-            if (state.cookies >= currentCost) {
-                if (btn.disabled) {
-                    btn.disabled = false;
-                    // Optional: Add a subtle animation when an item becomes affordable
-                    btn.classList.add('animate-pulse-once');
-                    setTimeout(() => btn.classList.remove('animate-pulse-once'), 500);
-                }
-            } else {
-                btn.disabled = true;
-            }
-        });
-    };
+    
+    // Icon and name row
+    const headerRow = createElement('div', {
+      classes: ['flex', 'items-center', 'mb-2']
+    });
+    
+    const icon = createElement('span', {
+      classes: ['text-2xl', 'mr-2'],
+      text: upgrade.icon
+    });
+    
+    const name = createElement('h3', {
+      classes: ['font-bold', 'text-lg'],
+      text: upgrade.name
+    });
+    
+    headerRow.appendChild(icon);
+    headerRow.appendChild(name);
+    card.appendChild(headerRow);
+    
+    // Description
+    const description = createElement('p', {
+      classes: ['text-sm', 'text-gray-600', 'mb-3'],
+      text: upgrade.description
+    });
+    card.appendChild(description);
+    
+    // Stats row
+    const statsRow = createElement('div', {
+      classes: ['flex', 'justify-between', 'items-center', 'mb-3']
+    });
+    
+    const cpsDisplay = createElement('span', {
+      classes: ['text-xs', 'font-medium', 'text-green-700'],
+      text: `+${formatNumber(upgrade.cpsIncrease)} CPS`
+    });
+    
+    const ownedDisplay = createElement('span', {
+      classes: ['text-xs', 'font-medium', 'text-amber-700'],
+      text: `Owned: ${owned}`
+    });
+    
+    statsRow.appendChild(cpsDisplay);
+    statsRow.appendChild(ownedDisplay);
+    card.appendChild(statsRow);
+    
+    // Purchase button
+    const button = createElement('button', {
+      classes: [
+        'w-full', 
+        'py-2', 
+        'px-4', 
+        'rounded-md', 
+        'font-semibold',
+        'transition-colors',
+        'focus:outline-none',
+        'focus:ring-2',
+        'focus:ring-offset-2',
+        'focus:ring-amber-500'
+      ],
+      text: `${formatNumber(cost)} 🍪`
+    });
+    
+    // Update button state based on affordability
+    if (gameState.cookies >= cost) {
+      button.classList.add('bg-amber-500', 'hover:bg-amber-600', 'text-white');
+    } else {
+      button.classList.add('bg-gray-200', 'text-gray-500', 'cursor-not-allowed');
+    }
+    
+    button.addEventListener('click', () => {
+      if (gameState.cookies >= cost) {
+        onPurchase(upgrade);
+        // Re-render to update costs and quantities
+        initShop(container, gameState, onPurchase);
+      }
+    });
+    
+    card.appendChild(button);
+    grid.appendChild(card);
+  });
 }
