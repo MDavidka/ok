@@ -1,79 +1,19 @@
-import { useState } from 'react';
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  Link,
-  Chip,
-  useDisclosure
-} from '@heroui/react';
-import { Home, Gift, Settings, Puzzle } from 'lucide-react';
-import { TabKey } from '../types';
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@heroui/react';
+import { Link } from 'react-router-dom';
 
-interface HeaderProps {
-  currentTab: TabKey;
-  setCurrentTab: (tab: TabKey) => void;
-  cookies: number;
-}
-
-export default function Header({ currentTab, setCurrentTab, cookies }: HeaderProps) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+export default function Header() {
   return (
-    <Navbar isBordered onScroll={false}>
-      <NavbarBrand>
-        <Gift className="h-6 w-6 text-primary" />
-        <p className="font-bold text-lg hidden sm:block">Cookie Clicker</p>
-      </NavbarBrand>
-      <NavbarContent justify="center" className="hidden sm:flex">
-        <NavbarItem>
-          <Link
-            className={`cursor-pointer ${currentTab === 'home' ? 'text-primary font-semibold' : 'text-default-500'}`}
-            onClick={() => setCurrentTab('home')}
-          >
-            Home
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link
-            className={`cursor-pointer ${currentTab === 'upgrades' ? 'text-primary font-semibold' : 'text-default-500'}`}
-            onClick={() => setCurrentTab('upgrades')}
-          >
-            Upgrades
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link
-            className={`cursor-pointer ${currentTab === 'prestige' ? 'text-primary font-semibold' : 'text-default-500'}`}
-            onClick={() => setCurrentTab('prestige')}
-          >
-            Prestige
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link
-            className={`cursor-pointer ${currentTab === 'settings' ? 'text-primary font-semibold' : 'text-default-500'}`}
-            onClick={() => setCurrentTab('settings')}
-          >
-            Settings
-          </Link>
-        </NavbarItem>
+    <Navbar isBordered className="backdrop-blur supports-[backdrop-filter]:bg-white/10 supports-[backdrop-filter]:dark:bg-black/10">
+      <NavbarContent>
+        <NavbarBrand as={Link} to="/" className="text-lg font-semibold">
+          🍪 Cookie Clicker
+        </NavbarBrand>
       </NavbarContent>
-      <NavbarContent justify="end">
+      <NavbarContent position="end">
         <NavbarItem>
-          <Chip color="primary" variant="flat">
-            {Math.floor(cookies).toLocaleString()} Cookies
-          </Chip>
-        </NavbarItem>
-        <NavbarItem>
-          <button
-            onClick={onOpen}
-            className="p-2 hover:bg-default-100 dark:hover:bg-default-600 rounded"
-            aria-label="menu"
-          >
-            <Puzzle className="h-5 w-5" />
-          </button>
+          <Link to="/about" className="hover:underline text-default-500 dark:text-default-300">
+            About
+          </Link>
         </NavbarItem>
       </NavbarContent>
     </Navbar>
