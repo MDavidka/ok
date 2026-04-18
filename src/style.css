@@ -27,6 +27,9 @@ body {
   color: var(--color-text);
   min-height: 100vh;
   transition: background-color 0.3s ease, color 0.3s ease;
+  /* Prevent text selection during rapid clicking */
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 #root {
@@ -46,4 +49,18 @@ body {
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* Custom utility to prevent tap highlight on mobile devices for the main cookie */
+.no-tap-highlight {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hide scrollbar for clean UI but allow scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

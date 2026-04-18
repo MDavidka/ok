@@ -1,177 +1,95 @@
-# Cookie Clicker (No Database)
+# 🍪 Cookie Clicker (Hero UI Edition)
 
-A simple, fun cookie-clicker game built with modern web technologies. Click the cookie to earn points, with progress saved in browser session storage (persists on refresh but not across devices/browsers).
-
-![Cookie Clicker Screenshot](https://placehold.co/800x400.png?text=Cookie+Clicker+Game)
+A modern, high-performance Cookie Clicker clone built with React, Vite, TypeScript, Tailwind CSS, and **Hero UI**. This project features a fully functional game loop, an upgrade shop, real-time statistics, and cloud save functionality using the **MongoDB Atlas Data API**.
 
 ## ✨ Features
 
-- **Click to Earn**: Click the cookie to increment your score
-- **Session Persistence**: Progress saved in `sessionStorage` (survives page refresh)
-- **Real-time Stats**: See your clicks per second (CPS) and total clicks
-- **Visual Feedback**: Animated cookie press effect
-- **Reset Option**: Clear your session and start fresh
-- **Responsive Design**: Works on mobile and desktop
-- **Modern UI**: Built with Hero UI components and Tailwind CSS
-- **TypeScript**: Full type safety for better developer experience
+- **Interactive Clicker:** Smooth, animated cookie clicking with floating "+1" effects using Framer Motion.
+- **Upgrade Shop:** Purchase buildings and upgrades (Cursors, Grandmas, Farms, etc.) to increase your Cookies Per Second (CPS).
+- **Real-time Stats:** Track your manual clicks, total buildings, and progress towards your next upgrade goal.
+- **Cloud Saves:** Automatically save and load your game state to the cloud using MongoDB Atlas.
+- **Modern UI:** Built entirely with Hero UI components for a sleek, accessible, and responsive dark-mode-first design.
 
-## 🛠️ Tech Stack
+## 🚀 Tech Stack
 
-- **Framework**: [Vite](https://vitejs.dev/) with React + TypeScript
-- **UI Library**: [Hero UI](https://heroui.com/) (React component library)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) (via Hero UI integration)
-- **State Management**: Browser `sessionStorage` (no external database)
-- **Icons**: Built-in Hero UI icons
-- **Deployment**: Optimized for [Cloudflare Pages](https://pages.cloudflare.com/)
+- **Frontend:** React 18, Vite, TypeScript
+- **UI Library:** Hero UI (`@heroui/react`)
+- **Styling:** Tailwind CSS
+- **Animations:** Framer Motion
+- **Icons:** Lucide React
+- **Database:** MongoDB Atlas Data API (Serverless HTTP connection)
 
-## 🚀 Getting Started
+---
+
+## 🛠️ Getting Started
 
 ### Prerequisites
 
-- Node.js (v18+ recommended)
+- Node.js (v18 or higher recommended)
 - npm or yarn
 
 ### Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/cookie-clicker.git
-cd cookie-clicker
+1. Clone the repository and navigate to the project directory.
+2. Install the dependencies:
 
-# Install dependencies
+```bash
 npm install
 ```
 
-### Development
+3. Start the development server:
 
 ```bash
-# Start the development server
 npm run dev
-
-# Open http://localhost:5173 in your browser
 ```
 
-### Building for Production
-
-```bash
-# Create production build
-npm run build
-
-# Preview the build
-npm run preview
-```
-
-## 🎮 How to Play
-
-1. Click the large cookie in the center of the screen
-2. Each click earns you 1 point
-3. Your score, total clicks, and clicks per second (CPS) are displayed
-4. Progress is automatically saved to your browser's session storage
-5. To reset your game, click the "Reset Session" button at the bottom
-6. Refreshing the page will restore your last session
-
-## ☁️ Deployment to Cloudflare Pages
-
-This project is ready for deployment to Cloudflare Pages:
-
-1. Push your code to a GitHub/GitLab/Bitbucket repository
-2. Go to [Cloudflare Pages](https://dash.cloudflare.com/pages)
-3. Click "Create a project" and connect your repository
-4. Configure the build settings:
-   - **Framework preset**: Vite
-   - **Build command**: `npm run build`
-   - **Build output directory**: `dist`
-5. Click "Save and Deploy"
-
-Your site will be automatically deployed on every push to your connected branch.
-
-## 📁 Project Structure
-
-```
-cookie-clicker/
-├── public/                 # Static assets
-├── src/
-│   ├── main.tsx           # React entry point
-│   ├── types.ts           # Shared TypeScript interfaces
-│   ├── utils.ts           # Utility functions (sessionStorage helpers)
-│   ├── style.css          # Design system tokens & global styles
-│   └── components/
-│       ├── header.tsx     # App header/navigation
-│       ├── cookie-game.tsx # Main gameplay component
-│       └── footer.tsx     # App footer
-├── index.html             # HTML entry point
-├── package.json           # Dependencies & scripts
-├── tsconfig.json          # TypeScript configuration
-├── vite.config.ts         # Vite configuration
-├── .gitignore             # Git ignore rules
-└── README.md              # This file
-```
-
-## 🔧 How It Works
-
-### State Management
-
-The game uses browser `sessionStorage` to persist state:
-- State is saved automatically after each click
-- On page load, the game attempts to restore state from sessionStorage
-- State includes: score, timestamp of last click, and total click count
-- Data is cleared when the browser tab/session ends
-
-### Key Utilities (`src/utils.ts`)
-
-- `loadState()`: Retrieves and parses game state from sessionStorage
-- `saveState(state)`: Saves game state to sessionStorage
-- `resetState()`: Resets to initial state and saves it
-- `formatNumber(n)`: Formats large numbers for display
-
-### Game Logic (`src/components/cookie-game.tsx`)
-
-- Uses React hooks (`useState`, `useEffect`) for state management
-- Implements click handling with visual feedback (scale animation)
-- Calculates CPS based on time since first click
-- Renders UI using Hero UI components (Button, Card, Chip, etc.)
-
-## 🎨 Design System
-
-The game uses a custom design system defined in `src/style.css`:
-
-### Color Palette
-- **Primary**: `#6366f1` (Indigo)
-- **Secondary**: `#8b5cf6` (Violet)
-- **Accent**: `#f43f5e` (Rose)
-- **Background**: `#0f172a` (Dark Blue)
-- **Text**: `#e2e8f0` (Light Slate)
-- **Muted**: `#94a3b8` (Slate)
-
-### Typography
-- **Heading**: Inter, system-ui, sans-serif
-- **Body**: Inter, system-ui, sans-serif
-
-### Spacing & Radius
-- Consistent 4px-based spacing scale
-- 12px border radius for soft, modern feel
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🙏 Acknowledgments
-
-- [Hero UI](https://heroui.com/) for the beautiful component library
-- [Vite](https://vitejs.dev/) for the blazing fast development experience
-- [Tailwind CSS](https://tailwindcss.com/) for the utility-first CSS framework
-- [React](https://react.dev/) and [TypeScript](https://www.typescriptlang.org/) for the robust frontend stack
+4. Open your browser and visit `http://localhost:5173`.
 
 ---
 
-Made with ❤️ for cookie lovers everywhere. Happy clicking!
+## 🗄️ Database Configuration (MongoDB Atlas)
+
+This game uses the **MongoDB Atlas Data API** to save and load player progress without needing a dedicated backend server. To enable cloud saves, follow these steps:
+
+### 1. Set up MongoDB Atlas
+1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and create a free account/cluster.
+2. Create a new Database named `cookie_game`.
+3. Inside that database, create a Collection named `saves`.
+
+### 2. Enable the Data API
+1. In your Atlas dashboard, navigate to **Data API** (under Services) on the left sidebar.
+2. Click **Enable Data API**.
+3. Select your cluster and click **Create API Key**.
+4. Copy the generated **API Key** and the **URL Endpoint** immediately (you won't be able to see the key again).
+
+### 3. Configure the Game
+Open `src/db.ts` in your code editor and update the exported constants with your specific Atlas details:
+
+```typescript
+// src/db.ts
+export const MONGO_ENDPOINT = 'YOUR_DATA_API_ENDPOINT_URL'; // e.g., https://data.mongodb-api.com/app/data-xxxxx/endpoint/data/v1
+export const MONGO_API_KEY = 'YOUR_GENERATED_API_KEY';
+export const DATA_SOURCE = 'Cluster0'; // The name of your Atlas Cluster
+export const DATABASE_NAME = 'cookie_game';
+export const COLLECTION_SAVES = 'saves';
+```
+
+*Note: For a production deployment, you should move these sensitive keys to environment variables (e.g., `.env` and `import.meta.env.VITE_MONGO_API_KEY`).*
+
+---
+
+## 🚢 Deployment
+
+This project is optimized for deployment on **Cloudflare Pages**, Vercel, or Netlify.
+
+To build the project for production:
+
+```bash
+npm run build
+```
+
+The compiled static files will be located in the `dist/` directory, ready to be uploaded or continuously deployed via your Git repository.
+
+## 📜 License
+
+MIT License - feel free to modify and use this project for your own learning and development!
