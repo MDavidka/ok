@@ -1,114 +1,151 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { Card, CardBody, Image } from '@heroui/react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { formatNumber } from '../utils';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Card, CardBody, Chip, Image } from '@heroui/react';
+import { MousePointerClick, Zap, TrendingUp } from 'lucide-react';
+import { formatCookies } from '../utils';
 
 export interface ClickerProps {
-  /** Current total score/cookies */
-  score: number;
-  /** Current Clicks Per Second */
+  cookies: number;
   cps: number;
-  /** Callback fired when the cookie is clicked */
-  onCookieClick: () => void;
+  clickPower: number;
+  onManualClick: () => void;
 }
 
-interface ClickEffect {
-  id: number;
+interface FloatingText {
+  id: string;
   x: number;
   y: number;
+  value: number;
 }
 
-export function Clicker({ score, cps, onCookieClick }: ClickerProps) {
-  const [clickEffects, setClickEffects] = useState<ClickEffect[]>([]);
-  const clickIdRef = useRef(0);
+export function Clicker({ cookies, cps, clickPower, onManualClick }: ClickerProps): JSX.Element {
+  const [floatingTexts, setFloatingTexts] = useState<FloatingText[]>([]);
 
-  const handleInteraction = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    // Prevent default browser behaviors like drag or text selection
+  // Cleanup floating texts to prevent memory leaks
+  useEffect(() => {
+    if (floatingTexts.length > 0) {
+      const timer = setTimeout(() => {
+        setFloatingTexts((prev) => prev.slice(1));
+      }, 800); // Matches the 0.8s animation duration in style.css
+      return () => clearTimeout(timer);
+    }
+  }, [floatingTexts]);
+
+  const handleCookieClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    // Prevent default behavior like text selection
     e.preventDefault();
     
-    // Trigger the game logic
-    onCookieClick();
+    // Trigger the state update in the parent
+    onManualClick();
 
-    // Calculate click coordinates relative to the cookie container
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    // Add a new floating text at the mouse coordinates
+    const newText: FloatingText = {
+      id: `${Date.now()}-${Math.random()}`,
+      x: e.clientX,
+      y: e.clientY,
+      value: clickPower,
+    };
 
-    // Create a unique ID for the floating text animation
-    const id = clickIdRef.current++;
-    
-    setClickEffects((prev) => [...prev, { id, x, y }]);
-
-    // Clean up the effect after animation completes
-    setTimeout(() => {
-      setClickEffects((prev) => prev.filter((effect) => effect.id !== id));
-    }, 1000);
-  }, [onCookieClick]);
+    setFloatingTexts((prev) => [...prev, newText]);
+  }, [clickPower, onManualClick]);
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-surface/40 backdrop-blur-md border border-white/10 shadow-2xl">
-      <CardBody className="flex flex-col items-center justify-center p-8 overflow-hidden relative min-h-[500px]">
-        
-        {/* Score Display */}
-        <div className="text-center mb-12 z-10">
-          <h2 className="text-6xl font-heading font-extrabold text-text mb-2 tracking-tight drop-shadow-sm">
-            {formatNumber(score)}
-          </h2>
-          <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-black/20 border border-white/5">
-            <p className="text-lg text-accent font-medium">
-              {formatNumber(cps)} <span className="text-muted text-sm">cookies / sec</span>
-            </p>
+    <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto p-4 gap-8 relative">
+      
+      {/* Stats Header */}
+      <Card className="w-full bg-background/60 backdrop-blur-md border-none shadow-lg" shadow="sm">
+        <CardBody className="flex flex-col items-center py-8 gap-4">
+          <div className="flex flex-col items-center gap-1">
+            <h2 className="text-default-500 font-heading font-semibold tracking-wider uppercase text-sm">
+              Current Bakery Balance
+            </h2>
+            <div className="text-5xl sm:text-6xl font-heading font-black text-primary drop-shadow-sm flex items-center gap-3">
+              {formatCookies(cookies)}
+              <span className="text-3xl sm:text-4xl text-cookie">🍪</span>
+            </div>
           </div>
-        </div>
 
-        {/* Interactive Cookie Area */}
-        <div
-          className="relative cursor-pointer select-none touch-manipulation z-20"
-          onPointerDown={handleInteraction}
-          style={{ WebkitTapHighlightColor: 'transparent' }}
+          <div className="flex flex-wrap justify-center gap-3 mt-4">
+            <Chip
+              startContent={<TrendingUp className="w-4 h-4" />}
+              variant="flat"
+              color="success"
+              size="lg"
+              className="font-semibold"
+            >
+              {formatCookies(cps)} CPS
+            </Chip>
+            <Chip
+              startContent={<MousePointerClick className="w-4 h-4" />}
+              variant="flat"
+              color="primary"
+              size="lg"
+              className="font-semibold"
+            >
+              {formatCookies(clickPower)} / Click
+            </Chip>
+          </div>
+        </CardBody>
+      </Card>
+
+      {/* Main Clicker Area */}
+      <div className="relative flex items-center justify-center w-full py-12 select-none">
+        {/* Decorative background glow based on CPS */}
+        <div 
+          className={`absolute inset-0 bg-primary/20 rounded-full blur-3xl -z-10 transition-opacity duration-1000 ${cps > 0 ? 'animate-subtle-pulse opacity-100' : 'opacity-0'}`}
+          style={{ transform: `scale(${Math.min(1 + cps / 1000, 1.5)})` }}
+        />
+
+        {/* The Cookie */}
+        <div 
+          className="cookie-btn relative rounded-full shadow-2xl shadow-primary/20"
+          onMouseDown={handleCookieClick}
+          role="button"
+          tabIndex={0}
+          aria-label="Click to bake cookies"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              // Simulate a click in the center of the element for keyboard users
+              const rect = e.currentTarget.getBoundingClientRect();
+              handleCookieClick({
+                clientX: rect.left + rect.width / 2,
+                clientY: rect.top + rect.height / 2,
+                preventDefault: () => {},
+              } as React.MouseEvent<HTMLDivElement>);
+            }
+          }}
         >
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.92 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            className="relative"
-          >
-            {/* Glow effect behind the cookie */}
-            <div className="absolute inset-0 bg-accent/20 rounded-full blur-3xl -z-10 scale-110 animate-pulse" />
-            
-            <Image
-              src="https://placehold.co/320x320/8B4513/FFFFFF.png?text=Cookie"
-              alt="Giant Interactive Cookie"
-              width={320}
-              height={320}
-              className="rounded-full shadow-2xl pointer-events-none border-4 border-accent/20"
-              draggable={false}
-            />
-          </motion.div>
-
-          {/* Floating Click Effects (+1) */}
-          <AnimatePresence>
-            {clickEffects.map((effect) => (
-              <motion.div
-                key={effect.id}
-                initial={{ opacity: 1, y: effect.y - 20, x: effect.x - 20, scale: 0.5 }}
-                animate={{ opacity: 0, y: effect.y - 120, scale: 1.2 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="absolute pointer-events-none text-3xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] z-50"
-                style={{ left: 0, top: 0 }}
-              >
-                +1
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          <Image
+            src="https://placehold.co/400x400/d97706/ffffff.png?text=Click+Me"
+            alt="Giant Cookie"
+            width={320}
+            height={320}
+            className="rounded-full border-8 border-cookie/30 object-cover pointer-events-none"
+            draggable={false}
+          />
         </div>
-        
-        {/* Subtle instruction text */}
-        <p className="mt-12 text-sm text-muted/60 font-medium tracking-wide uppercase z-10">
-          Click to bake
-        </p>
-      </CardBody>
-    </Card>
+      </div>
+
+      {/* Floating Numbers Layer */}
+      {floatingTexts.map((text) => (
+        <div
+          key={text.id}
+          className="floating-number"
+          style={{
+            left: text.x,
+            top: text.y,
+            // Center the text exactly on the cursor
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          +{formatCookies(text.value)}
+        </div>
+      ))}
+
+      {/* Quick Info Footer */}
+      <div className="flex items-center gap-2 text-default-400 text-sm font-medium">
+        <Zap className="w-4 h-4 text-warning" />
+        <p>Click the cookie to earn more!</p>
+      </div>
+    </div>
   );
 }

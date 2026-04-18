@@ -1,92 +1,89 @@
-import { GameState } from './types';
-
-const STORAGE_KEY = 'cookie_clicker_state';
-
-export const INITIAL_STATE: GameState = {
-  score: 0,
-  lastClickAt: 0,
-  clicks: 0
-};
+import { Upgrade } from './types';
 
 /**
- * Formats large numbers into a readable string with suffixes (e.g., 1.5M, 2B)
- * @param num The number to format
- * @returns A formatted string representation of the number
+ * Formats a large number into a human-readable string with suffixes (e.g., 1.5M, 2B).
+ * @param amount The number of cookies to format.
+ * @returns A formatted string representation of the number.
  */
-export function formatNumber(num: number): string {
-  if (num === 0) return "0";
-  if (num < 1000) return Math.floor(num).toString();
+export function formatCookies(amount: number): string {
+  const safeAmount = Math.max(0, Math.floor(amount));
+  
+  if (safeAmount < 1000) {
+    return safeAmount.toString();
+  }
 
   const suffixes = ["", "k", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"];
-  const suffixIndex = Math.floor(Math.log10(num) / 3);
+  const suffixIndex = Math.floor(Math.log10(safeAmount) / 3);
 
+  // Fallback to scientific notation if we run out of suffixes
   if (suffixIndex >= suffixes.length) {
-    return num.toExponential(2);
+    return safeAmount.toExponential(2);
   }
 
-  const shortValue = num / Math.pow(1000, suffixIndex);
+  const shortValue = safeAmount / Math.pow(1000, suffixIndex);
   
-  // Format with up to 1 decimal place, dropping trailing zeros
-  return Number(shortValue.toFixed(1)) + suffixes[suffixIndex];
+  // Keep 1 decimal place if the number is less than 100 (e.g., 1.5M), otherwise 0 (e.g., 150M)
+  const formattedValue = shortValue.toFixed(shortValue < 100 ? 1 : 0);
+  
+  // Remove trailing '.0' if it exists
+  return formattedValue.replace(/\.0$/, '') + suffixes[suffixIndex];
 }
 
 /**
- * Calculates the Clicks Per Second (CPS)
- * @param clicks Total number of clicks
- * @param startTime Timestamp of the first click
- * @param currentTime Current timestamp (defaults to Date.now())
- * @returns The calculated CPS, rounded to 1 decimal place
+ * Calculates the cost of the next upgrade based on the base cost, multiplier, and current quantity owned.
+ * Formula: BaseCost * (Multiplier ^ CurrentQuantity)
+ * @param baseCost The initial cost of the upgrade.
+ * @param costMultiplier The exponential multiplier for each subsequent purchase.
+ * @param currentQuantity The number of this upgrade currently owned.
+ * @returns The calculated cost for the next purchase.
  */
-export function calculateCPS(clicks: number, startTime: number, currentTime: number = Date.now()): number {
-  if (!startTime || clicks === 0) return 0;
-  
-  const secondsElapsed = (currentTime - startTime) / 1000;
-  
-  // Prevent division by zero or inflated CPS in the first fraction of a second
-  if (secondsElapsed < 1) return clicks;
-  
-  return Number((clicks / secondsElapsed).toFixed(1));
+export function calculateUpgradeCost(baseCost: number, costMultiplier: number, currentQuantity: number): number {
+  return Math.floor(baseCost * Math.pow(costMultiplier, currentQuantity));
 }
 
 /**
- * Loads the game state from browser sessionStorage
- * @returns The parsed GameState or the INITIAL_STATE if none exists/errors occur
+ * Calculates the total Cookies Per Second (CPS) based on all owned upgrades.
+ * @param ownedUpgrades A record mapping upgrade IDs to the quantity owned.
+ * @param upgradeDefinitions The array of all available upgrades with their base CPS values.
+ * @returns The total calculated CPS.
  */
-export function loadState(): GameState {
-  try {
-    const saved = sessionStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsedState = JSON.parse(saved) as Partial<GameState>;
-      // Merge with initial state to ensure all properties exist
-      return { ...INITIAL_STATE, ...parsedState };
-    }
-  } catch (error) {
-    console.error('Failed to load game state from sessionStorage:', error);
+export function calculateTotalCps(ownedUpgrades: Record<string, number>, upgradeDefinitions: Upgrade[]): number {
+  let totalCps = 0;
+  
+  for (const upgrade of upgradeDefinitions) {
+    const quantity = ownedUpgrades[upgrade.id] || 0;
+    totalCps += quantity * upgrade.baseCps;
   }
-  return { ...INITIAL_STATE };
+  
+  return totalCps;
 }
 
 /**
- * Saves the current game state to browser sessionStorage
- * @param state The current GameState to save
+ * Calculates the number of cookies earned while the user was offline.
+ * Caps the offline time to 24 hours to prevent infinite accumulation exploits.
+ * @param lastSaveTime The timestamp (in milliseconds) of the last save.
+ * @param currentCps The user's current Cookies Per Second.
+ * @returns The number of cookies earned offline.
  */
-export function saveState(state: GameState): void {
-  try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch (error) {
-    console.error('Failed to save game state to sessionStorage:', error);
+export function calculateOfflineCookies(lastSaveTime: number, currentCps: number): number {
+  if (!lastSaveTime || currentCps <= 0) {
+    return 0;
   }
+
+  const now = Date.now();
+  const secondsOffline = Math.floor((now - lastSaveTime) / 1000);
+  
+  // Cap offline time to 24 hours (86400 seconds)
+  const MAX_OFFLINE_SECONDS = 86400;
+  const effectiveSeconds = Math.min(Math.max(0, secondsOffline), MAX_OFFLINE_SECONDS);
+  
+  return Math.floor(effectiveSeconds * currentCps);
 }
 
 /**
- * Clears the game state from sessionStorage and returns a fresh state
- * @returns A fresh INITIAL_STATE object
+ * Generates a random ID for new users or sessions.
+ * @returns A random alphanumeric string.
  */
-export function resetState(): GameState {
-  try {
-    sessionStorage.removeItem(STORAGE_KEY);
-  } catch (error) {
-    console.error('Failed to reset game state in sessionStorage:', error);
-  }
-  return { ...INITIAL_STATE };
+export function generateUserId(): string {
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }

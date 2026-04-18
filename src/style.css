@@ -2,65 +2,101 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --color-primary: #6366f1;
-  --color-secondary: #ec4899;
-  --color-accent: #f59e0b;
-  --color-bg: #0f172a;
-  --color-surface: #1e293b;
-  --color-text: #f1f5f9;
-  --color-muted: #94a3b8;
-  --font-heading: 'Inter', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --radius: 12px;
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
+@layer base {
+  :root {
+    /* Light Mode Variables - Warm Cookie Theme */
+    --color-bg: #fdf8f5; /* Light cream */
+    --color-text: #4a3b32; /* Dark brown */
+    
+    --color-primary: #f59e0b; /* Amber 500 */
+    --color-primary-hover: #d97706; /* Amber 600 */
+    
+    --color-secondary: #8b5cf6; /* Purple for magical upgrades */
+    --color-accent: #10b981; /* Emerald for CPS/money */
+    
+    --color-cookie: #d97706; /* Golden brown cookie */
+    --color-chip: #451a03; /* Dark chocolate chip */
+
+    --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  .dark {
+    /* Dark Mode Variables - Night Bakery Theme */
+    --color-bg: #1c1917; /* Stone 900 */
+    --color-text: #f5f5f4; /* Stone 100 */
+    
+    --color-primary: #fbbf24; /* Amber 400 */
+    --color-primary-hover: #f59e0b; /* Amber 500 */
+    
+    --color-secondary: #a78bfa; /* Purple 400 */
+    --color-accent: #34d399; /* Emerald 400 */
+    
+    --color-cookie: #f59e0b; /* Brighter cookie for dark mode */
+    --color-chip: #292524; /* Very dark chocolate */
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
 }
 
-body {
-  margin: 0;
-  font-family: var(--font-body);
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  /* Prevent text selection during rapid clicking */
-  user-select: none;
-  -webkit-user-select: none;
-}
+@layer utilities {
+  /* Custom Animations for the Cookie Clicker */
+  
+  /* The main cookie pulse/click effect */
+  .cookie-btn {
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  
+  .cookie-btn:active {
+    transform: scale(0.92);
+  }
 
-#root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+  /* Floating numbers when clicking */
+  @keyframes float-up {
+    0% { 
+      opacity: 1; 
+      transform: translateY(0) scale(1); 
+    }
+    100% { 
+      opacity: 0; 
+      transform: translateY(-60px) scale(1.2); 
+    }
+  }
 
-/* Hero UI theme customization */
-.heroui {
-  --radius: var(--radius);
-  --font-family: var(--font-body);
-  --font-family-heading: var(--font-heading);
-}
+  .floating-number {
+    animation: float-up 0.8s ease-out forwards;
+    pointer-events: none;
+    position: absolute;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 50;
+    user-select: none;
+  }
 
-/* Focus ring for accessibility */
-:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
+  /* Subtle pulse for high CPS */
+  @keyframes subtle-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
 
-/* Custom utility to prevent tap highlight on mobile devices for the main cookie */
-.no-tap-highlight {
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Hide scrollbar for clean UI but allow scrolling */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  .animate-subtle-pulse {
+    animation: subtle-pulse 2s infinite ease-in-out;
+  }
 }

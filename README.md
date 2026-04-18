@@ -1,95 +1,94 @@
-# 🍪 Cookie Clicker (Hero UI Edition)
+# 🍪 Cookie Clicker - HeroUI Edition
 
-A modern, high-performance Cookie Clicker clone built with React, Vite, TypeScript, Tailwind CSS, and **Hero UI**. This project features a fully functional game loop, an upgrade shop, real-time statistics, and cloud save functionality using the **MongoDB Atlas Data API**.
+A modern, responsive, and accessible incremental game built with React, Vite, Tailwind CSS, and Hero UI. 
 
 ## ✨ Features
 
-- **Interactive Clicker:** Smooth, animated cookie clicking with floating "+1" effects using Framer Motion.
-- **Upgrade Shop:** Purchase buildings and upgrades (Cursors, Grandmas, Farms, etc.) to increase your Cookies Per Second (CPS).
-- **Real-time Stats:** Track your manual clicks, total buildings, and progress towards your next upgrade goal.
-- **Cloud Saves:** Automatically save and load your game state to the cloud using MongoDB Atlas.
-- **Modern UI:** Built entirely with Hero UI components for a sleek, accessible, and responsive dark-mode-first design.
+- **Classic Clicker Mechanics:** Click the giant cookie to earn cookies.
+- **Upgrades & Shop:** Purchase cursors, grandmas, farms, and more to increase your Cookies Per Second (CPS).
+- **Offline Progression:** Earn cookies even when you're away! The game calculates your offline earnings based on your CPS and time away.
+- **Modern UI/UX:** Built entirely with **Hero UI** components for a polished, accessible, and responsive design.
+- **Dark/Light Mode:** Fully themed with custom CSS variables and Tailwind classes.
+- **Hybrid Saving:** Automatically saves your progress to `localStorage`. Ready to be connected to MongoDB Atlas Data API for cross-device cloud saves.
 
-## 🚀 Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend:** React 18, Vite, TypeScript
-- **UI Library:** Hero UI (`@heroui/react`)
-- **Styling:** Tailwind CSS
-- **Animations:** Framer Motion
+- **Framework:** [React 18](https://react.dev/) + [Vite](https://vitejs.dev/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **UI Library:** [Hero UI](https://heroui.com/) (`@heroui/react`)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Routing:** React Router DOM
 - **Icons:** Lucide React
-- **Database:** MongoDB Atlas Data API (Serverless HTTP connection)
 
----
-
-## 🛠️ Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
 - Node.js (v18 or higher recommended)
-- npm or yarn
+- npm, yarn, or pnpm
 
 ### Installation
 
-1. Clone the repository and navigate to the project directory.
+1. Clone the repository or download the source code.
 2. Install the dependencies:
 
 ```bash
 npm install
 ```
 
-3. Start the development server:
+### Running Locally
+
+Start the Vite development server:
 
 ```bash
 npm run dev
 ```
 
-4. Open your browser and visit `http://localhost:5173`.
+The application will be available at `http://localhost:5173`.
 
----
+## 📦 Building for Production
 
-## 🗄️ Database Configuration (MongoDB Atlas)
-
-This game uses the **MongoDB Atlas Data API** to save and load player progress without needing a dedicated backend server. To enable cloud saves, follow these steps:
-
-### 1. Set up MongoDB Atlas
-1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and create a free account/cluster.
-2. Create a new Database named `cookie_game`.
-3. Inside that database, create a Collection named `saves`.
-
-### 2. Enable the Data API
-1. In your Atlas dashboard, navigate to **Data API** (under Services) on the left sidebar.
-2. Click **Enable Data API**.
-3. Select your cluster and click **Create API Key**.
-4. Copy the generated **API Key** and the **URL Endpoint** immediately (you won't be able to see the key again).
-
-### 3. Configure the Game
-Open `src/db.ts` in your code editor and update the exported constants with your specific Atlas details:
-
-```typescript
-// src/db.ts
-export const MONGO_ENDPOINT = 'YOUR_DATA_API_ENDPOINT_URL'; // e.g., https://data.mongodb-api.com/app/data-xxxxx/endpoint/data/v1
-export const MONGO_API_KEY = 'YOUR_GENERATED_API_KEY';
-export const DATA_SOURCE = 'Cluster0'; // The name of your Atlas Cluster
-export const DATABASE_NAME = 'cookie_game';
-export const COLLECTION_SAVES = 'saves';
-```
-
-*Note: For a production deployment, you should move these sensitive keys to environment variables (e.g., `.env` and `import.meta.env.VITE_MONGO_API_KEY`).*
-
----
-
-## 🚢 Deployment
-
-This project is optimized for deployment on **Cloudflare Pages**, Vercel, or Netlify.
-
-To build the project for production:
+To create a production-ready build:
 
 ```bash
 npm run build
 ```
 
-The compiled static files will be located in the `dist/` directory, ready to be uploaded or continuously deployed via your Git repository.
+This will generate a `dist` folder containing the optimized static assets. You can preview the build locally using:
 
-## 📜 License
+```bash
+npm run preview
+```
 
-MIT License - feel free to modify and use this project for your own learning and development!
+## 🗄️ Database Integration (Optional)
+
+By default, the game runs in **Local Save Mode**, storing your progress in the browser's `localStorage`. 
+
+To enable cloud saving across devices, you can connect a MongoDB Atlas database using the Data API:
+
+1. Set up a MongoDB Atlas cluster.
+2. Enable the Data API in your Atlas dashboard.
+3. Update `src/db.ts` with your Data API endpoint, API key, Cluster Name, and Database Name.
+4. Change `export const IS_DB_CONNECTED = false;` to `true` in `src/db.ts`.
+
+*Note: Never commit your actual API keys to version control. Use environment variables (`import.meta.env.VITE_MONGO_API_KEY`) in a real-world scenario.*
+
+## ☁️ Deployment
+
+This project is optimized for deployment on **Cloudflare Pages**, Vercel, or Netlify.
+
+### Cloudflare Pages Deployment Steps:
+
+1. Push your code to a GitHub or GitLab repository.
+2. Log in to the Cloudflare dashboard and navigate to **Pages**.
+3. Click **Create a project** > **Connect to Git**.
+4. Select your repository.
+5. Configure the build settings:
+   - **Framework preset:** Vite
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+6. Click **Save and Deploy**.
+
+## 📄 License
+
+MIT License - feel free to use this project for your own learning or commercial purposes.

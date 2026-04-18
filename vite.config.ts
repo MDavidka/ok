@@ -6,10 +6,5 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: 'dist',
-    // Using default esbuild minifier as per requirements
   },
-  server: {
-    port: 5173,
-    strictPort: true,
-  }
 });
