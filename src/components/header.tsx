@@ -1,113 +1,117 @@
-import React, { useState } from 'react';
-import { 
-  Navbar, 
-  NavbarBrand, 
-  NavbarContent, 
-  NavbarItem, 
-  Link, 
-  Chip, 
-  Tooltip,
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem
+import React from 'react';
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Button,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  Link
 } from '@heroui/react';
-import { Cookie, CloudOff, Cloud } from 'lucide-react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { IS_DB_CONNECTED } from '../db';
-import { NavItem } from '../types';
-
-const NAV_ITEMS: NavItem[] = [
-  { label: 'Bakery', href: '/' },
-  { label: 'Upgrades', href: '/shop' },
-  { label: 'Stats', href: '/stats' },
-];
+import { Cookie, Info, RotateCcw, Github } from 'lucide-react';
 
 export function Header(): JSX.Element {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const handleReset = () => {
+    if (window.confirm("Are you sure you want to reset your progress? This cannot be undone.")) {
+      sessionStorage.clear();
+      window.location.reload();
+    }
+  };
 
   return (
-    <Navbar 
-      isBordered 
-      isMenuOpen={isMenuOpen}
-      onMenuOpenChange={setIsMenuOpen}
-      className="bg-background/80 backdrop-blur-md border-b border-divider"
-      maxWidth="xl"
-    >
-      <NavbarContent>
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden"
-        />
-        <NavbarBrand as={RouterLink} to="/" className="gap-2 transition-transform hover:scale-105 active:scale-95">
-          <Cookie className="w-8 h-8 text-primary" />
-          <p className="font-heading font-bold text-inherit text-xl tracking-tight hidden sm:block">
-            Cookie<span className="text-primary">Clicker</span>
+    <>
+      <Navbar isBordered className="bg-background/70 backdrop-blur-md border-b border-divider">
+        <NavbarBrand>
+          <Cookie className="text-primary mr-2" size={28} />
+          <p className="font-bold text-xl tracking-tight font-heading text-primary">
+            Cookie Clicker
           </p>
         </NavbarBrand>
-      </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex gap-6" justify="center">
-        {NAV_ITEMS.map((item) => {
-          const isActive = location.pathname === item.href;
-          return (
-            <NavbarItem key={item.href} isActive={isActive}>
-              <Link 
-                as={RouterLink} 
-                to={item.href} 
-                color={isActive ? "primary" : "foreground"}
-                className={`font-medium transition-colors ${isActive ? 'text-primary' : 'hover:text-primary/80'}`}
-              >
-                {item.label}
-              </Link>
-            </NavbarItem>
-          );
-        })}
-      </NavbarContent>
-
-      <NavbarContent justify="end">
-        <NavbarItem>
-          <Tooltip 
-            content={
-              IS_DB_CONNECTED 
-                ? "Your progress is being saved to the cloud." 
-                : "Connect a database in the Integrations tab to enable cloud saving."
-            }
-            placement="bottom-end"
-            color={IS_DB_CONNECTED ? "success" : "warning"}
-          >
-            <Chip
-              startContent={IS_DB_CONNECTED ? <Cloud className="w-4 h-4" /> : <CloudOff className="w-4 h-4" />}
-              color={IS_DB_CONNECTED ? "success" : "warning"}
-              variant="flat"
-              size="sm"
-              className="cursor-help font-medium"
+        <NavbarContent justify="end">
+          <NavbarItem className="hidden sm:flex">
+            <Button 
+              variant="light" 
+              color="default" 
+              onPress={onOpen} 
+              startContent={<Info size={18} />}
+              className="font-medium"
             >
-              {IS_DB_CONNECTED ? "Cloud Sync On" : "Local Save Only"}
-            </Chip>
-          </Tooltip>
-        </NavbarItem>
-      </NavbarContent>
+              About
+            </Button>
+          </NavbarItem>
+          <NavbarItem>
+            <Button 
+              variant="flat" 
+              color="danger" 
+              onPress={handleReset} 
+              startContent={<RotateCcw size={18} />}
+              className="font-medium"
+            >
+              Reset
+            </Button>
+          </NavbarItem>
+        </NavbarContent>
+      </Navbar>
 
-      <NavbarMenu className="bg-background/90 backdrop-blur-lg pt-6">
-        {NAV_ITEMS.map((item, index) => {
-          const isActive = location.pathname === item.href;
-          return (
-            <NavbarMenuItem key={`${item.label}-${index}`}>
-              <Link
-                as={RouterLink}
-                className="w-full font-heading font-semibold"
-                color={isActive ? "primary" : "foreground"}
-                to={item.href}
-                size="lg"
-                onPress={() => setIsMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          );
-        })}
-      </NavbarMenu>
-    </Navbar>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center" backdrop="blur">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 font-heading text-2xl text-primary">
+                About Cookie Clicker
+              </ModalHeader>
+              <ModalBody>
+                <p className="text-default-600">
+                  Welcome to the ultimate Cookie Clicker experience! This is a lightweight, 
+                  high-performance incremental game built with modern web technologies.
+                </p>
+                <div className="flex flex-col gap-2 mt-4">
+                  <h3 className="font-bold text-default-800">How to play:</h3>
+                  <ul className="list-disc list-inside text-default-600 space-y-1">
+                    <li>Click the giant cookie to earn cookies.</li>
+                    <li>Spend your cookies in the shop to buy upgrades.</li>
+                    <li>Upgrades increase your Cookies Per Second (CPS).</li>
+                    <li>Your progress is automatically saved to your browser's session.</li>
+                  </ul>
+                </div>
+                <div className="flex flex-col gap-2 mt-4">
+                  <h3 className="font-bold text-default-800">Tech Stack:</h3>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-2 py-1 bg-default-100 rounded-md text-xs font-medium">React</span>
+                    <span className="px-2 py-1 bg-default-100 rounded-md text-xs font-medium">TypeScript</span>
+                    <span className="px-2 py-1 bg-default-100 rounded-md text-xs font-medium">Vite</span>
+                    <span className="px-2 py-1 bg-default-100 rounded-md text-xs font-medium">Hero UI</span>
+                    <span className="px-2 py-1 bg-default-100 rounded-md text-xs font-medium">Tailwind CSS</span>
+                  </div>
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                <Button 
+                  color="primary" 
+                  as={Link} 
+                  href="https://github.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  startContent={<Github size={18} />}
+                >
+                  Source Code
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   );
 }

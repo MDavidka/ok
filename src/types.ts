@@ -27,20 +27,3 @@ export interface GameState {
   upgrades: Record<string, number>; // Maps upgradeId to the quantity owned
   lastSaveTime: number;
 }
-
-export interface UserData {
-  _id?: string;
-  userId: string;
-  gameState: GameState;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export interface DbResponse<T> {
-  document?: T;
-  documents?: T[];
-  insertedId?: string;
-  matchedCount?: number;
-  modifiedCount?: number;
-  error?: string;
-}

@@ -1,317 +1,270 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import ReactDOM from 'react-dom/client';
-import { HeroUIProvider, Card, CardBody, Spinner, Button } from '@heroui/react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Database, AlertCircle } from 'lucide-react';
-
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { createRoot } from 'react-dom/client';
+import { HeroUIProvider } from '@heroui/react';
 import './style.css';
+
+// Components
 import { Header } from './components/header';
 import { Footer } from './components/footer';
-import { Clicker } from './components/clicker';
+import { CookieButton } from './components/cookie-button';
 import { Shop } from './components/shop';
+import { StatsDisplay } from './components/stats-display';
 
-import { Upgrade, GameState } from './types';
-import { 
-  calculateTotalCps, 
-  generateUserId, 
-  calculateOfflineCookies 
-} from './utils';
-import { IS_DB_CONNECTED, loadUserData, saveUserData } from './db';
+// Types & Utils
+import { GameState, Upgrade } from './types';
+import { calculateTotalCps, calculateOfflineCookies } from './utils';
 
-// Define the available upgrades in the game
+const SAVE_KEY = 'cookie_clicker_save';
+
+// Master list of all available upgrades in the game
 const UPGRADES: Upgrade[] = [
-  { 
-    id: 'cursor', 
-    name: 'Cursor', 
-    description: 'Auto-clicks once every 10 seconds. Also increases your manual click power by 1.', 
-    baseCost: 15, 
-    costMultiplier: 1.15, 
-    cpsIncrease: 0.1, 
-    clickIncrease: 1, 
-    icon: '👆' 
+  {
+    id: 'cursor',
+    name: 'Auto-Cursor',
+    description: 'Automatically clicks the cookie once every 10 seconds.',
+    baseCost: 15,
+    baseCps: 0.1,
+    costMultiplier: 1.15,
+    iconUrl: 'https://placehold.co/100x100/f59e0b/ffffff.png?text=Cursor'
   },
-  { 
-    id: 'grandma', 
-    name: 'Grandma', 
-    description: 'A nice grandma to bake more cookies for you.', 
-    baseCost: 100, 
-    costMultiplier: 1.15, 
-    cpsIncrease: 1, 
-    clickIncrease: 0, 
-    icon: '👵' 
+  {
+    id: 'grandma',
+    name: 'Grandma',
+    description: 'A nice grandma to bake more cookies.',
+    baseCost: 100,
+    baseCps: 1,
+    costMultiplier: 1.15,
+    iconUrl: 'https://placehold.co/100x100/f59e0b/ffffff.png?text=Grandma'
   },
-  { 
-    id: 'farm', 
-    name: 'Cookie Farm', 
-    description: 'Grows cookie plants from cookie seeds.', 
-    baseCost: 1100, 
-    costMultiplier: 1.15, 
-    cpsIncrease: 8, 
-    clickIncrease: 0, 
-    icon: '🌾' 
+  {
+    id: 'farm',
+    name: 'Cookie Farm',
+    description: 'Grows cookie plants from cookie seeds.',
+    baseCost: 1100,
+    baseCps: 8,
+    costMultiplier: 1.15,
+    iconUrl: 'https://placehold.co/100x100/f59e0b/ffffff.png?text=Farm'
   },
-  { 
-    id: 'mine', 
-    name: 'Mine', 
-    description: 'Mines out cookie dough and chocolate chips.', 
-    baseCost: 12000, 
-    costMultiplier: 1.15, 
-    cpsIncrease: 47, 
-    clickIncrease: 0, 
-    icon: '⛏️' 
+  {
+    id: 'mine',
+    name: 'Cookie Mine',
+    description: 'Mines out cookie dough and chocolate chips.',
+    baseCost: 12000,
+    baseCps: 47,
+    costMultiplier: 1.15,
+    iconUrl: 'https://placehold.co/100x100/f59e0b/ffffff.png?text=Mine'
   },
-  { 
-    id: 'factory', 
-    name: 'Factory', 
-    description: 'Produces large quantities of cookies automatically.', 
-    baseCost: 130000, 
-    costMultiplier: 1.15, 
-    cpsIncrease: 260, 
-    clickIncrease: 0, 
-    icon: '🏭' 
+  {
+    id: 'factory',
+    name: 'Cookie Factory',
+    description: 'Produces large quantities of cookies.',
+    baseCost: 130000,
+    baseCps: 260,
+    costMultiplier: 1.15,
+    iconUrl: 'https://placehold.co/100x100/f59e0b/ffffff.png?text=Factory'
   },
-  { 
-    id: 'bank', 
-    name: 'Bank', 
-    description: 'Generates cookies from interest.', 
-    baseCost: 1400000, 
-    costMultiplier: 1.15, 
-    cpsIncrease: 1400, 
-    clickIncrease: 0, 
-    icon: '🏦' 
+  {
+    id: 'bank',
+    name: 'Cookie Bank',
+    description: 'Generates cookies from interest.',
+    baseCost: 1400000,
+    baseCps: 1400,
+    costMultiplier: 1.15,
+    iconUrl: 'https://placehold.co/100x100/f59e0b/ffffff.png?text=Bank'
   }
 ];
 
-function App() {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [userId, setUserId] = useState<string>('');
-  const [cookies, setCookies] = useState<number>(0);
-  const [ownedUpgrades, setOwnedUpgrades] = useState<Record<string, number>>({});
-  const [offlineEarnings, setOfflineEarnings] = useState<number>(0);
+function App(): JSX.Element {
+  // Initialize state from sessionStorage or use defaults
+  const [gameState, setGameState] = useState<GameState>(() => {
+    const defaultState: GameState = {
+      cookies: 0,
+      totalCookies: 0,
+      clickPower: 1,
+      cps: 0,
+      upgrades: {},
+      lastSaveTime: Date.now()
+    };
 
-  // Derived stats
-  const cps = useMemo(() => calculateTotalCps(ownedUpgrades, UPGRADES), [ownedUpgrades]);
-  
-  const clickPower = useMemo(() => {
-    let power = 1;
-    UPGRADES.forEach(u => {
-      if (u.clickIncrease && ownedUpgrades[u.id]) {
-        power += u.clickIncrease * ownedUpgrades[u.id];
-      }
-    });
-    return power;
-  }, [ownedUpgrades]);
+    try {
+      const saved = sessionStorage.getItem(SAVE_KEY);
+      if (!saved) return defaultState;
 
-  // Initialization & Loading
-  useEffect(() => {
-    const initGame = async () => {
-      let uid = localStorage.getItem('cookie_userId');
-      if (!uid) {
-        uid = generateUserId();
-        localStorage.setItem('cookie_userId', uid);
-      }
-      setUserId(uid);
-
-      if (IS_DB_CONNECTED) {
-        try {
-          const res = await loadUserData(uid);
-          if (res.data && res.data.gameState) {
-            const state = res.data.gameState;
-            setOwnedUpgrades(state.ownedUpgrades || {});
-            
-            const currentCps = calculateTotalCps(state.ownedUpgrades || {}, UPGRADES);
-            const offline = calculateOfflineCookies(state.lastSaveTime, currentCps);
-            
-            setCookies((state.cookies || 0) + offline);
-            if (offline > 0) setOfflineEarnings(offline);
-          }
-        } catch (error) {
-          console.error("Failed to load game state from DB:", error);
-          loadLocalFallback();
-        }
-      } else {
-        loadLocalFallback();
-      }
+      const parsed: GameState = JSON.parse(saved);
       
-      setIsLoaded(true);
-    };
-
-    const loadLocalFallback = () => {
-      const localStateStr = localStorage.getItem('cookie_gameState');
-      if (localStateStr) {
-        try {
-          const state: GameState = JSON.parse(localStateStr);
-          setOwnedUpgrades(state.ownedUpgrades || {});
-          
-          const currentCps = calculateTotalCps(state.ownedUpgrades || {}, UPGRADES);
-          const offline = calculateOfflineCookies(state.lastSaveTime, currentCps);
-          
-          setCookies((state.cookies || 0) + offline);
-          if (offline > 0) setOfflineEarnings(offline);
-        } catch (e) {
-          console.error("Failed to parse local game state", e);
-        }
+      // Calculate offline progress
+      const offlineCookies = calculateOfflineCookies(parsed.lastSaveTime, parsed.cps);
+      if (offlineCookies > 0) {
+        parsed.cookies += offlineCookies;
+        parsed.totalCookies += offlineCookies;
+        console.info(`Welcome back! You baked ${Math.floor(offlineCookies)} cookies while away.`);
       }
-    };
 
-    initGame();
+      parsed.lastSaveTime = Date.now();
+      // Ensure CPS is accurate based on current upgrade definitions
+      parsed.cps = calculateTotalCps(parsed.upgrades, UPGRADES);
+
+      return parsed;
+    } catch (e) {
+      console.error("Failed to parse save data, starting fresh.", e);
+      return defaultState;
+    }
+  });
+
+  const lastTickRef = useRef<number>(Date.now());
+  const saveCounterRef = useRef<number>(0);
+
+  // Main Game Loop
+  useEffect(() => {
+    const tickRate = 100; // Run 10 times per second for smooth UI updates
+    
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const deltaSeconds = (now - lastTickRef.current) / 1000;
+      lastTickRef.current = now;
+
+      setGameState(prev => {
+        if (prev.cps === 0) return prev;
+
+        const generatedCookies = prev.cps * deltaSeconds;
+        const newState = {
+          ...prev,
+          cookies: prev.cookies + generatedCookies,
+          totalCookies: prev.totalCookies + generatedCookies,
+          lastSaveTime: now
+        };
+
+        // Throttle sessionStorage writes to roughly once per second (every 10 ticks)
+        saveCounterRef.current += 1;
+        if (saveCounterRef.current >= 10) {
+          sessionStorage.setItem(SAVE_KEY, JSON.stringify(newState));
+          saveCounterRef.current = 0;
+        }
+
+        return newState;
+      });
+    }, tickRate);
+
+    return () => clearInterval(interval);
   }, []);
 
-  // Game Loop (CPS)
+  // Save on window unload to ensure no data is lost
   useEffect(() => {
-    if (!isLoaded || cps === 0) return;
-
-    // Run 10 times a second for smoother visual updates
-    const interval = setInterval(() => {
-      setCookies(prev => prev + (cps / 10));
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, [isLoaded, cps]);
-
-  // Auto-save Loop
-  useEffect(() => {
-    if (!isLoaded) return;
-
-    const interval = setInterval(() => {
-      const state: GameState = {
-        cookies,
-        ownedUpgrades,
-        lastSaveTime: Date.now()
-      };
-
-      if (IS_DB_CONNECTED) {
-        saveUserData(userId, state).catch(err => console.error("Auto-save failed:", err));
-      } else {
-        localStorage.setItem('cookie_gameState', JSON.stringify(state));
-      }
-    }, 10000); // Save every 10 seconds
-
-    return () => clearInterval(interval);
-  }, [isLoaded, cookies, ownedUpgrades, userId]);
+    const handleUnload = () => {
+      sessionStorage.setItem(SAVE_KEY, JSON.stringify(gameState));
+    };
+    window.addEventListener('beforeunload', handleUnload);
+    return () => window.removeEventListener('beforeunload', handleUnload);
+  }, [gameState]);
 
   // Handlers
   const handleManualClick = useCallback(() => {
-    setCookies(prev => prev + clickPower);
-  }, [clickPower]);
-
-  const handlePurchase = useCallback((upgradeId: string, cost: number) => {
-    setCookies(prevCookies => {
-      if (prevCookies >= cost) {
-        setOwnedUpgrades(prev => ({
-          ...prev,
-          [upgradeId]: (prev[upgradeId] || 0) + 1
-        }));
-        return prevCookies - cost;
-      }
-      return prevCookies;
+    setGameState(prev => {
+      const newState = {
+        ...prev,
+        cookies: prev.cookies + prev.clickPower,
+        totalCookies: prev.totalCookies + prev.clickPower
+      };
+      // Immediate save on manual action
+      sessionStorage.setItem(SAVE_KEY, JSON.stringify(newState));
+      return newState;
     });
   }, []);
 
-  const dismissOfflineEarnings = () => setOfflineEarnings(0);
+  const handlePurchase = useCallback((upgradeId: string, cost: number) => {
+    setGameState(prev => {
+      if (prev.cookies < cost) return prev; // Double-check affordability
 
-  if (!isLoaded) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground gap-4">
-        <Spinner size="lg" color="primary" />
-        <h2 className="text-xl font-heading font-semibold animate-pulse">Heating up the ovens...</h2>
-      </div>
-    );
-  }
+      const newUpgrades = {
+        ...prev.upgrades,
+        [upgradeId]: (prev.upgrades[upgradeId] || 0) + 1
+      };
+
+      const newCps = calculateTotalCps(newUpgrades, UPGRADES);
+
+      const newState = {
+        ...prev,
+        cookies: prev.cookies - cost,
+        upgrades: newUpgrades,
+        cps: newCps
+      };
+      
+      // Immediate save on purchase
+      sessionStorage.setItem(SAVE_KEY, JSON.stringify(newState));
+      return newState;
+    });
+  }, []);
 
   return (
-    <BrowserRouter>
-      <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-primary/30">
-        <Header />
+    <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-primary/30">
+      <Header />
+      
+      <main className="flex-grow container mx-auto px-4 py-6 sm:py-8 flex flex-col lg:flex-row gap-6 sm:gap-8">
         
-        <main className="flex-grow flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 gap-6">
+        {/* Left Column: Stats & Interactive Clicker */}
+        <div className="flex-1 flex flex-col gap-6 sm:gap-8">
+          <StatsDisplay
+            cookies={Math.floor(gameState.cookies)}
+            cps={gameState.cps}
+            clickPower={gameState.clickPower}
+            totalCookies={Math.floor(gameState.totalCookies)}
+          />
           
-          {/* Database Connection Warning */}
-          {!IS_DB_CONNECTED && (
-            <Card className="bg-warning-50 border-warning-200 shadow-sm">
-              <CardBody className="flex flex-row items-center gap-4 py-3 px-4">
-                <div className="p-2 bg-warning-100 rounded-full text-warning-600">
-                  <Database className="w-5 h-5" />
-                </div>
-                <div className="flex-grow">
-                  <h3 className="text-sm font-semibold text-warning-800">Local Save Mode Active</h3>
-                  <p className="text-xs text-warning-700 mt-0.5">
-                    Connect a database from the Integrations tab to enable cloud saving across devices.
-                  </p>
-                </div>
-              </CardBody>
-            </Card>
-          )}
-
-          {/* Offline Earnings Notification */}
-          {offlineEarnings > 0 && (
-            <Card className="bg-success-50 border-success-200 shadow-sm animate-appearance-in">
-              <CardBody className="flex flex-row items-center justify-between gap-4 py-3 px-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-success-100 rounded-full text-success-600">
-                    <AlertCircle className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-success-800">Welcome Back!</h3>
-                    <p className="text-xs text-success-700 mt-0.5">
-                      Your bakery produced <strong>{Math.floor(offlineEarnings).toLocaleString()}</strong> cookies while you were away.
-                    </p>
-                  </div>
-                </div>
-                <Button size="sm" color="success" variant="flat" onPress={dismissOfflineEarnings}>
-                  Awesome
-                </Button>
-              </CardBody>
-            </Card>
-          )}
-
-          {/* Routing */}
-          <div className="flex-grow flex flex-col">
-            <Routes>
-              <Route 
-                path="/" 
-                element={
-                  <Clicker 
-                    cookies={Math.floor(cookies)} 
-                    cps={cps} 
-                    clickPower={clickPower} 
-                    onManualClick={handleManualClick} 
-                  />
-                } 
-              />
-              <Route 
-                path="/shop" 
-                element={
-                  <Shop 
-                    cookies={Math.floor(cookies)} 
-                    upgrades={UPGRADES} 
-                    ownedUpgrades={ownedUpgrades} 
-                    onPurchase={handlePurchase} 
-                  />
-                } 
-              />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+          <div className="flex-grow flex items-center justify-center min-h-[300px] sm:min-h-[400px]">
+            <CookieButton
+              onClick={handleManualClick}
+              clickPower={gameState.clickPower}
+            />
           </div>
+        </div>
 
-        </main>
+        {/* Right Column: Upgrade Shop */}
+        <div className="w-full lg:w-[400px] xl:w-[450px] flex-shrink-0 h-[600px] lg:h-auto">
+          <Shop
+            upgrades={UPGRADES}
+            ownedUpgrades={gameState.upgrades}
+            currentCookies={Math.floor(gameState.cookies)}
+            onPurchase={handlePurchase}
+          />
+        </div>
+        
+      </main>
 
-        <Footer />
-      </div>
-    </BrowserRouter>
+      <Footer />
+    </div>
   );
 }
 
-// Mount the React application
-const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error("Failed to find the root element. Ensure there is a <div id='root'></div> in your index.html");
+// Safely initialize the React application without top-level DOM access
+export function init(): void {
+  const rootElement = document.getElementById('root');
+  
+  if (!rootElement) {
+    console.error('Failed to find the root element. Ensure index.html has a <div id="root"></div>');
+    return;
+  }
+
+  // Prevent double initialization in development
+  if (rootElement.hasChildNodes()) {
+    return;
+  }
+
+  const root = createRoot(rootElement);
+  
+  root.render(
+    <React.StrictMode>
+      <HeroUIProvider>
+        <App />
+      </HeroUIProvider>
+    </React.StrictMode>
+  );
 }
 
-ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
-    <HeroUIProvider>
-      <App />
-    </HeroUIProvider>
-  </React.StrictMode>
-);
+// Bootstrapper
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+}
