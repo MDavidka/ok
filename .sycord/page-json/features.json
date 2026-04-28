@@ -1,0 +1,32 @@
+{
+  "type": "ui-tree",
+  "version": "1.0",
+  "component": {
+    "name": "main",
+    "props": {
+      "className": "min-h-screen bg-background text-foreground"
+    },
+    "children": [
+      {
+        "name": "section",
+        "copy": "Feature Grid",
+        "className": "px-4 py-10 sm:px-6 lg:px-8"
+      },
+      {
+        "name": "section",
+        "copy": "Use Cases",
+        "className": "px-4 py-10 sm:px-6 lg:px-8"
+      },
+      {
+        "name": "section",
+        "copy": "Comparison",
+        "className": "px-4 py-10 sm:px-6 lg:px-8"
+      },
+      {
+        "name": "section",
+        "copy": "CTA",
+        "className": "px-4 py-10 sm:px-6 lg:px-8"
+      }
+    ]
+  }
+}
