@@ -1,5 +1,4 @@
-import type { ProjectManifest } from "@/lib/ai-website-builder"
-export const generatedManifest: ProjectManifest = {
+export const generatedManifest = {
   "projectName": "A phone selling",
   "siteType": "business",
   "brandStyle": "clean modern mobile-first",
@@ -111,4 +110,4 @@ export const generatedManifest: ProjectManifest = {
   "motion": {
     "profile": "soft-reveal"
   }
-}
+} as const

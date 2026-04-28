@@ -1,0 +1,98 @@
+{
+  "runtime": "nextjs",
+  "createdAt": "2026-04-28T20:03:59.196Z",
+  "files": [
+    {
+      "path": "package.json",
+      "size": 423
+    },
+    {
+      "path": "next.config.ts",
+      "size": 48
+    },
+    {
+      "path": "tsconfig.json",
+      "size": 330
+    },
+    {
+      "path": "tailwind.config.ts",
+      "size": 82
+    },
+    {
+      "path": "postcss.config.js",
+      "size": 79
+    },
+    {
+      "path": "app/layout.tsx",
+      "size": 535
+    },
+    {
+      "path": "app/globals.css",
+      "size": 91
+    },
+    {
+      "path": "components/site-header.tsx",
+      "size": 1502
+    },
+    {
+      "path": "components/site-footer.tsx",
+      "size": 769
+    },
+    {
+      "path": "components/motion/fade-in.tsx",
+      "size": 292
+    },
+    {
+      "path": "components/motion/stagger.tsx",
+      "size": 305
+    },
+    {
+      "path": "components/motion/motion-card.tsx",
+      "size": 225
+    },
+    {
+      "path": "lib/utils.ts",
+      "size": 116
+    },
+    {
+      "path": "components/ui/button.tsx",
+      "size": 852
+    },
+    {
+      "path": "components/ui/badge.tsx",
+      "size": 448
+    },
+    {
+      "path": "components/ui/sheet.tsx",
+      "size": 494
+    },
+    {
+      "path": "lib/site-config.ts",
+      "size": 175
+    },
+    {
+      "path": "lib/generated-manifest.ts",
+      "size": 2786
+    },
+    {
+      "path": "lib/actions/contact-actions.ts",
+      "size": 191
+    },
+    {
+      "path": "lib/actions/cart-actions.ts",
+      "size": 219
+    },
+    {
+      "path": "app/page.tsx",
+      "size": 3335
+    },
+    {
+      "path": "app/features/page.tsx",
+      "size": 3354
+    },
+    {
+      "path": "app/contact/page.tsx",
+      "size": 3339
+    }
+  ]
+}
