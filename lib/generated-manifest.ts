@@ -1,5 +1,5 @@
 export const generatedManifest = {
-  "projectName": "a phone shop",
+  "projectName": "A phone selling",
   "siteType": "business",
   "brandStyle": "clean modern mobile-first",
   "pages": [
@@ -30,7 +30,7 @@ export const generatedManifest = {
       "componentName": "HomePage",
       "description": "Introduce the brand and primary value proposition.",
       "metadata": {
-        "title": "Home | a phone shop",
+        "title": "Home | A phone selling",
         "description": "Introduce the brand and primary value proposition."
       }
     },
@@ -62,7 +62,7 @@ export const generatedManifest = {
       "componentName": "FeaturesPage",
       "description": "Show product capabilities and benefits.",
       "metadata": {
-        "title": "Features | a phone shop",
+        "title": "Features | A phone selling",
         "description": "Show product capabilities and benefits."
       }
     },
@@ -94,7 +94,7 @@ export const generatedManifest = {
       "componentName": "ContactPage",
       "description": "Capture inquiries and support requests.",
       "metadata": {
-        "title": "Contact | a phone shop",
+        "title": "Contact | A phone selling",
         "description": "Capture inquiries and support requests."
       }
     }

@@ -1,5 +1,5 @@
 {
-  "name": "a-phone-shop",
+  "name": "a-phone-selling",
   "private": true,
   "scripts": {
     "dev": "next dev",
