@@ -1,0 +1,529 @@
+import * as React from "react";
+import Link from "next/link";
+import { Star } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+import { Product } from "@/types";
+
+// --- Mock Product Data ---
+// In a real application, this data would be fetched from an API.
+// For this example, we use static mock data based on the Product interface.
+const MOCK_PRODUCTS: Product[] = [
+  {
+    _id: "p1",
+    name: "Wireless Bluetooth Headphones",
+    description: "High-fidelity sound with comfortable earcups and long battery life.",
+    price: 99.99,
+    imageUrl: "https://placehold.co/400x300.png?text=Headphones",
+    category: "Electronics",
+    stock: 50,
+    rating: 4.5,
+    reviewsCount: 120,
+    variants: [{ type: "color", value: "Black" }, { type: "color", value: "White" }],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "p2",
+    name: "Ergonomic Office Chair",
+    description: "Adjustable lumbar support and breathable mesh for all-day comfort.",
+    price: 249.99,
+    imageUrl: "https://placehold.co/400x300.png?text=Office+Chair",
+    category: "Furniture",
+    stock: 20,
+    rating: 4.8,
+    reviewsCount: 85,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "p3",
+    name: "Smartwatch with Heart Rate Monitor",
+    description: "Track your fitness and stay connected with notifications.",
+    price: 149.99,
+    imageUrl: "https://placehold.co/400x300.png?text=Smartwatch",
+    category: "Electronics",
+    stock: 100,
+    rating: 4.2,
+    reviewsCount: 200,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "p4",
+    name: "Stainless Steel Water Bottle",
+    description: "Keeps drinks cold for 24 hours and hot for 12 hours.",
+    price: 25.00,
+    imageUrl: "https://placehold.co/400x300.png?text=Water+Bottle",
+    category: "Kitchen",
+    stock: 300,
+    rating: 4.7,
+    reviewsCount: 500,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "p5",
+    name: "Portable External SSD 1TB",
+    description: "Ultra-fast data transfer speeds in a compact design.",
+    price: 120.00,
+    imageUrl: "https://placehold.co/400x300.png?text=SSD",
+    category: "Electronics",
+    stock: 75,
+    rating: 4.6,
+    reviewsCount: 90,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "p6",
+    name: "Organic Cotton T-Shirt",
+    description: "Soft and breathable, made from 100% organic cotton.",
+    price: 35.00,
+    imageUrl: "https://placehold.co/400x300.png?text=T-Shirt",
+    category: "Apparel",
+    stock: 200,
+    rating: 4.3,
+    reviewsCount: 150,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "p7",
+    name: "Noise-Cancelling Earbuds",
+    description: "Immersive audio experience with active noise cancellation.",
+    price: 179.99,
+    imageUrl: "https://placehold.co/400x300.png?text=Earbuds",
+    category: "Electronics",
+    stock: 60,
+    rating: 4.4,
+    reviewsCount: 110,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "p8",
+    name: "Digital Camera 24MP",
+    description: "Capture stunning photos and videos with ease.",
+    price: 499.99,
+    imageUrl: "https://placehold.co/400x300.png?text=Camera",
+    category: "Electronics",
+    stock: 30,
+    rating: 4.9,
+    reviewsCount: 70,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "p9",
+    name: "Yoga Mat Eco-Friendly",
+    description: "Non-slip surface and made from sustainable materials.",
+    price: 45.0    ,
+    imageUrl: "https://placehold.co/400x300.png?text=Yoga+Mat",
+    category: "Sports",
+    stock: 150,
+    rating: 4.6,
+    reviewsCount: 95,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "p10",
+    name: "Coffee Maker Programmable",
+    description: "Wake up to freshly brewed coffee every morning.",
+    price: 75.00,
+    imageUrl: "https://placehold.co/400x300.png?text=Coffee+Maker",
+    category: "Kitchen",
+    stock: 80,
+    rating: 4.1,
+    reviewsCount: 130,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "p11",
+    name: "Gaming Mouse RGB",
+    description: "Precision sensor and customizable RGB lighting for gamers.",
+    price: 59.99,
+    imageUrl: "https://placehold.co/400x300.png?text=Gaming+Mouse",
+    category: "Electronics",
+    stock: 120,
+    rating: 4.7,
+    reviewsCount: 180,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: "p12",
+    name: "Leather Wallet Slim Design",
+    description: "Genuine leather wallet with multiple card slots and RFID protection.",
+    price: 40.00,
+    imageUrl: "https://placehold.co/400x300.png?text=Wallet",
+    category: "Accessories",
+    stock: 250,
+    rating: 4.4,
+    reviewsCount: 210,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
+
+// Extract unique categories and mock brands for filters
+const allCategories = Array.from(new Set(MOCK_PRODUCTS.map(p => p.category)));
+const allBrands = ["Brand A", "Brand B", "Brand C", "Brand D"]; // Mock brands as products don't have a brand field
+
+interface ProductCardProps {
+  product: Product;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => (
+  <Card className="flex flex-col h-full">
+    <CardHeader className="p-4 pb-2">
+      <Link href={`/product/${product._id}`} className="block">
+        <img
+          src={product.imageUrl}
+          alt={product.name}
+          className="w-full h-48 object-cover rounded-md mb-2"
+        />
+      </Link>
+      <CardTitle className="text-lg font-semibold line-clamp-2">
+        <Link href={`/product/${product._id}`} className="hover:underline">
+          {product.name}
+        </Link>
+      </CardTitle>
+      <CardDescription className="text-sm text-muted-foreground line-clamp-2">
+        {product.description}
+      </CardDescription>
+    </CardHeader>
+    <CardContent className="flex-grow p-4 pt-0">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xl font-bold">${product.price.toFixed(2)}</span>
+        {product.rating && (
+          <div className="flex items-center text-sm text-yellow-500">
+            <Star className="h-4 w-4 fill-yellow-500 stroke-yellow-500 mr-1" />
+            <span>{product.rating.toFixed(1)}</span>
+            {product.reviewsCount && (
+              <span className="text-muted-foreground ml-1">({product.reviewsCount})</span>
+            )}
+          </div>
+        )}
+      </div>
+      <Badge variant="secondary" className="text-xs">{product.category}</Badge>
+    </CardContent>
+    <CardFooter className="p-4 pt-0">
+      <Button className="w-full">Add to Cart</Button>
+    </CardFooter>
+  </Card>
+);
+
+export function ProductsPage() {
+  const [products] = React.useState<Product[]>(MOCK_PRODUCTS);
+  const [filters, setFilters] = React.useState({
+    category: "all",
+    minPrice: "",
+    maxPrice: "",
+    brands: [] as string[],
+  });
+  const [sortBy, setSortBy] = React.useState("default");
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const productsPerPage = 9; // Display 9 products per page
+
+  // Filter products based on current filter settings
+  const filteredProducts = React.useMemo(() => {
+    return products.filter((product) => {
+      // Category filter
+      if (filters.category !== "all" && product.category !== filters.category) {
+        return false;
+      }
+
+      // Price filter
+      const minPrice = parseFloat(filters.minPrice);
+      const maxPrice = parseFloat(filters.maxPrice);
+      if (!isNaN(minPrice) && product.price < minPrice) {
+        return false;
+      }
+      if (!isNaN(maxPrice) && product.price > maxPrice) {
+        return false;
+      }
+
+      // Brand filter (simulated: checks if product name contains a mock brand name)
+      if (filters.brands.length > 0) {
+        const productBrand = allBrands.find(brand => product.name.toLowerCase().includes(brand.toLowerCase().replace('brand ', '')));
+        if (!productBrand || !filters.brands.includes(productBrand)) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [products, filters]);
+
+  // Sort products based on current sort criteria
+  const sortedProducts = React.useMemo(() => {
+    let sorted = [...filteredProducts];
+    switch (sortBy) {
+      case "price-asc":
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      case "name-asc":
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "name-desc":
+        sorted.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case "rating-desc":
+        sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        break;
+      default:
+        // Default sort (e.g., by _id or creation date if available)
+        sorted.sort((a, b) => a._id.localeCompare(b._id));
+        break;
+    }
+    return sorted;
+  }, [filteredProducts, sortBy]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
+  const currentProducts = sortedProducts.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage
+  );
+
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+    setCurrentPage(1); // Reset to first page on filter change
+  };
+
+  const handleBrandFilterChange = (brand: string, checked: boolean) => {
+    setFilters((prev) => {
+      const newBrands = checked
+        ? [...prev.brands, brand]
+        : prev.brands.filter((b) => b !== brand);
+      return { ...prev, brands: newBrands };
+    });
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top on page change
+    }
+  };
+
+  const renderPaginationItems = () => {
+    const items = [];
+    const maxVisiblePages = 5; // Number of page links to show directly
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    // Adjust startPage if endPage hits totalPages but we don't have enough visible pages
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    if (startPage > 1) {
+      items.push(
+        <PaginationItem key="1">
+          <PaginationLink onClick={() => handlePageChange(1)}>1</PaginationLink>
+        </PaginationItem>
+      );
+      if (startPage > 2) {
+        items.push(<PaginationItem key="ellipsis-start"><PaginationEllipsis /></PaginationItem>);
+      }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      items.push(
+        <PaginationItem key={i}>
+          <PaginationLink isActive={i === currentPage} onClick={() => handlePageChange(i)}>
+            {i}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        items.push(<PaginationItem key="ellipsis-end"><PaginationEllipsis /></PaginationItem>);
+      }
+      items.push(
+        <PaginationItem key={totalPages}>
+          <PaginationLink onClick={() => handlePageChange(totalPages)}>{totalPages}</PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    return items;
+  };
+
+  return (
+    <div className="container py-8">
+      <h1 className="text-3xl font-bold mb-6">Products</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-8">
+        {/* Filters Sidebar */}
+        <aside className="bg-card p-6 rounded-lg shadow-sm border">
+          <h2 className="text-xl font-semibold mb-4">Filters</h2>
+
+          <ScrollArea className="h-[calc(100vh-200px)] pr-4"> {/* Adjust height as needed for sticky header/footer */}
+            {/* Category Filter */}
+            <div className="mb-6">
+              <Label htmlFor="category-filter" className="mb-2 block text-base font-medium">Category</Label>
+              <Select
+                value={filters.category}
+                onValueChange={(value) => handleFilterChange("category", value)}
+              >
+                <SelectTrigger id="category-filter">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {allCategories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Separator className="my-6" />
+
+            {/* Price Range Filter */}
+            <div className="mb-6">
+              <Label className="mb-2 block text-base font-medium">Price Range</Label>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  value={filters.minPrice}
+                  onChange={(e) => handleFilterChange("minPrice", e.target.value)}
+                  className="w-1/2"
+                />
+                <span>-</span>
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={filters.maxPrice}
+                  onChange={(e) => handleFilterChange("maxPrice", e.target.value)}
+                  className="w-1/2"
+                />
+              </div>
+            </div>
+
+            <Separator className="my-6" />
+
+            {/* Brand Filter */}
+            <div className="mb-6">
+              <Label className="mb-3 block text-base font-medium">Brand</Label>
+              <div className="space-y-3">
+                {allBrands.map((brand) => (
+                  <div key={brand} className="flex items-center">
+                    <Checkbox
+                      id={`brand-${brand}`}
+                      checked={filters.brands.includes(brand)}
+                      onCheckedChange={(checked) =>
+                        handleBrandFilterChange(brand, checked as boolean)
+                      }
+                    />
+                    <label
+                      htmlFor={`brand-${brand}`}
+                      className="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {brand}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </ScrollArea>
+        </aside>
+
+        {/* Product Listing Area */}
+        <main>
+          {/* Sort By and Results Count */}
+          <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
+            <p className="text-muted-foreground">
+              Showing {currentProducts.length} of {filteredProducts.length} products
+            </p>
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="sort-by" className="whitespace-nowrap">Sort by:</Label>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger id="sort-by" className="w-[180px]">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Default</SelectItem>
+                  <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                  <SelectItem value="name-asc">Name: A-Z</SelectItem>
+                  <SelectItem value="name-desc">Name: Z-A</SelectItem>
+                  <SelectItem value="rating-desc">Rating: High to Low</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Product Grid */}
+          {currentProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentProducts.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-muted-foreground">
+              No products found matching your criteria.
+            </div>
+          )}
+
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <Pagination className="mt-10">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+                {renderPaginationItems()}
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}
+[/code]
+[file]src/products.tsx[file][usedfor]Displays a grid or list of products, typically filtered by category or search results. Includes options for sorting, filtering by price, brand, or other attributes, and pagination. Each product is presented as a Card component.[usedfor]

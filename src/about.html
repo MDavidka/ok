@@ -1,0 +1,133 @@
+import * as React from "react";
+import Image from "next/image"; // Assuming Next.js environment for Image component
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+// Mock data for the About Us page
+const companyInfo = {
+  mission: "Our mission is to provide high-quality, sustainable products that enhance our customers' daily lives, delivered with exceptional service and a commitment to ethical practices.",
+  values: [
+    {
+      title: "Customer Focus",
+      description: "We prioritize our customers' needs, striving to exceed expectations with every interaction and product.",
+    },
+    {
+      title: "Quality & Innovation",
+      description: "We are dedicated to offering products of the highest quality, constantly seeking innovative solutions and designs.",
+    },
+    {
+      title: "Sustainability",
+      description: "We commit to environmentally responsible practices, from sourcing to packaging, minimizing our ecological footprint.",
+    },
+    {
+      title: "Integrity & Transparency",
+      description: "We operate with honesty, transparency, and ethical conduct in all business dealings.",
+    },
+  ],
+  history: `Founded in 2023, Webshop started as a small online venture with a passion for bringing unique and high-quality goods to a wider audience. What began as a curated collection of handcrafted items quickly grew into a diverse marketplace, driven by our commitment to customer satisfaction and a keen eye for emerging trends. Over the years, we've expanded our product lines, embraced sustainable practices, and built a community of loyal customers who share our vision for conscious consumption. Today, Webshop continues to evolve, always staying true to its roots of quality, service, and innovation.`,
+  team: [
+    {
+      name: "Jane Doe",
+      role: "CEO & Founder",
+      avatar: "https://placehold.co/100x100.png?text=JD",
+      bio: "With a background in e-commerce and a passion for sustainable living, Jane founded Webshop to create a platform for ethically sourced products.",
+    },
+    {
+      name: "John Smith",
+      role: "Head of Product",
+      avatar: "https://placehold.co/100x100.png?text=JS",
+      bio: "John leads our product development and sourcing, ensuring every item meets our high standards for quality and innovation.",
+    },
+    {
+      name: "Emily White",
+      role: "Customer Relations Manager",
+      avatar: "https://placehold.co/100x100.png?text=EW",
+      bio: "Emily is the voice of our customers, dedicated to providing outstanding support and building lasting relationships.",
+    },
+  ],
+};
+
+export default function AboutPage() {
+  return (
+    <div className="container py-8 md:py-12">
+      <h1 className="text-4xl font-bold text-center mb-8 md:mb-12">About Our Webshop</h1>
+
+      {/* Our Mission */}
+      <Card className="mb-8 md:mb-12">
+        <CardHeader>
+          <CardTitle className="text-2xl md:text-3xl">Our Mission</CardTitle>
+          <CardDescription>What drives us every day.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-lg leading-relaxed text-muted-foreground">
+            {companyInfo.mission}
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Our Values */}
+      <div className="mb-8 md:mb-12">
+        <h2 className="text-3xl font-bold text-center mb-6">Our Core Values</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {companyInfo.values.map((value, index) => (
+            <Card key={index} className="flex flex-col items-center text-center p-6">
+              <CardTitle className="text-xl mb-2">{value.title}</CardTitle>
+              <CardDescription className="text-sm">{value.description}</CardDescription>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      <Separator className="my-8 md:my-12" />
+
+      {/* Our History */}
+      <Card className="mb-8 md:mb-12">
+        <CardHeader>
+          <CardTitle className="text-2xl md:text-3xl">Our Story</CardTitle>
+          <CardDescription>How we came to be.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-lg leading-relaxed text-muted-foreground whitespace-pre-line">
+            {companyInfo.history}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Separator className="my-8 md:my-12" />
+
+      {/* Meet the Team */}
+      <div className="mb-8 md:mb-12">
+        <h2 className="text-3xl font-bold text-center mb-6">Meet the Team</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {companyInfo.team.map((member, index) => (
+            <Card key={index} className="flex flex-col items-center text-center p-6">
+              <Avatar className="h-24 w-24 mb-4">
+                <AvatarImage src={member.avatar} alt={member.name} />
+                <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+              </Avatar>
+              <CardTitle className="text-xl mb-1">{member.name}</CardTitle>
+              <CardDescription className="text-primary mb-3">{member.role}</CardDescription>
+              <p className="text-sm text-muted-foreground">{member.bio}</p>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Call to Action or additional info */}
+      <Card className="text-center p-8 bg-primary text-primary-foreground">
+        <CardTitle className="text-2xl mb-2">Have Questions?</CardTitle>
+        <CardDescription className="text-primary-foreground/80 mb-4">
+          Feel free to reach out to us for any inquiries or feedback.
+        </CardDescription>
+        {/* In a real app, this would link to a contact page */}
+        <a href="/contact" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+          Contact Us
+        </a>
+      </Card>
+    </div>
+  );
+}
+[/code]
+[file]src/about.tsx[file][usedfor]Provides information about the webshop, its mission, values, and history. May include team members or a company story, presented in a clean, readable format.[usedfor]
