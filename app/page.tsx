@@ -1,129 +1,217 @@
-import Link from "next/link";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Phone } from "@/lib/types";
+import Link from "next/link";
 
-// Mock data for featured phones
-const featuredPhones: Phone[] = [
+import { cn, formatCurrency } from "@/lib/utils";
+import { PhoneProduct } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+// Mock data for demonstration. In a real app, this would come from a database.
+const mockProducts: PhoneProduct[] = [
   {
-    id: "iphone-15-pro",
-    name: "iPhone 15 Pro",
+    id: "iphone-15-pro-max",
+    name: "iPhone 15 Pro Max",
+    description:
+      "The latest iPhone with A17 Bionic chip, Pro camera system, and Dynamic Island. Experience unparalleled performance and photography.",
+    price: 1199.99,
+    image: "https://placehold.co/800x600.png",
+    category: "Smartphone",
     brand: "Apple",
-    price: 999.99,
-    description: "The latest iPhone with a titanium design and A17 Pro chip.",
-    imageUrls: ["https://placehold.co/600x400.png?text=iPhone+15+Pro"],
-    storageOptions: ["128GB", "256GB", "512GB", "1TB"],
-    colorOptions: ["Natural Titanium", "Blue Titanium", "White Titanium", "Black Titanium"],
+    storage: "256GB",
+    color: "Titanium Black",
+    inStock: true,
+    rating: 4.8,
+    reviewsCount: 1250,
   },
   {
     id: "samsung-galaxy-s24-ultra",
     name: "Samsung Galaxy S24 Ultra",
+    description:
+      "Unleash the power of AI with the Galaxy S24 Ultra. Featuring a stunning display, S Pen integration, and advanced camera capabilities.",
+    price: 1299.99,
+    image: "https://placehold.co/800x600.png",
+    category: "Smartphone",
     brand: "Samsung",
-    price: 1199.99,
-    description: "Experience the power of AI with the new Galaxy S24 Ultra.",
-    imageUrls: ["https://placehold.co/600x400.png?text=Galaxy+S24+Ultra"],
-    storageOptions: ["256GB", "512GB", "1TB"],
-    colorOptions: ["Titanium Gray", "Titanium Black", "Titanium Violet", "Titanium Yellow"],
+    storage: "512GB",
+    color: "Phantom Gray",
+    inStock: true,
+    rating: 4.7,
+    reviewsCount: 980,
   },
   {
     id: "google-pixel-8-pro",
     name: "Google Pixel 8 Pro",
+    description:
+      "The smartest Pixel yet, powered by Google Tensor G3. Exceptional camera, long-lasting battery, and cutting-edge AI features.",
+    price: 999.99,
+    image: "https://placehold.co/800x600.png",
+    category: "Smartphone",
     brand: "Google",
-    price: 899.99,
-    description: "The smartest Pixel yet, with advanced camera and AI features.",
-    imageUrls: ["https://placehold.co/600x400.png?text=Pixel+8+Pro"],
-    storageOptions: ["128GB", "256GB", "512GB"],
-    colorOptions: ["Obsidian", "Porcelain", "Bay"],
+    storage: "128GB",
+    color: "Obsidian Black",
+    inStock: false,
+    rating: 4.5,
+    reviewsCount: 720,
+  },
+  {
+    id: "oneplus-12",
+    name: "OnePlus 12",
+    description:
+      "Smooth performance, stunning display, and fast charging. The OnePlus 12 delivers a flagship experience.",
+    price: 799.99,
+    image: "https://placehold.co/800x600.png",
+    category: "Smartphone",
+    brand: "OnePlus",
+    storage: "256GB",
+    color: "Flowy Emerald",
+    inStock: true,
+    rating: 4.6,
+    reviewsCount: 500,
+  },
+  {
+    id: "xiaomi-14-ultra",
+    name: "Xiaomi 14 Ultra",
+    description:
+      "Professional-grade camera system co-engineered with Leica. Experience mobile photography at its finest.",
+    price: 1099.99,
+    image: "https://placehold.co/800x600.png",
+    category: "Smartphone",
+    brand: "Xiaomi",
+    storage: "512GB",
+    color: "Black",
+    inStock: true,
+    rating: 4.7,
+    reviewsCount: 650,
   },
 ];
 
-export default async function IndexPage() {
+export default async function HomePage() {
+  // In a real application, you would fetch data here.
+  // const featuredProducts = await fetchFeaturedProducts();
+  const featuredProducts = mockProducts.filter((_, i) => i < 3); // Show first 3 as featured
+  const newArrivals = mockProducts.filter((_, i) => i >= 3); // Show remaining as new arrivals
+
   return (
-    <div className="flex flex-col items-center justify-center py-8 md:py-12 lg:py-16">
+    <main className="flex-1">
       {/* Hero Section */}
-      <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10 lg:grid-cols-2 lg:gap-12">
-        <div className="flex flex-col items-start gap-4">
-          <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]">
-            Discover Your Next Smartphone.
-          </h1>
-          <p className="max-w-[700px] text-lg text-muted-foreground sm:text-xl">
-            Explore the latest models from top brands. Unbeatable prices, cutting-edge technology.
-          </p>
-          <div className="flex gap-4">
-            <Link href="/products">
-              <Button size="lg">Shop Now</Button>
-            </Link>
-            <Link href="/about">
-              <Button variant="outline" size="lg">Learn More</Button>
-            </Link>
-          </div>
-        </div>
-        <div className="hidden lg:flex justify-center">
+      <section className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20 md:py-32 lg:py-40 overflow-hidden">
+        <div className="absolute inset-0 z-0 opacity-20">
           <Image
-            src="https://placehold.co/600x400.png?text=Hero+Image"
-            alt="Hero Image"
-            width={600}
-            height={400}
-            className="rounded-lg object-cover shadow-lg"
+            src="https://placehold.co/1920x1080.png"
+            alt="Hero Background"
+            layout="fill"
+            objectFit="cover"
+            quality={100}
+            className="hidden md:block"
           />
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-70"></div>
+        </div>
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
+            Discover Your Next Smartphone
+          </h1>
+          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+            Explore the latest in mobile technology, from flagship devices to
+            budget-friendly options.
+          </p>
+          <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-6">
+            <Link href="/products/iphone-15-pro-max">Shop Now</Link>
+          </Button>
         </div>
       </section>
 
       {/* Featured Products Section */}
-      <section className="container py-8 md:py-12 lg:py-16">
-        <h2 className="mb-8 text-center text-3xl font-bold tracking-tighter md:text-4xl">
-          Featured Products
+      <section className="container mx-auto py-12 px-4 md:px-6 lg:px-8">
+        <h2 className="text-3xl font-bold text-center mb-8">
+          Featured Smartphones
         </h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredPhones.map((phone) => (
-            <Card key={phone.id} className="flex flex-col">
-              <CardHeader className="flex-grow">
-                <Image
-                  src={phone.imageUrls[0]}
-                  alt={phone.name}
-                  width={600}
-                  height={400}
-                  className="mb-4 h-48 w-full rounded-md object-cover"
-                />
-                <CardTitle>{phone.name}</CardTitle>
-                <CardDescription>{phone.brand}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-lg font-semibold">${phone.price.toFixed(2)}</p>
-                <p className="text-sm text-muted-foreground line-clamp-2">{phone.description}</p>
-              </CardContent>
-              <CardFooter>
-                <Link href={`/products/${phone.id}`} className="w-full">
-                  <Button className="w-full">View Details</Button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredProducts.map((product) => (
+            <Card key={product.id} className="flex flex-col">
+              <CardHeader className="p-0">
+                <Link href={`/products/${product.id}`}>
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    width={400}
+                    height={300}
+                    className="rounded-t-lg object-cover w-full h-48"
+                  />
                 </Link>
+              </CardHeader>
+              <CardContent className="p-4 flex-grow">
+                <CardTitle className="text-xl font-semibold mb-2">
+                  <Link href={`/products/${product.id}`} className="hover:underline">
+                    {product.name}
+                  </Link>
+                </CardTitle>
+                <CardDescription className="text-muted-foreground line-clamp-2">
+                  {product.description}
+                </CardDescription>
+                <p className="text-2xl font-bold mt-3">
+                  {formatCurrency(product.price)}
+                </p>
+              </CardContent>
+              <CardFooter className="p-4 pt-0">
+                <Button className="w-full" disabled={!product.inStock}>
+                  {product.inStock ? "Add to Cart" : "Out of Stock"}
+                </Button>
               </CardFooter>
             </Card>
           ))}
         </div>
       </section>
 
-      {/* Call to Action Section */}
-      <section className="container py-8 md:py-12 lg:py-16 text-center">
-        <Card className="p-8 md:p-12">
-          <CardHeader>
-            <CardTitle className="text-3xl md:text-4xl font-bold">
-              Ready to Upgrade?
-            </CardTitle>
-            <CardDescription className="mt-4 text-lg text-muted-foreground">
-              Browse our full collection of smartphones and find the perfect device for you.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href="/products">
-              <Button size="lg" className="mt-6">
-                Explore All Phones
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
+      {/* New Arrivals Section */}
+      <section className="container mx-auto py-12 px-4 md:px-6 lg:px-8 bg-muted">
+        <h2 className="text-3xl font-bold text-center mb-8">New Arrivals</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {newArrivals.map((product) => (
+            <Card key={product.id} className="flex flex-col">
+              <CardHeader className="p-0">
+                <Link href={`/products/${product.id}`}>
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    width={400}
+                    height={300}
+                    className="rounded-t-lg object-cover w-full h-48"
+                  />
+                </Link>
+              </CardHeader>
+              <CardContent className="p-4 flex-grow">
+                <CardTitle className="text-xl font-semibold mb-2">
+                  <Link href={`/products/${product.id}`} className="hover:underline">
+                    {product.name}
+                  </Link>
+                </CardTitle>
+                <CardDescription className="text-muted-foreground line-clamp-2">
+                  {product.description}
+                </CardDescription>
+                <p className="text-2xl font-bold mt-3">
+                  {formatCurrency(product.price)}
+                </p>
+              </CardContent>
+              <CardFooter className="p-4 pt-0">
+                <Button className="w-full" disabled={!product.inStock}>
+                  {product.inStock ? "Add to Cart" : "Out of Stock"}
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
       </section>
-    </div>
-  );
-}
+
+      {/* Call to Action / Category Browse */}
+      <section className="container mx-auto py-12 px-4 md:px-6 lg:px-8 text-center">
+        <h2 className="text-3xl font-bold mb-4">Explore All Categories</h2>
+        <p className="text-lg text-muted-foreground mb-8">
+          Find the perfect device for your needs.
+        </p>
