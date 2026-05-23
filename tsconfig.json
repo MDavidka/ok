@@ -1,4 +1,3 @@
-[code]
 {
   "compilerOptions": {
     "target": "ES2020",
@@ -35,5 +34,3 @@
   ],
   "exclude": ["node_modules"]
 }
-[/code]
-[file]tsconfig.json[file][usedfor]Configures the TypeScript compiler options for the project, ensuring proper type checking and compilation settings for a Next.js application.[usedfor]
