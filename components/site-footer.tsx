@@ -9,7 +9,7 @@ export function SiteFooter() {
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
             Built by{" "}
             <Link
-              href="https://github.com/your-github-profile" // Replace with actual profile
+              href="https://github.com/your-github-profile"
               target="_blank"
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
@@ -18,7 +18,7 @@ export function SiteFooter() {
             </Link>
             . The source code is available on{" "}
             <Link
-              href="https://github.com/shadcn/ui" // Placeholder, replace with actual repo
+              href="https://github.com/shadcn/ui"
               target="_blank"
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
@@ -40,5 +40,3 @@ export function SiteFooter() {
     </footer>
   );
 }
-[/code]
-[file]components/site-footer.tsx[file][usedfor]The main footer component for the phone store, providing copyright information, links to legal pages, social media, or other supplementary navigation.[usedfor]

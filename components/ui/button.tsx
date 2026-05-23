@@ -54,5 +54,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 export { Button, buttonVariants }
-[/code]
-[file]components/ui/button.tsx[file][usedfor]The reusable Button component from shadcn/ui, providing various styles and sizes. It leverages `class-variance-authority` for flexible styling and `@radix-ui/react-slot` for polymorphic behavior.[usedfor]

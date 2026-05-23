@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { Phone as PhoneIcon } from "lucide-react"; // Renamed to avoid conflict with Phone interface
+import { Phone as PhoneIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { SiteConfig, NavItem } from "@/lib/types";
 
-// Site configuration for navigation and metadata
 const siteConfig: SiteConfig = {
   name: "Phone Store",
   description: "Your one-stop shop for the latest smartphones.",
@@ -58,16 +57,9 @@ export function SiteHeader() {
           ) : null}
         </div>
         <div className="flex flex-1 items-center justify-end space-x-4">
-          <nav className="flex items-center space-x-1">
-            {/* Placeholder for future utility buttons like search or cart */}
-            {/* <Button variant="ghost" size="icon" aria-label="Search">
-              <Search className="h-5 w-5" />
-            </Button> */}
-          </nav>
+          <nav className="flex items-center space-x-1"></nav>
         </div>
       </div>
     </header>
   );
 }
-[/code]
-[file]components/site-header.tsx[file][usedfor]The main header component for the phone store, typically containing the logo, navigation links (e.g., to products), and potentially a search bar or cart icon. It utilizes the `Button` component.[usedfor]
