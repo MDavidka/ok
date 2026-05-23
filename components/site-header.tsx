@@ -7,26 +7,29 @@ import { SiteConfig, NavItem } from "@/lib/types";
 const siteConfig: SiteConfig = {
   name: "Phone Store",
   description: "Your one-stop shop for the latest smartphones.",
-  mainNav: [
-    {
-      title: "Products",
-      href: "/products",
-    },
-    {
-      title: "About",
-      href: "/about",
-    },
-    {
-      title: "Contact",
-      href: "/contact",
-    },
-  ],
+  url: "https://phonestore.com",
+  ogImage: "https://placehold.co/1200x630.png",
   links: {
-    twitter: "https://twitter.com/shadcn",
-    github: "https://github.com/shadcn/ui",
-    linkedin: "https://linkedin.com/company/shadcn",
+    twitter: "https://twitter.com/phonestore",
+    github: "https://github.com/phonestore",
+    linkedin: "https://linkedin.com/company/phonestore",
   },
 };
+
+const mainNav: NavItem[] = [
+  {
+    title: "Products",
+    href: "/products",
+  },
+  {
+    title: "About",
+    href: "/about",
+  },
+  {
+    title: "Contact",
+    href: "/contact",
+  },
+];
 
 export function SiteHeader() {
   return (
@@ -37,9 +40,9 @@ export function SiteHeader() {
             <PhoneIcon className="h-6 w-6" />
             <span className="inline-block font-bold">{siteConfig.name}</span>
           </Link>
-          {siteConfig.mainNav?.length ? (
+          {mainNav.length ? (
             <nav className="hidden gap-6 md:flex">
-              {siteConfig.mainNav.map(
+              {mainNav.map(
                 (item: NavItem) =>
                   item.href && (
                     <Link
