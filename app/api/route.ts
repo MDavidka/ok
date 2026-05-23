@@ -90,4 +90,3 @@ export async function DELETE(request: NextRequest) {
     timestamp: new Date().toISOString()
   })
 }
-[file]app/api/route.ts[/file][usedfor]API route handler for server-side operations[/usedfor]

@@ -127,5 +127,3 @@ export default async function IndexPage() {
     </div>
   );
 }
-[/code]
-[file]app/page.tsx[file][usedfor]The main landing page of the phone store. It serves as the entry point for users, featuring promotional content, featured products, and navigation to other parts of the site.[usedfor]

@@ -34,5 +34,3 @@ export default function RootLayout({
     </html>
   );
 }
-[/code]
-[file]app/layout.tsx[file][usedfor]The root layout component for the entire application. It defines global metadata, imports fonts (e.g., Inter), sets up the HTML structure, and includes the `SiteHeader` and `SiteFooter` components.[usedfor]
