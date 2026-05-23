@@ -1,8 +1,9 @@
 import * as React from "react";
 import Link from "next/link";
-import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { cva } from "class-variance-authority";
 import { ChevronDown } from "lucide-react";
+
+import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 
 import { cn } from "@/lib/utils";
 
@@ -70,8 +71,7 @@ const NavigationMenuContent = React.forwardRef<
   <NavigationMenuPrimitive.Content
     ref={ref}
     className={cn(
-      "left-0 top-0 w-full data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion^=from-]:zoom-in-90 data-[motion^=to-]:zoom-out-90 data-[motion^=from-]:slide-in-from-left-50 data-[motion^=to-]:slide-out-to-left-50 md:absolute md:w-auto ",
-      "data-[orientation=horizontal]:data-[motion^=from-]:slide-in-from-top-[--radix-navigation-menu-content-transform-start] data-[orientation=horizontal]:data-[motion^=to-]:slide-out-to-top-[--radix-navigation-menu-content-transform-end] data-[orientation=vertical]:data-[motion^=from-]:slide-in-from-left-[--radix-navigation-menu-content-transform-start] data-[orientation=vertical]:data-[motion^=to-]:slide-out-to-left-[--radix-navigation-menu-content-transform-end]",
+      "left-0 top-0 w-full data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion^=from-]:zoom-in-90 data-[motion^=to-]:zoom-out-90 data-[orientation=horizontal]:slide-in-from-top-2 data-[orientation=vertical]:slide-in-from-left-2 md:absolute md:w-auto ",
       className
     )}
     {...props}
@@ -117,35 +117,6 @@ const NavigationMenuIndicator = React.forwardRef<
 NavigationMenuIndicator.displayName =
   NavigationMenuPrimitive.Indicator.displayName;
 
-interface ListItemProps extends React.ComponentPropsWithoutRef<"a"> {
-  title: string;
-}
-
-const ListItem = React.forwardRef<HTMLAnchorElement, ListItemProps>(
-  ({ className, title, children, ...props }, ref) => {
-    return (
-      <li>
-        <NavigationMenuLink asChild>
-          <a
-            ref={ref}
-            className={cn(
-              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-              className
-            )}
-            {...props}
-          >
-            <div className="text-sm font-medium leading-none">{title}</div>
-            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-              {children}
-            </p>
-          </a>
-        </NavigationMenuLink>
-      </li>
-    );
-  }
-);
-ListItem.displayName = "ListItem";
-
 export {
   navigationMenuTriggerStyle,
   NavigationMenu,
@@ -156,7 +127,5 @@ export {
   NavigationMenuLink,
   NavigationMenuIndicator,
   NavigationMenuViewport,
-  ListItem,
 };
-
-components/ui/navigation-menu.tsx[usedfor]Main navigation[usedfor]
+components/ui/navigation-menu.tsx[usedfor]Main site navigation[usedfor]

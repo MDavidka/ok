@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { cn, formatCurrency } from "@/lib/utils";
-import { PhoneProduct } from "@/lib/types";
+import { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,206 +12,279 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Input } from "@/components/ui/input";
 
-// Mock data for demonstration. In a real app, this would come from a database.
-const mockProducts: PhoneProduct[] = [
+// Mock data for products
+const mockProducts: Product[] = [
   {
-    id: "iphone-15-pro-max",
+    id: "1",
     name: "iPhone 15 Pro Max",
-    description:
-      "The latest iPhone with A17 Bionic chip, Pro camera system, and Dynamic Island. Experience unparalleled performance and photography.",
+    description: "The latest and greatest iPhone with A17 Bionic chip.",
     price: 1199.99,
-    image: "https://placehold.co/800x600.png",
+    imageUrl: "https://placehold.co/400x300.png?text=iPhone+15+Pro+Max",
     category: "Smartphone",
     brand: "Apple",
-    storage: "256GB",
-    color: "Titanium Black",
-    inStock: true,
-    rating: 4.8,
-    reviewsCount: 1250,
+    stock: 50,
+    specs: {
+      screenSize: "6.7 inches",
+      processor: "A17 Bionic",
+      ram: "8GB",
+      storage: "256GB",
+      camera: "48MP Main",
+      battery: "4422 mAh",
+    },
+    colors: ["Natural Titanium", "Blue Titanium", "White Titanium", "Black Titanium"],
   },
   {
-    id: "samsung-galaxy-s24-ultra",
+    id: "2",
     name: "Samsung Galaxy S24 Ultra",
-    description:
-      "Unleash the power of AI with the Galaxy S24 Ultra. Featuring a stunning display, S Pen integration, and advanced camera capabilities.",
+    description: "Android flagship with S Pen and powerful camera.",
     price: 1299.99,
-    image: "https://placehold.co/800x600.png",
+    imageUrl: "https://placehold.co/400x300.png?text=Galaxy+S24+Ultra",
     category: "Smartphone",
     brand: "Samsung",
-    storage: "512GB",
-    color: "Phantom Gray",
-    inStock: true,
-    rating: 4.7,
-    reviewsCount: 980,
+    stock: 45,
+    specs: {
+      screenSize: "6.8 inches",
+      processor: "Snapdragon 8 Gen 3",
+      ram: "12GB",
+      storage: "512GB",
+      camera: "200MP Main",
+      battery: "5000 mAh",
+    },
+    colors: ["Titanium Gray", "Titanium Black", "Titanium Violet", "Titanium Yellow"],
   },
   {
-    id: "google-pixel-8-pro",
+    id: "3",
     name: "Google Pixel 8 Pro",
-    description:
-      "The smartest Pixel yet, powered by Google Tensor G3. Exceptional camera, long-lasting battery, and cutting-edge AI features.",
+    description: "Best of Google AI with an amazing camera.",
     price: 999.99,
-    image: "https://placehold.co/800x600.png",
+    imageUrl: "https://placehold.co/400x300.png?text=Pixel+8+Pro",
     category: "Smartphone",
     brand: "Google",
-    storage: "128GB",
-    color: "Obsidian Black",
-    inStock: false,
-    rating: 4.5,
-    reviewsCount: 720,
+    stock: 60,
+    specs: {
+      screenSize: "6.7 inches",
+      processor: "Tensor G3",
+      ram: "12GB",
+      storage: "128GB",
+      camera: "50MP Main",
+      battery: "5050 mAh",
+    },
+    colors: ["Obsidian", "Porcelain", "Bay"],
   },
   {
-    id: "oneplus-12",
+    id: "4",
     name: "OnePlus 12",
-    description:
-      "Smooth performance, stunning display, and fast charging. The OnePlus 12 delivers a flagship experience.",
+    description: "Fast charging and smooth performance.",
     price: 799.99,
-    image: "https://placehold.co/800x600.png",
+    imageUrl: "https://placehold.co/400x300.png?text=OnePlus+12",
     category: "Smartphone",
     brand: "OnePlus",
-    storage: "256GB",
-    color: "Flowy Emerald",
-    inStock: true,
-    rating: 4.6,
-    reviewsCount: 500,
+    stock: 70,
+    specs: {
+      screenSize: "6.82 inches",
+      processor: "Snapdragon 8 Gen 3",
+      ram: "16GB",
+      storage: "512GB",
+      camera: "50MP Main",
+      battery: "5400 mAh",
+    },
+    colors: ["Flowy Emerald", "Silky Black"],
   },
   {
-    id: "xiaomi-14-ultra",
+    id: "5",
     name: "Xiaomi 14 Ultra",
-    description:
-      "Professional-grade camera system co-engineered with Leica. Experience mobile photography at its finest.",
+    description: "Leica co-engineered camera system.",
     price: 1099.99,
-    image: "https://placehold.co/800x600.png",
+    imageUrl: "https://placehold.co/400x300.png?text=Xiaomi+14+Ultra",
     category: "Smartphone",
     brand: "Xiaomi",
-    storage: "512GB",
-    color: "Black",
-    inStock: true,
-    rating: 4.7,
-    reviewsCount: 650,
+    stock: 30,
+    specs: {
+      screenSize: "6.73 inches",
+      processor: "Snapdragon 8 Gen 3",
+      ram: "16GB",
+      storage: "512GB",
+      camera: "50MP Main (Quad)",
+      battery: "5000 mAh",
+    },
+    colors: ["Black", "White", "Titanium Gray"],
+  },
+];
+
+const mockBanners = [
+  {
+    id: "banner-1",
+    imageUrl: "https://placehold.co/1200x400.png?text=New+Arrivals+Sale",
+    altText: "New Arrivals Sale",
+    link: "/products?category=new-arrivals",
+  },
+  {
+    id: "banner-2",
+    imageUrl: "https://placehold.co/1200x400.png?text=Featured+Phones",
+    altText: "Featured Phones",
+    link: "/products?featured=true",
+  },
+  {
+    id: "banner-3",
+    imageUrl: "https://placehold.co/1200x400.png?text=Limited+Time+Offer",
+    altText: "Limited Time Offer",
+    link: "/offers",
   },
 ];
 
 export default async function HomePage() {
-  // In a real application, you would fetch data here.
-  // const featuredProducts = await fetchFeaturedProducts();
-  const featuredProducts = mockProducts.filter((_, i) => i < 3); // Show first 3 as featured
-  const newArrivals = mockProducts.filter((_, i) => i >= 3); // Show remaining as new arrivals
+  const featuredProducts = mockProducts.slice(0, 3); // Example: first 3 products as featured
+  const newArrivals = mockProducts.slice(3, 5); // Example: next 2 products as new arrivals
 
   return (
     <main className="flex-1">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20 md:py-32 lg:py-40 overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-20">
-          <Image
-            src="https://placehold.co/1920x1080.png"
-            alt="Hero Background"
-            layout="fill"
-            objectFit="cover"
-            quality={100}
-            className="hidden md:block"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-70"></div>
-        </div>
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
-            Discover Your Next Smartphone
-          </h1>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-            Explore the latest in mobile technology, from flagship devices to
-            budget-friendly options.
-          </p>
-          <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-6">
-            <Link href="/products/iphone-15-pro-max">Shop Now</Link>
-          </Button>
+      {/* Hero Carousel Section */}
+      <section className="w-full py-8 md:py-12 lg:py-16">
+        <div className="container px-4 md:px-6">
+          <Carousel className="w-full max-w-full mx-auto">
+            <CarouselContent>
+              {mockBanners.map((banner) => (
+                <CarouselItem key={banner.id}>
+                  <Link href={banner.link}>
+                    <div className="relative w-full h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden rounded-lg">
+                      <Image
+                        src={banner.imageUrl}
+                        alt={banner.altText}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        className="rounded-lg"
+                        priority
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent p-6 flex items-end justify-start">
+                        <h2 className="text-white text-2xl md:text-4xl font-bold">
+                          {banner.altText}
+                        </h2>
+                      </div>
+                    </div>
+                  </Link>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-4" />
+            <CarouselNext className="right-4" />
+          </Carousel>
         </div>
       </section>
 
       {/* Featured Products Section */}
-      <section className="container mx-auto py-12 px-4 md:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-center mb-8">
-          Featured Smartphones
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredProducts.map((product) => (
-            <Card key={product.id} className="flex flex-col">
-              <CardHeader className="p-0">
-                <Link href={`/products/${product.id}`}>
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={400}
-                    height={300}
-                    className="rounded-t-lg object-cover w-full h-48"
-                  />
-                </Link>
-              </CardHeader>
-              <CardContent className="p-4 flex-grow">
-                <CardTitle className="text-xl font-semibold mb-2">
-                  <Link href={`/products/${product.id}`} className="hover:underline">
-                    {product.name}
+      <section className="w-full py-8 md:py-12 lg:py-16 bg-muted">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
+            Featured Products
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredProducts.map((product) => (
+              <Card key={product.id} className="flex flex-col">
+                <CardHeader className="p-0">
+                  <Link href={`/products/${product.id}`}>
+                    <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
+                      <Image
+                        src={product.imageUrl}
+                        alt={product.name}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        className="rounded-t-lg transition-transform duration-300 hover:scale-105"
+                      />
+                    </div>
                   </Link>
-                </CardTitle>
-                <CardDescription className="text-muted-foreground line-clamp-2">
-                  {product.description}
-                </CardDescription>
-                <p className="text-2xl font-bold mt-3">
-                  {formatCurrency(product.price)}
-                </p>
-              </CardContent>
-              <CardFooter className="p-4 pt-0">
-                <Button className="w-full" disabled={!product.inStock}>
-                  {product.inStock ? "Add to Cart" : "Out of Stock"}
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+                </CardHeader>
+                <CardContent className="p-4 flex-grow">
+                  <CardTitle className="text-lg font-semibold mb-2">
+                    <Link href={`/products/${product.id}`} className="hover:underline">
+                      {product.name}
+                    </Link>
+                  </CardTitle>
+                  <CardDescription className="text-sm line-clamp-2">
+                    {product.description}
+                  </CardDescription>
+                  <p className="text-xl font-bold mt-3">
+                    {formatCurrency(product.price)}
+                  </p>
+                </CardContent>
+                <CardFooter className="p-4 pt-0">
+                  <Button className="w-full">Add to Cart</Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* New Arrivals Section */}
-      <section className="container mx-auto py-12 px-4 md:px-6 lg:px-8 bg-muted">
-        <h2 className="text-3xl font-bold text-center mb-8">New Arrivals</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {newArrivals.map((product) => (
-            <Card key={product.id} className="flex flex-col">
-              <CardHeader className="p-0">
-                <Link href={`/products/${product.id}`}>
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={400}
-                    height={300}
-                    className="rounded-t-lg object-cover w-full h-48"
-                  />
-                </Link>
-              </CardHeader>
-              <CardContent className="p-4 flex-grow">
-                <CardTitle className="text-xl font-semibold mb-2">
-                  <Link href={`/products/${product.id}`} className="hover:underline">
-                    {product.name}
+      <section className="w-full py-8 md:py-12 lg:py-16">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
+            New Arrivals
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+            {newArrivals.map((product) => (
+              <Card key={product.id} className="flex flex-col sm:flex-row">
+                <CardHeader className="p-0 flex-shrink-0 w-full sm:w-1/3">
+                  <Link href={`/products/${product.id}`}>
+                    <div className="relative w-full h-48 sm:h-full overflow-hidden rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none">
+                      <Image
+                        src={product.imageUrl}
+                        alt={product.name}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        className="rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none transition-transform duration-300 hover:scale-105"
+                      />
+                    </div>
                   </Link>
-                </CardTitle>
-                <CardDescription className="text-muted-foreground line-clamp-2">
-                  {product.description}
-                </CardDescription>
-                <p className="text-2xl font-bold mt-3">
-                  {formatCurrency(product.price)}
-                </p>
-              </CardContent>
-              <CardFooter className="p-4 pt-0">
-                <Button className="w-full" disabled={!product.inStock}>
-                  {product.inStock ? "Add to Cart" : "Out of Stock"}
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+                </CardHeader>
+                <div className="flex flex-col flex-grow">
+                  <CardContent className="p-4 flex-grow">
+                    <CardTitle className="text-lg font-semibold mb-2">
+                      <Link href={`/products/${product.id}`} className="hover:underline">
+                        {product.name}
+                      </Link>
+                    </CardTitle>
+                    <CardDescription className="text-sm line-clamp-3">
+                      {product.description}
+                    </CardDescription>
+                    <p className="text-xl font-bold mt-3">
+                      {formatCurrency(product.price)}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="p-4 pt-0 sm:pt-4">
+                    <Button className="w-full">View Details</Button>
+                  </CardFooter>
+                </div>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Call to Action / Category Browse */}
-      <section className="container mx-auto py-12 px-4 md:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl font-bold mb-4">Explore All Categories</h2>
-        <p className="text-lg text-muted-foreground mb-8">
-          Find the perfect device for your needs.
-        </p>
+      {/* Newsletter Signup Section */}
+      <section className="w-full py-8 md:py-12 lg:py-16 bg-primary text-primary-foreground">
+        <div className="container px-4 md:px-6 text-center">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
+            Stay Updated
+          </h2>
+          <p className="max-w-[700px] mx-auto text-lg mb-8">
+            Sign up for our newsletter to get the latest deals and new product announcements.
+          </p>
+          <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <Input
+              type="email"
+              placeholder="Enter your email"
+              className="flex-grow bg-primary-foreground text-primary placeholder:text-primary/70 border-none focus:ring-2 focus:ring-primary-foreground"
+            />
+            <Button type="submit" variant="secondary" size="lg">
+              Subscribe
+            </Button>

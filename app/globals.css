@@ -4,81 +4,74 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%; /* hsl(0 0% 100%) */
-    --foreground: 222.2 84% 4.9%; /* hsl(222.2 84% 4.9%) */
+    --background: 0 0% 100%; /* White */
+    --foreground: 222.2 47.4% 11.2%; /* Dark Blue-Gray */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%; /* White */
+    --card-foreground: 222.2 47.4% 11.2%; /* Dark Blue-Gray */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%; /* White */
+    --popover-foreground: 222.2 47.4% 11.2%; /* Dark Blue-Gray */
 
-    --primary: 222.2 47.4% 11.2%; /* hsl(222.2 47.4% 11.2%) */
-    --primary-foreground: 210 40% 98%; /* hsl(210 40% 98%) */
+    --primary: 221.2 83.2% 53.3%; /* A vibrant blue */
+    --primary-foreground: 210 40% 98%; /* Off-white */
 
-    --secondary: 210 40% 96.1%; /* hsl(210 40% 96.1%) */
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 40% 96.1%; /* Light Gray */
+    --secondary-foreground: 222.2 47.4% 11.2%; /* Dark Blue-Gray */
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 40% 96.1%; /* Light Gray */
+    --muted-foreground: 215.4 16.3% 46.9%; /* Medium Gray */
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 210 40% 96.1%; /* Light Gray */
+    --accent-foreground: 222.2 47.4% 11.2%; /* Dark Blue-Gray */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84.2% 60.2%; /* Red */
+    --destructive-foreground: 210 40% 98%; /* Off-white */
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 214.3 31.8% 91.4%; /* Light Border Gray */
+    --input: 214.3 31.8% 91.4%; /* Light Input Gray */
+    --ring: 221.2 83.2% 53.3%; /* Primary blue for ring */
 
     --radius: 0.5rem;
 
     /* Custom Design System Variables */
-    --color-primary: hsl(220 80% 40%); /* A professional blue */
-    --color-secondary: hsl(210 20% 90%); /* Light cool grey */
-    --color-accent: hsl(340 80% 50%); /* A vibrant magenta/pink */
-    --color-bg: hsl(0 0% 100%); /* White */
-    --color-text: hsl(222.2 84% 4.9%); /* Very dark blue/black */
-    --font-heading: Inter, system-ui, sans-serif;
-    --font-body: Inter, system-ui, sans-serif;
+    --color-primary: hsl(var(--primary));
+    --color-secondary: hsl(var(--secondary));
+    --color-accent: hsl(var(--accent));
+    --color-bg: hsl(var(--background));
+    --color-text: hsl(var(--foreground));
+    --font-heading: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-body: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 222.2 84% 4.9%; /* Dark Charcoal */
+    --foreground: 210 40% 98%; /* Off-white */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%; /* Dark Charcoal */
+    --card-foreground: 210 40% 98%; /* Off-white */
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%; /* Dark Charcoal */
+    --popover-foreground: 210 40% 98%; /* Off-white */
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 217.2 91.2% 59.8%; /* A lighter blue for dark mode */
+    --primary-foreground: 222.2 47.4% 11.2%; /* Dark Blue-Gray */
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 17.5%; /* Darker Gray */
+    --secondary-foreground: 210 40% 98%; /* Off-white */
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 217.2 32.6% 17.5%; /* Darker Gray */
+    --muted-foreground: 215 20.2% 65.1%; /* Lighter Gray */
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 217.2 32.6% 17.5%; /* Darker Gray */
+    --accent-foreground: 210 40% 98%; /* Off-white */
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%; /* Dark Red */
+    --destructive-foreground: 210 40% 98%; /* Off-white */
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-
-    /* Custom Design System Variables for Dark Mode */
-    --color-primary: hsl(220 80% 60%); /* Lighter blue for dark mode */
-    --color-secondary: hsl(210 20% 20%); /* Dark cool grey */
-    --color-accent: hsl(340 80% 60%); /* Slightly lighter magenta/pink */
-    --color-bg: hsl(222.2 84% 4.9%); /* Very dark blue/black */
-    --color-text: hsl(210 40% 98%); /* Off-white */
+    --border: 217.2 32.6% 17.5%; /* Dark Border Gray */
+    --input: 217.2 32.6% 17.5%; /* Dark Input Gray */
+    --ring: 217.2 91.2% 59.8%; /* Primary blue for ring */
   }
 }
 

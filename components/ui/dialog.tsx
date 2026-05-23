@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
@@ -125,4 +127,4 @@ export {
   DialogTitle,
   DialogDescription,
 };
-components/ui/dialog.tsx[usedfor]Modal interactions[usedfor]
+components/ui/dialog.tsx[usedfor]Product quick view / Confirmation modals[usedfor]

@@ -1,7 +1,33 @@
-export interface SiteConfig {
+export interface Product {
+  id: string;
   name: string;
   description: string;
-  mainNav: NavItem[];
+  price: number;
+  imageUrl: string;
+  category: string;
+  brand: string;
+  stock: number;
+  // Add other relevant product details like specifications, colors, etc.
+  specs?: {
+    screenSize?: string;
+    processor?: string;
+    ram?: string;
+    storage?: string;
+    camera?: string;
+    battery?: string;
+  };
+  colors?: string[];
+}
+
+export interface CartItem extends Product {
+  quantity: number;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name?: string;
+  // Add other user-related fields like address, phone, etc.
 }
 
 export interface NavItem {
@@ -11,28 +37,15 @@ export interface NavItem {
   external?: boolean;
 }
 
-export interface PhoneProduct {
-  id: string;
+export interface SiteConfig {
   name: string;
   description: string;
-  price: number;
-  image: string; // URL to PNG image
-  category: string; // e.g., "Smartphone", "Feature Phone"
-  brand: string;
-  storage: string; // e.g., "128GB", "256GB"
-  color: string;
-  inStock: boolean;
-  rating?: number; // Optional rating
-  reviewsCount?: number; // Optional number of reviews
-}
-
-export interface CartItem {
-  product: PhoneProduct;
-  quantity: number;
-}
-
-export interface User {
-  id: string;
-  email: string;
-  name?: string;
+  url: string;
+  ogImage: string;
+  links: {
+    twitter?: string;
+    github?: string;
+  };
+  mainNav: NavItem[];
+  footerNav: NavItem[];
 }
