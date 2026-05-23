@@ -1,0 +1,91 @@
+/* Mobile-first responsive utilities */
+@layer utilities {
+  .container {
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  
+  .section {
+    @apply py-12 md:py-16 lg:py-20;
+  }
+  
+  .heading-xl {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight;
+  }
+  
+  .heading-lg {
+    @apply text-3xl md:text-4xl font-semibold tracking-tight;
+  }
+  
+  .heading-md {
+    @apply text-2xl md:text-3xl font-semibold tracking-tight;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Phone store specific styles */
+@layer components {
+  .phone-card {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+  }
+  
+  .variant-button {
+    @apply border-2 transition-all duration-200 hover:scale-105;
+  }
+  
+  .variant-button.active {
+    @apply border-primary ring-2 ring-primary/20;
+  }
+  
+  .cart-item {
+    @apply flex items-center gap-4 p-4 border rounded-lg;
+  }
+  
+  .price {
+    @apply font-semibold text-lg tabular-nums;
+  }
+  
+  .spec-label {
+    @apply text-sm font-medium text-muted-foreground;
+  }
+  
+  .spec-value {
+    @apply text-sm font-medium;
+  }
+}
+
+/* Smooth scrolling and focus styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+/* Custom scrollbar for drawers and modals */
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-full;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
+[/code]
+[file]app/globals.css[/file]
+[usedfor]global styles[/usedfor]
