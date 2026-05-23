@@ -1,92 +1,98 @@
+import * as React from "react"
 import Link from "next/link"
-import { useState } from "react"
-import { ShoppingCart, Menu, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Badge } from "@/components/ui/badge"
+import { usePathname } from "next/navigation"
+import { ShoppingCart, Menu, X, Phone } from "lucide-react"
+
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet"
+import { Badge } from "@/components/ui/badge"
 
-interface NavItem {
-  label: string
-  href: string
-}
-
-const navItems: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "Phones", href: "/phones" },
-  { label: "Brands", href: "/brands" },
-  { label: "Support", href: "/support" },
+const navigation = [
+  { name: "Home", href: "/" },
+  { name: "Phones", href: "/phones" },
+  { name: "Deals", href: "/deals" },
+  { name: "Support", href: "/support" },
 ]
 
-export function SiteHeader() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [cartCount, setCartCount] = useState(0)
+interface SiteHeaderProps {
+  cartCount?: number
+}
 
-  // In a real app, this would come from a cart context/store
-  // For now, we'll simulate cart count updates
-  const updateCartCount = (count: number) => {
-    setCartCount(count)
-  }
+export function SiteHeader({ cartCount = 0 }: SiteHeaderProps) {
+  const pathname = usePathname()
+  const [isOpen, setIsOpen] = React.useState(false)
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <span className="text-sm font-bold">N</span>
+        <Link href="/" className="flex items-center gap-2">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Phone className="h-5 w-5" />
           </div>
-          <span className="font-semibold text-xl tracking-tight">Nexlify</span>
+          <span className="font-bold text-xl tracking-tight">PhoneStore</span>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
+          {navigation.map((item) => (
             <Link
-              key={item.href}
+              key={item.name}
               href={item.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-primary",
+                pathname === item.href
+                  ? "text-foreground"
+                  : "text-muted-foreground"
+              )}
             >
-              {item.label}
+              {item.name}
             </Link>
           ))}
         </nav>
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-4">
-          <Link href="/cart">
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="h-5 w-5" />
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/account">Account</Link>
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/cart" className="relative">
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Cart
               {cartCount > 0 && (
-                <Badge 
-                  variant="destructive" 
-                  className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                <Badge
+                  variant="secondary"
+                  className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
                 >
                   {cartCount}
                 </Badge>
               )}
-            </Button>
-          </Link>
-          <Button asChild>
-            <Link href="/phones">Shop Now</Link>
+            </Link>
           </Button>
         </div>
 
         {/* Mobile Menu */}
         <div className="flex md:hidden items-center gap-2">
-          <Link href="/cart">
-            <Button variant="ghost" size="icon" className="relative">
+          <Button variant="ghost" size="icon" asChild className="relative">
+            <Link href="/cart">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
-                <Badge 
-                  variant="destructive" 
-                  className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                <Badge
+                  variant="secondary"
+                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
                 >
                   {cartCount}
                 </Badge>
               )}
-            </Button>
-          </Link>
+            </Link>
+          </Button>
 
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
@@ -99,35 +105,58 @@ export function SiteHeader() {
               <div className="flex flex-col h-full">
                 {/* Mobile Header */}
                 <div className="flex items-center justify-between pb-6">
-                  <Link href="/" className="flex items-center space-x-2" onClick={() => setIsOpen(false)}>
+                  <Link href="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                      <span className="text-sm font-bold">N</span>
+                      <Phone className="h-4 w-4" />
                     </div>
-                    <span className="font-semibold text-xl tracking-tight">Nexlify</span>
+                    <span className="font-bold text-lg">PhoneStore</span>
                   </Link>
-                  <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-                    <X className="h-5 w-5" />
-                  </Button>
+                  <SheetClose asChild>
+                    <Button variant="ghost" size="icon">
+                      <X className="h-5 w-5" />
+                    </Button>
+                  </SheetClose>
                 </div>
 
                 {/* Mobile Navigation */}
                 <nav className="flex flex-col gap-1">
-                  {navItems.map((item) => (
+                  {navigation.map((item) => (
                     <Link
-                      key={item.href}
+                      key={item.name}
                       href={item.href}
-                      className="flex items-center px-4 py-3 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
                       onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors",
+                        pathname === item.href
+                          ? "bg-accent text-accent-foreground"
+                          : "hover:bg-accent hover:text-accent-foreground"
+                      )}
                     >
-                      {item.label}
+                      {item.name}
                     </Link>
                   ))}
                 </nav>
 
                 <div className="mt-auto pt-6 border-t">
-                  <Button asChild className="w-full" onClick={() => setIsOpen(false)}>
-                    <Link href="/phones">Shop Now</Link>
-                  </Button>
+                  <div className="flex flex-col gap-3">
+                    <Button variant="outline" asChild onClick={() => setIsOpen(false)}>
+                      <Link href="/account">Account</Link>
+                    </Button>
+                    <Button asChild onClick={() => setIsOpen(false)}>
+                      <Link href="/cart" className="relative">
+                        <ShoppingCart className="h-4 w-4 mr-2" />
+                        Cart
+                        {cartCount > 0 && (
+                          <Badge
+                            variant="secondary"
+                            className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                          >
+                            {cartCount}
+                          </Badge>
+                        )}
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </SheetContent>
@@ -138,5 +167,4 @@ export function SiteHeader() {
   )
 }
 [/code]
-[file]components/site-header.tsx[/file]
-[usedfor]header[/usedfor]
+[file]components/site-header.tsx[/file][usedfor]Site header with logo, navigation links, cart icon with badge, and mobile menu using Sheet[/usedfor]
