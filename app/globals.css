@@ -5,58 +5,76 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
+    --background: 0 0% 100%; /* bg-background */
+    --foreground: 222.2 84% 4.9%; /* text-foreground */
+
+    --card: 0 0% 100%; /* bg-card */
     --card-foreground: 222.2 84% 4.9%;
+
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
+
+    --primary: 222.2 47.4% 11.2%; /* bg-primary */
+    --primary-foreground: 210 40% 98%; /* text-primary-foreground */
+
+    --secondary: 210 40% 96.1%; /* bg-secondary */
+    --secondary-foreground: 222.2 47.4% 11.2%; /* text-secondary-foreground */
+
+    --muted: 210 40% 96.1%; /* bg-muted */
+    --muted-foreground: 215.4 16.3% 46.9%; /* text-muted-foreground */
+
+    --accent: 210 40% 96.1%; /* bg-accent */
     --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
+
+    --destructive: 0 84.2% 60.2%; /* bg-destructive */
+    --destructive-foreground: 210 40% 98%; /* text-destructive-foreground */
+
+    --border: 214.3 31.8% 91.4%; /* border-border */
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
+
     --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+
+    /* Semantic tokens for design system */
+    --color-bg: hsl(var(--background));
+    --color-text: hsl(var(--foreground));
+    --color-primary: hsl(var(--primary));
+    --color-primary-foreground: hsl(var(--primary-foreground));
+    --color-secondary: hsl(var(--secondary));
+    --color-secondary-foreground: hsl(var(--secondary-foreground));
+    --color-accent: hsl(var(--accent));
+    --color-muted-foreground: hsl(var(--muted-foreground));
+    --color-border: hsl(var(--border));
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
+
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
+
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
     --primary-foreground: 222.2 47.4% 11.2%;
+
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
+
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
+
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
+
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
   }
 }
 
@@ -66,52 +84,14 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "kern" 1;
-  }
-}
-
-@layer components {
-  .phone-card {
-    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  .price {
-    @apply font-semibold text-lg tabular-nums;
-  }
-
-  .spec-label {
-    @apply text-sm font-medium text-muted-foreground;
-  }
-
-  .spec-value {
-    @apply text-sm font-medium;
-  }
-
-  .cart-item {
-    @apply border-b border-border pb-4 last:border-b-0 last:pb-0;
-  }
-
-  .nav-link {
-    @apply text-sm font-medium transition-colors hover:text-primary;
-  }
-
-  .section-title {
-    @apply text-3xl font-bold tracking-tight;
-  }
-
-  .section-subtitle {
-    @apply text-lg text-muted-foreground;
-  }
-}
-
-@layer utilities {
-  .container {
-    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
-  }
-
-  .text-balance {
-    text-wrap: balance;
+  /* Font variables */
+  :root {
+    --font-heading: 'Inter', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
   }
 }
 [/code]
-[file]app/globals.css[/file][usedfor]global styles[/usedfor]
+[file]app/globals.css[file][usedfor]Contains global CSS styles, including Tailwind CSS directives (`@tailwind base`, `@tailwind components`, `@tailwind utilities`) and any custom design tokens or base styles for the application.[usedfor]

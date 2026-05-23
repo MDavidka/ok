@@ -1,170 +1,73 @@
-import * as React from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { ShoppingCart, Menu, X, Phone } from "lucide-react"
+import Link from "next/link";
+import { Phone as PhoneIcon } from "lucide-react"; // Renamed to avoid conflict with Phone interface
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { SiteConfig, NavItem } from "@/lib/types";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetClose,
-} from "@/components/ui/sheet"
-import { Badge } from "@/components/ui/badge"
+// Site configuration for navigation and metadata
+const siteConfig: SiteConfig = {
+  name: "Phone Store",
+  description: "Your one-stop shop for the latest smartphones.",
+  mainNav: [
+    {
+      title: "Products",
+      href: "/products",
+    },
+    {
+      title: "About",
+      href: "/about",
+    },
+    {
+      title: "Contact",
+      href: "/contact",
+    },
+  ],
+  links: {
+    twitter: "https://twitter.com/shadcn",
+    github: "https://github.com/shadcn/ui",
+  },
+};
 
-const navigation = [
-  { name: "Home", href: "/" },
-  { name: "Phones", href: "/phones" },
-  { name: "Deals", href: "/deals" },
-  { name: "Support", href: "/support" },
-]
-
-interface SiteHeaderProps {
-  cartCount?: number
-}
-
-export function SiteHeader({ cartCount = 0 }: SiteHeaderProps) {
-  const pathname = usePathname()
-  const [isOpen, setIsOpen] = React.useState(false)
-
+export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Phone className="h-5 w-5" />
-          </div>
-          <span className="font-bold text-xl tracking-tight">PhoneStore</span>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                pathname === item.href
-                  ? "text-foreground"
-                  : "text-muted-foreground"
-              )}
-            >
-              {item.name}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Desktop Actions */}
-        <div className="hidden md:flex items-center gap-4">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/account">Account</Link>
-          </Button>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/cart" className="relative">
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Cart
-              {cartCount > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                >
-                  {cartCount}
-                </Badge>
-              )}
-            </Link>
-          </Button>
-        </div>
-
-        {/* Mobile Menu */}
-        <div className="flex md:hidden items-center gap-2">
-          <Button variant="ghost" size="icon" asChild className="relative">
-            <Link href="/cart">
-              <ShoppingCart className="h-5 w-5" />
-              {cartCount > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                >
-                  {cartCount}
-                </Badge>
-              )}
-            </Link>
-          </Button>
-
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[280px] sm:w-[320px]">
-              <div className="flex flex-col h-full">
-                {/* Mobile Header */}
-                <div className="flex items-center justify-between pb-6">
-                  <Link href="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                      <Phone className="h-4 w-4" />
-                    </div>
-                    <span className="font-bold text-lg">PhoneStore</span>
-                  </Link>
-                  <SheetClose asChild>
-                    <Button variant="ghost" size="icon">
-                      <X className="h-5 w-5" />
-                    </Button>
-                  </SheetClose>
-                </div>
-
-                {/* Mobile Navigation */}
-                <nav className="flex flex-col gap-1">
-                  {navigation.map((item) => (
+    <header className="sticky top-0 z-40 w-full border-b bg-background">
+      <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
+        <div className="flex gap-6 md:gap-10">
+          <Link href="/" className="flex items-center space-x-2">
+            <PhoneIcon className="h-6 w-6" />
+            <span className="inline-block font-bold">{siteConfig.name}</span>
+          </Link>
+          {siteConfig.mainNav?.length ? (
+            <nav className="hidden gap-6 md:flex">
+              {siteConfig.mainNav.map(
+                (item: NavItem) =>
+                  item.href && (
                     <Link
-                      key={item.name}
+                      key={item.href}
                       href={item.href}
-                      onClick={() => setIsOpen(false)}
                       className={cn(
-                        "flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors",
-                        pathname === item.href
-                          ? "bg-accent text-accent-foreground"
-                          : "hover:bg-accent hover:text-accent-foreground"
+                        "flex items-center text-lg font-medium transition-colors hover:text-primary sm:text-sm",
+                        item.disabled && "cursor-not-allowed opacity-80"
                       )}
                     >
-                      {item.name}
+                      {item.title}
                     </Link>
-                  ))}
-                </nav>
-
-                <div className="mt-auto pt-6 border-t">
-                  <div className="flex flex-col gap-3">
-                    <Button variant="outline" asChild onClick={() => setIsOpen(false)}>
-                      <Link href="/account">Account</Link>
-                    </Button>
-                    <Button asChild onClick={() => setIsOpen(false)}>
-                      <Link href="/cart" className="relative">
-                        <ShoppingCart className="h-4 w-4 mr-2" />
-                        Cart
-                        {cartCount > 0 && (
-                          <Badge
-                            variant="secondary"
-                            className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                          >
-                            {cartCount}
-                          </Badge>
-                        )}
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+                  )
+              )}
+            </nav>
+          ) : null}
+        </div>
+        <div className="flex flex-1 items-center justify-end space-x-4">
+          <nav className="flex items-center space-x-1">
+            {/* Placeholder for future utility buttons like search or cart */}
+            {/* <Button variant="ghost" size="icon" aria-label="Search">
+              <Search className="h-5 w-5" />
+            </Button> */}
+          </nav>
         </div>
       </div>
     </header>
-  )
+  );
 }
 [/code]
-[file]components/site-header.tsx[/file][usedfor]Site header with logo, navigation links, cart icon with badge, and mobile menu using Sheet[/usedfor]
+[file]components/site-header.tsx[file][usedfor]The main header component for the phone store, typically containing the logo, navigation links (e.g., to products), and potentially a search bar or cart icon. It utilizes the `Button` component.[usedfor]

@@ -1,16 +1,15 @@
 [code]
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "strict": true,
-    "noEmit": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
+    "useDefineForClassFields": true,
+    "noEmit": true,
     "jsx": "preserve",
     "incremental": true,
     "plugins": [
@@ -18,12 +17,23 @@
         "name": "next"
       }
     ],
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "baseUrl": "."
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx"
+  ],
   "exclude": ["node_modules"]
 }
 [/code]
-[file]tsconfig.json[/file][usedfor]TypeScript compiler configuration with strict mode, path aliases, and Next.js plugin settings[/usedfor]
+[file]tsconfig.json[file][usedfor]Configures the TypeScript compiler options for the project, ensuring proper type checking and compilation settings for a Next.js application.[usedfor]

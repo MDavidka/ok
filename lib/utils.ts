@@ -4,36 +4,5 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-
-export function formatPrice(price: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(price)
-}
-
-export function formatDate(date: string | Date): string {
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(date))
-}
-
-export function generateSlug(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^\w ]+/g, "")
-    .replace(/ +/g, "-")
-}
-
-export function calculateCartTotal(items: { phone: { price: number }; quantity: number }[]): number {
-  return items.reduce((total, item) => total + item.phone.price * item.quantity, 0)
-}
-
-export function truncateText(text: string, maxLength: number): string {
-  if (text.length <= maxLength) return text
-  return text.slice(0, maxLength) + "..."
-}
 [/code]
-[file]lib/utils.ts[/file][usedfor]Utility functions including cn() helper and price formatting[/usedfor]
+[file]lib/utils.ts[file][usedfor]Provides utility functions, most notably the `cn` helper, which combines `clsx` and `tailwind-merge` for conditionally joining Tailwind CSS classes with intelligent merging.[usedfor]
