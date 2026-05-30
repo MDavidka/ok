@@ -4,11 +4,11 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 
 export const metadata: Metadata = {
-  title: "ok — Phones that feel right.",
-  description: "ok is a curated phone store offering flagship devices, accessories, and same-day setup for people who want the best hardware without the noise.",
+  title: "ok — Phone service that just works",
+  description: "Modern phone service for teams that need reliable calls, SMS, and analytics without the enterprise markup.",
   openGraph: {
-    title: "ok — Phones that feel right.",
-    description: "ok is a curated phone store offering flagship devices, accessories, and same-day setup for people who want the best hardware without the noise.",
+    title: "ok — Phone service that just works",
+    description: "Modern phone service for teams that need reliable calls, SMS, and analytics without the enterprise markup.",
     siteName: "ok",
     type: "website",
   },
