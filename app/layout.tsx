@@ -4,11 +4,11 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 
 export const metadata: Metadata = {
-  title: "ok — Premium smartphones, perfectly priced.",
-  description: "Your trusted destination for unlocked, premium smartphones from top global brands. Fast shipping, easy trade-ins, and transparent pricing.",
+  title: "ok — Phones that feel right.",
+  description: "ok is a curated phone store offering flagship devices, accessories, and same-day setup for people who want the best hardware without the noise.",
   openGraph: {
-    title: "ok — Premium smartphones, perfectly priced.",
-    description: "Your trusted destination for unlocked, premium smartphones from top global brands. Fast shipping, easy trade-ins, and transparent pricing.",
+    title: "ok — Phones that feel right.",
+    description: "ok is a curated phone store offering flagship devices, accessories, and same-day setup for people who want the best hardware without the noise.",
     siteName: "ok",
     type: "website",
   },

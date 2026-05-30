@@ -7,8 +7,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { type Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "ok — Flagship phones, transparent pricing, 48h delivery",
-  description: "Shop the latest iPhone, Pixel, and Galaxy models at fixed prices. Ships in 48 hours, 30-day free returns.",
+  title: "ok — Curated flagship phones with same-day pickup",
+  description: "Shop the latest iPhone, Pixel, and Galaxy models at ok. Transparent pricing, 30-day returns, and same-day setup in San Francisco.",
 }
 
 export default function HomePage() {
@@ -18,11 +18,11 @@ export default function HomePage() {
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-2 lg:px-8">
         <div className="space-y-6">
           
-          <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">Phones that feel right</h1>
+          <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">Flagships. No noise.</h1>
           
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <Button asChild size="lg"><Link href="#">Get started</Link></Button>
-        
+        <Button asChild size="lg" variant="outline"><Link href="/compare">Compare models</Link></Button>
       </div>
           
         </div>
@@ -42,20 +42,16 @@ export default function HomePage() {
         
         <dl className="mt-10 grid gap-y-8 sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-border">
           <div className="px-2 text-center sm:px-6">
-            <dd className="text-4xl font-semibold tracking-tight sm:text-5xl">14</dd>
-            <dt className="mt-2 text-sm text-muted-foreground">Flagship models</dt>
-          </div>
-          <div className="px-2 text-center sm:px-6">
             <dd className="text-4xl font-semibold tracking-tight sm:text-5xl">48h</dd>
-            <dt className="mt-2 text-sm text-muted-foreground">Hour delivery</dt>
+            <dt className="mt-2 text-sm text-muted-foreground">Hours to ship</dt>
           </div>
           <div className="px-2 text-center sm:px-6">
-            <dd className="text-4xl font-semibold tracking-tight sm:text-5xl">30</dd>
-            <dt className="mt-2 text-sm text-muted-foreground">Day returns</dt>
-          </div>
-          <div className="px-2 text-center sm:px-6">
-            <dd className="text-4xl font-semibold tracking-tight sm:text-5xl">4.9</dd>
+            <dd className="text-4xl font-semibold tracking-tight sm:text-5xl">4.9/5</dd>
             <dt className="mt-2 text-sm text-muted-foreground">Average rating</dt>
+          </div>
+          <div className="px-2 text-center sm:px-6">
+            <dd className="text-4xl font-semibold tracking-tight sm:text-5xl">3200+</dd>
+            <dt className="mt-2 text-sm text-muted-foreground">Devices sold</dt>
           </div>
         </dl>
       </div>
@@ -65,29 +61,29 @@ export default function HomePage() {
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-24 lg:px-8">
         <div className="mx-auto max-w-3xl text-center space-y-4">
           
-          <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Why buyers choose ok</h2>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Why people choose ok</h2>
           
         </div>
         <div className="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-3">
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary"><Sparkles className="h-5 w-5" /></div>
-            <h3 className="text-lg font-semibold">Fixed pricing</h3>
-            <p className="text-sm text-muted-foreground">No secret markups. What you see is what you pay.</p>
+            <h3 className="text-lg font-semibold">30-day returns</h3>
+            <p className="text-sm text-muted-foreground">No restocking fees. Change your mind, send it back.</p>
           </div>
           <div className="space-y-3">
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary"><Sparkles className="h-5 w-5" /></div>
-            <h3 className="text-lg font-semibold">48-hour shipping</h3>
-            <p className="text-sm text-muted-foreground">Orders placed before 2pm ship same day.</p>
+            <h3 className="text-lg font-semibold">Same-day setup</h3>
+            <p className="text-sm text-muted-foreground">Book a 30-minute slot and walk out ready.</p>
           </div>
           <div className="space-y-3">
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary"><Sparkles className="h-5 w-5" /></div>
-            <h3 className="text-lg font-semibold">30-day free returns</h3>
-            <p className="text-sm text-muted-foreground">Send it back if it doesn’t click—no questions.</p>
+            <h3 className="text-lg font-semibold">Price match</h3>
+            <p className="text-sm text-muted-foreground">Find it cheaper elsewhere? We’ll match it.</p>
           </div>
           <div className="space-y-3">
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary"><Sparkles className="h-5 w-5" /></div>
-            <h3 className="text-lg font-semibold">Unlocked &amp; global</h3>
-            <p className="text-sm text-muted-foreground">Works on every major carrier worldwide.</p>
+            <h3 className="text-lg font-semibold">1-year warranty</h3>
+            <p className="text-sm text-muted-foreground">Full manufacturer coverage plus our own support.</p>
           </div>
         </div>
       </div>
@@ -97,7 +93,7 @@ export default function HomePage() {
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-24 lg:px-8">
         <div className="flex items-end justify-between gap-4">
           <div>
-            <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Featured phones</h2>
+            <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Featured devices</h2>
             
           </div>
           
@@ -108,9 +104,9 @@ export default function HomePage() {
             <CardContent className="space-y-2 p-4">
               <div className="flex items-center justify-between gap-3">
                 <p className="font-medium">iPhone 16 Pro</p>
-                <p className="font-semibold"></p>
+                <p className="font-semibold">$999</p>
               </div>
-              <p className="text-sm text-muted-foreground">256 GB • Titanium</p>
+              <p className="text-sm text-muted-foreground">Titanium. 48 MP camera. 8K video.</p>
             </CardContent>
           </Card>
           <Card className="overflow-hidden">
@@ -118,9 +114,9 @@ export default function HomePage() {
             <CardContent className="space-y-2 p-4">
               <div className="flex items-center justify-between gap-3">
                 <p className="font-medium">Pixel 9 Pro</p>
-                <p className="font-semibold"></p>
+                <p className="font-semibold">$899</p>
               </div>
-              <p className="text-sm text-muted-foreground">128 GB • Obsidian</p>
+              <p className="text-sm text-muted-foreground">Pure Android. Best-in-class AI.</p>
             </CardContent>
           </Card>
           <Card className="overflow-hidden">
@@ -128,9 +124,9 @@ export default function HomePage() {
             <CardContent className="space-y-2 p-4">
               <div className="flex items-center justify-between gap-3">
                 <p className="font-medium">Galaxy S25 Ultra</p>
-                <p className="font-semibold"></p>
+                <p className="font-semibold">$1,199</p>
               </div>
-              <p className="text-sm text-muted-foreground">256 GB • Titanium Gray</p>
+              <p className="text-sm text-muted-foreground">S Pen. 200 MP. Snapdragon 8 Gen 4.</p>
             </CardContent>
           </Card>
         </div>
@@ -148,7 +144,7 @@ export default function HomePage() {
           <Card className="border-border/60">
             <CardContent className="p-6">
               <Quote className="h-6 w-6 text-primary/40" />
-              <p className="mt-4 text-pretty text-base leading-relaxed">"Got my 16 Pro the next day. Same phone, $150 less than the carrier."</p>
+              <p className="mt-4 text-pretty text-base leading-relaxed">"Bought the 16 Pro on Friday, set up same day, no hassle."</p>
               <div className="mt-6 flex items-center gap-3">
                 <Avatar className="h-9 w-9"><AvatarFallback>MT</AvatarFallback></Avatar>
                 <div>
@@ -161,12 +157,12 @@ export default function HomePage() {
           <Card className="border-border/60">
             <CardContent className="p-6">
               <Quote className="h-6 w-6 text-primary/40" />
-              <p className="mt-4 text-pretty text-base leading-relaxed">"Finally a store that doesn’t try to upsell me a case I don’t need."</p>
+              <p className="mt-4 text-pretty text-base leading-relaxed">"They price-matched a deal I found online and still handled the transfer."</p>
               <div className="mt-6 flex items-center gap-3">
-                <Avatar className="h-9 w-9"><AvatarFallback>LC</AvatarFallback></Avatar>
+                <Avatar className="h-9 w-9"><AvatarFallback>LR</AvatarFallback></Avatar>
                 <div>
-                  <p className="text-sm font-semibold">Liam Chen</p>
-                  <p className="text-xs text-muted-foreground">Software engineer</p>
+                  <p className="text-sm font-semibold">Leo Rivera</p>
+                  <p className="text-xs text-muted-foreground">Founder</p>
                 </div>
               </div>
             </CardContent>
