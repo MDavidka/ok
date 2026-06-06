@@ -34,6 +34,41 @@ export interface Review {
   date: string;
 }
 
+export interface CodeSnippet {
+  id: string;
+  title: string;
+  description: string;
+  code: string;
+  language: string;
+  tags: string[];
+  likes: number;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  content: string;
+  avatarUrl: string;
+  rating: number;
+}
+
+export interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export interface EstimationParameter {
+  id: string;
+  name: string;
+  description: string;
+  baseCost: number;
+  type: 'platform' | 'feature' | 'design' | 'urgency';
+}
+
 export const PHONE_PRODUCTS: PhoneProduct[] = [
   {
     id: "aura-15-pro",
@@ -100,7 +135,7 @@ export const PHONE_PRODUCTS: PhoneProduct[] = [
     },
     featured: true,
     onSale: true,
-    saleDiscount: 10, // 10% off
+    saleDiscount: 10,
     badge: "Innovation",
     stock: 12
   },
@@ -166,95 +201,222 @@ export const PHONE_PRODUCTS: PhoneProduct[] = [
     },
     featured: false,
     onSale: true,
-    saleDiscount: 15, // 15% off
+    saleDiscount: 15,
     badge: "Value King",
     stock: 45
-  },
-  {
-    id: "apex-pro-max",
-    name: "Apex Pro Max Prime",
-    brand: "Apex",
-    tagline: "The absolute standard for mobile work and design.",
-    description: "Equipped with an integrated stylus pen with ultra-low 2.8ms latency, the Apex Pro Max Prime lets you sketch, annotate, and manage worksheets on the go. Armed with an advanced telephoto portrait lens and top-tier security chips.",
-    basePrice: 1299,
-    rating: 4.9,
-    reviewCount: 112,
-    image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=600&q=80",
-    colors: [
-      { name: "Champagne Gold", hex: "#D4AF37", image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=600&q=80" },
-      { name: "Phantom Black", hex: "#1A1A1A", image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80" }
-    ],
-    storageOptions: [
-      { size: "256GB", priceBump: 0 },
-      { size: "512GB", priceBump: 120 },
-      { size: "1TB", priceBump: 300 }
-    ],
-    specs: {
-      screen: "6.9-inch Dynamic AMOLED 2X, QHD+, 120Hz",
-      processor: "Exynos 2400 Pro / Snapdragon 8 Gen 3",
-      camera: "200MP Main + 50MP Periscope + 12MP Ultra-wide",
-      battery: "5400 mAh (65W fast charging)",
-      os: "Android",
-      weight: "228g",
-      waterProof: "IP68 dust and water proof"
-    },
-    featured: true,
-    onSale: false,
-    badge: "Stylus Included",
-    stock: 19
-  },
-  {
-    id: "vortex-edge-z",
-    name: "Vortex Edge Z",
-    brand: "Vortex",
-    tagline: "Compact form factor, monumental performance.",
-    description: "For lovers of small and handy premium phones. The Vortex Edge Z packs flagship internals into a 5.9-inch design that fits comfortably in one hand. Features a gorgeous bezel-less screen and dual-lens high-precision camera.",
-    basePrice: 749,
-    rating: 4.5,
-    reviewCount: 63,
-    image: "https://images.unsplash.com/photo-1573148195900-7845dcb9b127?auto=format&fit=crop&w=600&q=80",
-    colors: [
-      { name: "Polar Ice Blue", hex: "#AFEEEE", image: "https://images.unsplash.com/photo-1573148195900-7845dcb9b127?auto=format&fit=crop&w=600&q=80" },
-      { name: "Matte Black", hex: "#262626", image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80" }
-    ],
-    storageOptions: [
-      { size: "128GB", priceBump: 0 },
-      { size: "256GB", priceBump: 80 }
-    ],
-    specs: {
-      screen: "5.9-inch Super AMOLED, 120Hz",
-      processor: "Snapdragon 8 Gen 2",
-      camera: "50MP Main + 12MP Ultra-wide",
-      battery: "4200 mAh (30W charging)",
-      os: "Android",
-      weight: "165g",
-      waterProof: "IP68 water resistant"
-    },
-    featured: false,
-    onSale: false,
-    badge: "Compact Flagship",
-    stock: 15
   }
 ];
 
 export const MOCK_REVIEWS: Record<string, Review[]> = {
   "aura-15-pro": [
-    { id: "r1", author: "Marcus V.", rating: 5, comment: "This is easily the best phone I've ever owned. The screen is absurdly bright even under direct sunlight, and the titanium chassis feels amazingly premium.", date: "2024-02-12" },
-    { id: "r2", author: "Sarah Jenkins", rating: 5, comment: "The 5x optical zoom camera is mindblowing. I took this to a concert and the photos look like they came from a professional DSLR.", date: "2024-02-05" },
-    { id: "r3", author: "Derrick K.", rating: 4, comment: "Incredible battery life and charging speed. AuraOS is very clean, but takes a few days to get used to if you are transitioning from standard Android.", date: "2024-01-28" }
-  ],
-  "apex-fold-x": [
-    { id: "r4", author: "Leah T.", rating: 5, comment: "I can read spreadsheets and watch videos simultaneously without squinting. The crease is barely noticeable after 5 minutes of use.", date: "2024-02-10" },
-    { id: "r5", author: "Kenji S.", rating: 4, comment: "An absolute multitasker's dream. It is a bit heavy, but the utility of having a tablet in my pocket is unmatched.", date: "2024-02-01" }
-  ],
-  "vortex-pulse-12": [
-    { id: "r6", author: "GamerPro99", rating: 5, comment: "165Hz screen is incredibly smooth. Games like Genshin and PUBG run at absolute max settings without any thermal throttling thanks to the active cooling fan.", date: "2024-02-14" },
-    { id: "r7", author: "Elena Rostova", rating: 4, comment: "The battery is a beast! Easily lasts 2 full days of normal use. The gaming triggers work excellently.", date: "2024-02-03" }
+    { id: "r1", author: "Marcus V.", rating: 5, comment: "This is easily the best phone I've ever owned. The screen is absurdly bright even under direct sunlight.", date: "2024-02-12" }
   ]
 };
 
 export const PROMO_CODES: Record<string, number> = {
-  "WELCOME10": 10,  // 10% off
-  "AURASPECIAL": 15, // 15% off
-  "SUPERPHONE": 50,  // $50 off flat
+  "WELCOME10": 10,
+  "AURASPECIAL": 15,
+  "SUPERPHONE": 50,
+};
+
+// Seed Data for DevTools Portal
+export const CODE_SNIPPETS: CodeSnippet[] = [
+  {
+    id: "snip-1",
+    title: "Next.js Route Handler with CORS",
+    description: "A complete Route Handler template for Next.js App Router featuring custom CORS headers, error catching, and JSON parsing.",
+    language: "typescript",
+    tags: ["Next.js", "API", "Backend", "CORS"],
+    likes: 142,
+    difficulty: "Intermediate",
+    code: `import { NextResponse } from 'next/server';
+
+export async function OPTIONS(request: Request) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    if (!body.email) {
+      return NextResponse.json(
+        { error: 'Email is required field' },
+        { status: 400 }
+      );
+    }
+    
+    // Process your logic here (e.g. database, emailer)
+    
+    return NextResponse.json(
+      { success: true, message: 'Data received successfully', data: body },
+      {
+        status: 200,
+        headers: { 'Access-Control-Allow-Origin': '*' }
+      }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      { error: 'Invalid JSON payload format' },
+      { status: 500 }
+    );
+  }
+}`
+  },
+  {
+    id: "snip-2",
+    title: "Debounce Hook in React & TypeScript",
+    description: "A high-performance custom hook for debouncing quick input state changes (ideal for real-time search bars and API query limits).",
+    language: "typescript",
+    tags: ["React", "Hooks", "Performance"],
+    likes: 98,
+    difficulty: "Beginner",
+    code: `import { useState, useEffect } from 'react';
+
+export function useDebounce<T>(value: T, delay: number = 500): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}`
+  },
+  {
+    id: "snip-3",
+    title: "JWT Token verification middleware",
+    description: "Secure node-based token authentication utility with token expiry checks, ideal for Edge runtime or server-less server middlewares.",
+    language: "javascript",
+    tags: ["Security", "JWT", "Node.js"],
+    likes: 210,
+    difficulty: "Advanced",
+    code: `import { SignJWT, jwtVerify } from 'jose';
+
+const JWT_SECRET_KEY = new TextEncoder().encode(
+  process.env.JWT_SECRET || 'fallback-super-secret-key-for-local-only'
+);
+
+export async function verifyAuthToken(token) {
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET_KEY, {
+      algorithms: ['HS256'],
+    });
+    return payload; // Returns decoded token details
+  } catch (error) {
+    console.error('JWT Verification failed:', error.message);
+    throw new Error('Unauthorized: Invalid or expired authentication token');
+  }
+}`
+  },
+  {
+    id: "snip-4",
+    title: "Tailwind Dynamic Color Composer",
+    description: "Utility function combining clsx and tailwind-merge to safely compose dynamic style lists without collision.",
+    language: "typescript",
+    tags: ["Tailwind", "CSS", "UI"],
+    likes: 76,
+    difficulty: "Beginner",
+    code: `import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+// Usage example:
+// <div className={cn('p-4 border rounded-md', isActive && 'bg-primary text-white')} />`
+  }
+];
+
+export const TESTIMONIALS: Testimonial[] = [
+  {
+    id: "t-1",
+    name: "Alex Rivera",
+    role: "Lead Software Architect",
+    company: "DevFlow Solutions",
+    content: "The API Tester and Snippets repository has saved our frontend team hundreds of hours. Having a reliable live playground built right into our browser dashboard is a game changer.",
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
+    rating: 5
+  },
+  {
+    id: "t-2",
+    name: "Sarah Chen",
+    role: "Fullstack Developer",
+    company: "SaaSify Inc",
+    content: "The project estimator is unbelievably accurate. We used the PDF-style dynamic receipt to pitch our client on a new microservice architecture and won the contract on the spot!",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80",
+    rating: 5
+  },
+  {
+    id: "t-3",
+    name: "Douglas Miller",
+    role: "CTO & Co-Founder",
+    company: "HyperScale Tech",
+    content: "Beautiful design, robust tools, and instant response testing. It is clear that this suite is made by developers, for developers. Highly recommended!",
+    avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80",
+    rating: 5
+  }
+];
+
+export const FAQS: FAQItem[] = [
+  {
+    id: "faq-1",
+    question: "What is this DevTools portal?",
+    answer: "This is an interactive suite of utility tools designed for developers and product managers. It includes a live API Client Tester, an interactive Code Snippet Repository, and a Project Cost Estimator that generates instant breakdowns."
+  },
+  {
+    id: "faq-2",
+    question: "Is the API Client secure for live testing?",
+    answer: "Yes, our API Tester runs client-side requests directly from your browser. For testing local APIs or backend services, ensure your server has CORS enabled for this domain."
+  },
+  {
+    id: "faq-3",
+    question: "How does the Cost Estimator calculate final values?",
+    answer: "It uses pre-set weights for platforms, design complexity, feature additions, and urgency multipliers based on industry-standard development rates. You can export a PDF-style invoice summary instantly."
+  },
+  {
+    id: "faq-4",
+    question: "Can I add custom snippets to the repository?",
+    answer: "Absolutely! The Snippets page features an interactive form to register your custom code with tags, description, and difficulty level, stored dynamically in your current session."
+  }
+];
+
+export const ESTIMATION_FACTORS = {
+  platforms: [
+    { id: 'web', name: 'Web Application (React/Next.js)', cost: 4500, icon: 'Globe' },
+    { id: 'mobile-ios', name: 'iOS Mobile App (Swift)', cost: 6000, icon: 'Smartphone' },
+    { id: 'mobile-android', name: 'Android Mobile App (Kotlin)', cost: 5500, icon: 'Smartphone' },
+    { id: 'cross-platform', name: 'Cross-Platform Mobile (React Native)', cost: 7500, icon: 'Layers' },
+  ],
+  features: [
+    { id: 'auth', name: 'User Authentication & JWT Security', cost: 1200, description: 'OAuth, roles, password resets, session management' },
+    { id: 'payment', name: 'Stripe Payment & Subscription Integration', cost: 1500, description: 'Invoices, coupons, webhook listeners, secure checkout' },
+    { id: 'database', name: 'Real-time Database & Syncing', cost: 1800, description: 'PostgreSQL/MongoDB, optimized indexes, backup scheduling' },
+    { id: 'admin', name: 'Comprehensive Admin Dashboard', cost: 2000, description: 'Data tables, export CSV, metrics, user banning, logs' },
+    { id: 'ai', name: 'AI Integration (OpenAI / LLMs)', cost: 2500, description: 'Prompt engineering, structured output, token optimization' },
+    { id: 'notifications', name: 'Push Notifications & Email Alerts', cost: 800, description: 'Twilio SMS, Resend email templates, in-app bell' },
+  ],
+  designs: [
+    { id: 'clean', name: 'Clean & Modern (Standard Templates)', multiplier: 1.0, description: 'Elegant Tailwind layouts with minimal custom branding' },
+    { id: 'premium', name: 'Premium Custom UI (Bespoke Illustrations & Motion)', multiplier: 1.35, description: 'Framer Motion animations, custom icons, dark mode fine-tuning' },
+    { id: 'enterprise', name: 'Enterprise Design System (Figma-to-Code Alignment)', multiplier: 1.6, description: 'Strict component rules, accessibility compliance, full design review sessions' },
+  ],
+  urgency: [
+    { id: 'standard', name: 'Standard Delivery (4-8 weeks)', multiplier: 1.0 },
+    { id: 'expedited', name: 'Expedited Delivery (2-3 weeks)', multiplier: 1.25 },
+    { id: 'rush', name: 'Rush Dev Sprint (1 week)', multiplier: 1.5 },
+  ]
 };
