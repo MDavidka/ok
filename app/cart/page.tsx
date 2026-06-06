@@ -1,476 +1,487 @@
 "use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useCart, CartItem, Order } from '@/components/cart-context';
+import React, { useState } from "react";
+import Link from "next/link";
+import { useStore } from "@/lib/store-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
 import { 
   ShoppingCart, 
   Trash2, 
-  ChevronRight, 
+  Plus, 
+  Minus, 
+  RefreshCw, 
+  CreditCard, 
+  CheckCircle, 
   ArrowLeft, 
   Tag, 
-  ShieldCheck, 
-  CreditCard, 
-  Truck, 
-  CheckCircle, 
-  AlertCircle 
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+  X,
+  Truck,
+  ShieldCheck
+} from "lucide-react";
+import { toast } from "sonner";
 
 export default function CartPage() {
-  const router = useRouter();
-  const { cart, updateQuantity, removeFromCart, getCartTotal, clearCart, addOrder } = useCart();
+  const { 
+    cart, 
+    updateCartQuantity, 
+    removeFromCart, 
+    appliedPromo, 
+    applyPromo, 
+    removePromo, 
+    clearCart 
+  } = useStore();
 
-  // Promo code states
-  const [promoCode, setPromoCode] = useState('');
-  const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
-  const [discountAmount, setDiscountAmount] = useState(0);
-  const [promoError, setPromoError] = useState('');
+  // Promo Code Form State
+  const [promoInput, setPromoInput] = useState("");
 
-  // Checkout form states
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    address: '',
-    city: '',
-    zipCode: '',
-    paymentMethod: 'credit-card'
-  });
-  const [isSubmitting, setIsLoading] = useState(false);
-  const [formError, setFormError] = useState('');
+  // Checkout Form State
+  const [fullName, setFullName] = useState("");
+  const [address, setShippingAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [zip, setZip] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvv, setCvv] = useState("");
 
-  const subtotal = getCartTotal();
-  const shipping = subtotal > 499 || subtotal === 0 ? 0 : 15;
-  const tax = parseFloat(((subtotal - discountAmount) * 0.0825).toFixed(2));
-  const total = parseFloat((subtotal + shipping + tax - discountAmount).toFixed(2));
+  // Simulated Checkout result state
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [orderReceipt, setOrderConfirmation] = useState<{
+    orderId: string;
+    fullName: string;
+    address: string;
+    totalPaid: number;
+    itemsCount: number;
+  } | null>(null);
 
-  // Apply promo code
+  // Math Calculations
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const shippingFee = subtotal > 150 || subtotal === 0 ? 0 : 15;
+  const promoDiscount = appliedPromo ? appliedPromo.discountAmount : 0;
+  
+  // Final total cannot be below $0
+  const finalTotal = Math.max(0, subtotal + shippingFee - promoDiscount);
+
   const handleApplyPromo = (e: React.FormEvent) => {
     e.preventDefault();
-    setPromoError('');
-
-    const code = promoCode.trim().toUpperCase();
-    if (code === 'PHONEX50') {
-      if (subtotal < 300) {
-        setPromoError('Promo code PHONEX50 requires a minimum order of $300.');
-        return;
-      }
-      setDiscountAmount(50);
-      setAppliedPromo('PHONEX50 ($50 Off)');
-      setPromoCode('');
-    } else if (code === 'WELCOME10') {
-      const discount = parseFloat((subtotal * 0.10).toFixed(2));
-      setDiscountAmount(discount);
-      setAppliedPromo('WELCOME10 (10% Off)');
-      setPromoCode('');
-    } else {
-      setPromoError('Invalid promo code. Try "PHONEX50" or "WELCOME10".');
-    }
-  };
-
-  const handleRemovePromo = () => {
-    setDiscountAmount(0);
-    setAppliedPromo(null);
-  };
-
-  // Form input handler
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  // Handle Checkout submission
-  const handleSubmitCheckout = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError('');
-
-    if (cart.length === 0) {
-      setFormError('Your shopping cart is empty.');
+    if (!promoInput.trim()) {
+      toast.error("Please enter a promo code.");
       return;
     }
 
-    setIsLoading(true);
+    const code = promoInput.toUpperCase().trim();
 
-    try {
-      // Send order to Route Handler for validation and simulation
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: cart,
-          customer: formData,
-          pricing: {
-            subtotal,
-            shipping,
-            tax,
-            discount: discountAmount,
-            total
-          }
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong processing your order.');
-      }
-
-      // Add to local state order history
-      const confirmedOrder: Order = {
-        id: data.orderId,
-        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-        items: [...cart],
-        subtotal,
-        tax,
-        shipping,
-        discount: discountAmount,
-        total,
-        customer: formData,
-        status: 'processing'
-      };
-
-      addOrder(confirmedOrder);
-      
-      // Clear cart
-      clearCart();
-
-      // Redirect to Order Success Page
-      router.push(`/order-success?orderId=${data.orderId}`);
-    } catch (err: any) {
-      setFormError(err.message || 'Failed to submit order. Please try again.');
-    } finally {
-      setIsLoading(false);
+    // Check if it's a generated trade-in code or a generic high-value code
+    if (code.startsWith("TRADE-")) {
+      // Re-apply or simulate valid code
+      applyPromo(code, 150, "Traded Device");
+    } else if (code === "WELCOME10") {
+      applyPromo(code, 50, "Welcome Promo");
+    } else if (code === "SUPERPHONIX") {
+      applyPromo(code, 300, "Super Discount");
+    } else {
+      toast.error("Invalid promo code. Try calculating a trade-in value first!");
     }
+    setPromoInput("");
   };
 
-  return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
+  const handleCheckout = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (cart.length === 0) {
+      toast.error("Your cart is empty!");
+      return;
+    }
+
+    if (!fullName || !address || !city || !zip || !cardNumber || !expiry || !cvv) {
+      toast.error("Please fill in all shipping and payment fields.");
+      return;
+    }
+
+    setIsProcessing(true);
+
+    // Simulate payment gateway processing
+    setTimeout(() => {
+      const orderId = `PHX-ORDER-${Math.floor(100000 + Math.random() * 900000)}`;
       
-      {/* Breadcrumb */}
-      <div className="flex items-center space-x-2 text-xs text-muted-foreground mb-6">
-        <Link href="/" className="hover:text-primary">Home</Link>
-        <ChevronRight className="h-3 w-3" />
-        <span className="text-foreground font-medium">Shopping Cart</span>
-      </div>
+      setOrderConfirmation({
+        orderId,
+        fullName,
+        address: `${address}, ${city}, ${zip}`,
+        totalPaid: finalTotal,
+        itemsCount: cart.reduce((sum, item) => sum + item.quantity, 0),
+      });
 
-      <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-8">
-        Your Shopping Cart
-      </h1>
+      toast.success("Order processed successfully! Thank you for choosing Phonix.");
+      clearCart();
+      setIsProcessing(false);
+    }, 2000);
+  };
 
-      {cart.length === 0 ? (
-        <div className="text-center py-20 bg-white border rounded-2xl space-y-6 max-w-2xl mx-auto">
-          <div className="h-16 w-16 bg-blue-50 text-primary rounded-full flex items-center justify-center mx-auto">
-            <ShoppingCart className="h-8 w-8" />
-          </div>
-          <div className="space-y-2">
-            <h3 className="font-extrabold text-xl text-slate-900">Your cart is empty</h3>
-            <p className="text-sm text-slate-500 max-w-sm mx-auto">
-              Looks like you haven't added any premium smartphones to your cart yet. Let's start shopping!
-            </p>
-          </div>
+  // If order was successfully completed, show receipt screen
+  if (orderReceipt) {
+    return (
+      <div className="container mx-auto px-4 py-16 max-w-2xl text-center space-y-8">
+        <div className="h-20 w-20 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-500/20">
+          <CheckCircle className="h-12 w-12" />
+        </div>
+        <div className="space-y-3">
+          <h1 className="text-3xl font-extrabold tracking-tight">Order Confirmed!</h1>
+          <p className="text-sm text-muted-foreground">
+            Thank you for your purchase. Your payment has been processed securely and your shipment is being prepared.
+          </p>
+        </div>
+
+        <Card className="border-muted/60 text-left bg-card shadow-lg">
+          <CardHeader className="border-b">
+            <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">Receipt Details</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-4 text-xs">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground font-semibold">Order Number:</span>
+              <span className="font-mono font-bold text-foreground">{orderReceipt.orderId}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground font-semibold">Customer Name:</span>
+              <span className="font-bold text-foreground">{orderReceipt.fullName}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground font-semibold">Shipping Address:</span>
+              <span className="font-bold text-foreground text-right max-w-xs">{orderReceipt.address}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground font-semibold">Items Purchased:</span>
+              <span className="font-bold text-foreground">{orderReceipt.itemsCount} smartphones</span>
+            </div>
+            <div className="border-t pt-4 flex justify-between text-sm">
+              <span className="font-extrabold text-foreground">Total Paid:</span>
+              <span className="font-extrabold text-primary">${orderReceipt.totalPaid}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex justify-center gap-4">
           <Link href="/phones">
-            <Button className="gap-2 px-6">
-              <ArrowLeft className="h-4 w-4" /> Browse Catalog
+            <Button size="sm" className="font-bold">
+              Continue Shopping
+            </Button>
+          </Link>
+          <Link href="/support">
+            <Button size="sm" variant="outline">
+              Track Repair & Support
             </Button>
           </Link>
         </div>
-      ) : (
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto px-4 sm:px-6 py-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2">
+          <ShoppingCart className="h-8 w-8 text-primary" />
+          <span>Shopping Cart</span>
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Review your smartphones, apply trade-in credits, and complete your checkout securely.
+        </p>
+      </div>
+
+      {cart.length > 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Left Column: Cart Items list */}
+          {/* Left: Cart Items list */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="bg-white border rounded-2xl overflow-hidden shadow-sm">
-              <div className="p-4 sm:p-6 border-b bg-slate-50/50 flex justify-between items-center">
-                <h3 className="font-bold text-slate-900">Cart Items ({cart.length})</h3>
-                <Link href="/phones" className="text-xs text-primary font-semibold hover:underline flex items-center gap-1">
-                  Continue Shopping <ChevronRight className="h-3 w-3" />
-                </Link>
-              </div>
-
-              <div className="divide-y">
-                {cart.map((item, index) => (
-                  <div key={`${item.phoneId}-${item.color}-${item.storage}`} className="p-4 sm:p-6 flex flex-col sm:flex-row gap-4 items-center">
-                    {/* Phone Mini Image */}
-                    <div className="h-24 w-24 bg-slate-50 rounded-lg p-2 flex items-center justify-center shrink-0">
-                      <img src={item.image} alt={item.name} className="object-contain h-full" />
-                    </div>
-
-                    {/* Details */}
-                    <div className="flex-1 min-w-0 text-center sm:text-left space-y-1">
-                      <h4 className="font-bold text-slate-900 truncate text-base">{item.name}</h4>
-                      <p className="text-xs text-slate-500">
-                        Color: <span className="font-semibold text-slate-800">{item.color}</span> | Storage: <span className="font-semibold text-slate-800">{item.storage}</span>
-                      </p>
-                      <p className="text-sm font-extrabold text-slate-900">${item.price}</p>
-                    </div>
-
-                    {/* Quantity & Delete Actions */}
-                    <div className="flex items-center gap-4 shrink-0">
-                      {/* Quantity Controls */}
-                      <div className="flex items-center border rounded bg-slate-50">
-                        <button 
-                          onClick={() => updateQuantity(item.phoneId, item.color, item.storage, item.quantity - 1)}
-                          className="px-2 py-1 font-bold hover:bg-slate-100 text-slate-600 border-r text-xs"
-                        >
-                          -
-                        </button>
-                        <span className="px-3 font-bold text-xs text-slate-800">{item.quantity}</span>
-                        <button 
-                          onClick={() => updateQuantity(item.phoneId, item.color, item.storage, item.quantity + 1)}
-                          className="px-2 py-1 font-bold hover:bg-slate-100 text-slate-600 border-l text-xs"
-                        >
-                          +
-                        </button>
-                      </div>
-
-                      {/* Total for item */}
-                      <span className="font-extrabold text-sm text-slate-900 w-16 text-right">
-                        ${(item.price * item.quantity)}
-                      </span>
-
-                      {/* Delete */}
-                      <button 
-                        onClick={() => removeFromCart(item.phoneId, item.color, item.storage)}
-                        className="p-1.5 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                        title="Remove item"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Simulated Checkout Form */}
-            <div className="bg-white border rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
-              <div className="border-b pb-4">
-                <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
-                  <CreditCard className="h-5 w-5 text-primary" /> Delivery & Payment Details
-                </h3>
-                <p className="text-xs text-slate-500 mt-1">Provide your details to complete the simulated checkout.</p>
-              </div>
-
-              {formError && (
-                <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded-lg text-xs font-semibold flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 shrink-0" />
-                  <span>{formError}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleSubmitCheckout} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 uppercase">Full Name</label>
-                    <Input
-                      type="text"
-                      name="name"
-                      placeholder="e.g. John Doe"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="text-sm"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 uppercase">Email Address</label>
-                    <Input
-                      type="email"
-                      name="email"
-                      placeholder="e.g. john@example.com"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="text-sm"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase">Shipping Street Address</label>
-                  <Input
-                    type="text"
-                    name="address"
-                    placeholder="e.g. 123 Tech Boulevard Apt 4B"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    required
-                    className="text-sm"
+            {cart.map((item, index) => (
+              <Card key={`${item.phone.id}-${item.selectedColor}-${item.selectedStorage}`} className="border-muted/60">
+                <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-4">
+                  {/* Phone Image */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src={item.phone.image} 
+                    alt={item.phone.name} 
+                    className="h-20 w-auto object-contain rounded"
                   />
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 uppercase">City & State</label>
-                    <Input
-                      type="text"
-                      name="city"
-                      placeholder="e.g. Los Angeles, CA"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      required
-                      className="text-sm"
-                    />
+                  {/* Phone Details */}
+                  <div className="flex-1 text-center sm:text-left space-y-1">
+                    <h3 className="font-extrabold text-sm text-foreground">
+                      {item.phone.name}
+                    </h3>
+                    <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 text-[10px]">
+                      <Badge variant="secondary" className="font-medium text-[9px]">
+                        Color: {item.selectedColor}
+                      </Badge>
+                      <Badge variant="outline" className="font-medium text-[9px]">
+                        Storage: {item.selectedStorage}
+                      </Badge>
+                    </div>
+                    <p className="text-xs font-bold text-primary pt-1">
+                      ${item.price} <span className="text-[10px] text-muted-foreground font-normal">each</span>
+                    </p>
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 uppercase">Zip/Postal Code</label>
-                    <Input
-                      type="text"
-                      name="zipCode"
-                      placeholder="e.g. 90001"
-                      value={formData.zipCode}
-                      onChange={handleInputChange}
-                      required
-                      className="text-sm"
-                    />
-                  </div>
-                </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 uppercase">Select Payment Method</label>
-                  <select
-                    name="paymentMethod"
-                    value={formData.paymentMethod}
-                    onChange={handleInputChange}
-                    className="w-full bg-white border rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary font-medium text-slate-800"
-                  >
-                    <option value="credit-card">💳 Credit Card (Simulated Direct Checkout)</option>
-                    <option value="apple-pay"> Apple Pay / Google Pay</option>
-                    <option value="crypto">🪙 Bitcoin / USDC</option>
-                  </select>
-                </div>
-
-                <div className="bg-slate-50 p-4 rounded-xl border space-y-1 text-xs text-slate-500">
-                  <p className="font-bold text-slate-700">🔒 Secure Sandboxed Gateway</p>
-                  <p>This is a simulated checkout. No real money or credit card information is required or processed.</p>
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full h-11 text-sm font-bold bg-primary hover:bg-primary/95 text-white"
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center gap-2">
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      Validating Order...
+                  {/* Quantity Controls */}
+                  <div className="flex items-center gap-2 border rounded-lg p-1 bg-muted/20">
+                    <Button 
+                      size="icon" 
+                      variant="ghost" 
+                      className="h-7 w-7 rounded-md"
+                      onClick={() => updateCartQuantity(item.phone.id, item.selectedColor, item.selectedStorage, item.quantity - 1)}
+                    >
+                      <Minus className="h-3 w-3" />
+                    </Button>
+                    <span className="text-xs font-bold w-6 text-center">
+                      {item.quantity}
                     </span>
-                  ) : (
-                    `Place Secure Order ($${total})`
-                  )}
+                    <Button 
+                      size="icon" 
+                      variant="ghost" 
+                      className="h-7 w-7 rounded-md"
+                      onClick={() => updateCartQuantity(item.phone.id, item.selectedColor, item.selectedStorage, item.quantity + 1)}
+                    >
+                      <Plus className="h-3 w-3" />
+                    </Button>
+                  </div>
+
+                  {/* Trash/Remove Button */}
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+                    onClick={() => removeFromCart(item.phone.id, item.selectedColor, item.selectedStorage)}
+                    title="Remove item"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+
+            <div className="pt-2">
+              <Link href="/phones">
+                <Button variant="ghost" size="sm" className="gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground">
+                  <ArrowLeft className="h-4 w-4" />
+                  <span>Add more phones to cart</span>
                 </Button>
-              </form>
+              </Link>
             </div>
           </div>
 
-          {/* Right Column: Order Summary */}
-          <div className="lg:col-span-5 space-y-4 sticky top-24">
-            <Card className="border-slate-200">
-              <CardHeader className="bg-slate-50/50 border-b p-4 sm:p-6">
-                <CardTitle className="text-base font-bold text-slate-900">Order Summary</CardTitle>
+          {/* Right: Order Summary & Checkout */}
+          <div className="lg:col-span-5 space-y-6">
+            {/* Promo Code Application */}
+            <Card className="border-muted/60">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                  <Tag className="h-4 w-4" />
+                  <span>Apply Trade-In / Promo Code</span>
+                </CardTitle>
               </CardHeader>
-              <CardContent className="p-4 sm:p-6 space-y-4">
-                
-                {/* Promo Code Input */}
-                <div className="space-y-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700 block">Promo Code</span>
-                  
-                  {appliedPromo ? (
-                    <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg text-emerald-800 text-xs font-semibold">
-                      <span className="flex items-center gap-1.5">
-                        <Tag className="h-3.5 w-3.5" /> Code Applied: {appliedPromo}
-                      </span>
-                      <button 
-                        onClick={handleRemovePromo}
-                        className="text-emerald-900 hover:underline font-bold text-[10px]"
-                      >
-                        Remove
-                      </button>
+              <CardContent className="space-y-3">
+                <form onSubmit={handleApplyPromo} className="flex gap-2">
+                  <Input
+                    placeholder="e.g. TRADE-APP-XXXX, WELCOME10"
+                    value={promoInput}
+                    onChange={(e) => setPromoInput(e.target.value)}
+                    className="text-xs font-mono uppercase"
+                  />
+                  <Button type="submit" size="sm" className="text-xs font-semibold shrink-0">
+                    Apply
+                  </Button>
+                </form>
+
+                {appliedPromo ? (
+                  <div className="flex items-center justify-between p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-xs text-emerald-600">
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle className="h-4 w-4" />
+                      <span className="font-bold">{appliedPromo.code} (-${appliedPromo.discountAmount})</span>
                     </div>
-                  ) : (
-                    <form onSubmit={handleApplyPromo} className="flex gap-2">
-                      <Input
-                        type="text"
-                        placeholder="e.g. PHONEX50"
-                        value={promoCode}
-                        onChange={(e) => setPromoCode(e.target.value)}
-                        className="text-xs uppercase"
-                      />
-                      <Button type="submit" size="sm" variant="outline" className="text-xs font-semibold">
-                        Apply
-                      </Button>
-                    </form>
-                  )}
-                  
-                  {promoError && (
-                    <p className="text-[11px] text-red-600 font-medium">{promoError}</p>
-                  )}
-                  <p className="text-[10px] text-slate-400 italic">Try "PHONEX50" for $50 off or "WELCOME10" for 10% off!</p>
+                    <button onClick={removePromo} className="text-muted-foreground hover:text-destructive">
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-3 bg-muted/40 rounded-lg text-[10px] text-muted-foreground space-y-1">
+                    <p className="font-semibold text-foreground">💡 Tip for big discounts:</p>
+                    <p>
+                      Use our <Link href="/trade-in" className="underline text-primary font-semibold">Trade-In tool</Link> to estimate your old phone and get an instant promo code worth up to $650 off!
+                    </p>
+                    <p className="pt-1 text-primary">Or try test code: <code className="font-mono font-bold bg-muted px-1">WELCOME10</code> for $50 off!</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Price Calculations Summary */}
+            <Card className="border-muted/60">
+              <CardHeader className="pb-3 border-b">
+                <CardTitle className="text-sm">Order Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-3 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Subtotal ({cart.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
+                  <span className="font-bold text-foreground">${subtotal}</span>
                 </div>
-
-                <Separator />
-
-                {/* Subtotal, Shipping, Tax, Total */}
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between text-slate-600">
-                    <span>Cart Subtotal</span>
-                    <span className="font-semibold text-slate-900">${subtotal}</span>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Express Shipping</span>
+                  <span className="font-bold text-foreground">
+                    {shippingFee === 0 ? (
+                      <span className="text-emerald-600 font-bold uppercase">FREE</span>
+                    ) : (
+                      `$${shippingFee}`
+                    )}
+                  </span>
+                </div>
+                {promoDiscount > 0 && (
+                  <div className="flex justify-between text-emerald-600">
+                    <span>Trade-In Discount ({appliedPromo?.code})</span>
+                    <span className="font-bold">-${promoDiscount}</span>
                   </div>
-
-                  {discountAmount > 0 && (
-                    <div className="flex justify-between text-emerald-600 font-medium">
-                      <span>Discount Coupon</span>
-                      <span>-${discountAmount}</span>
-                    </div>
-                  )}
-
-                  <div className="flex justify-between text-slate-600">
-                    <span>Express Shipping</span>
-                    <span className="font-semibold text-slate-900">
-                      {shipping === 0 ? (
-                        <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100 border-none font-bold text-[10px]">
-                          FREE
-                        </Badge>
-                      ) : (
-                        `$${shipping}`
-                      )}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between text-slate-600">
-                    <span>Simulated Tax (8.25%)</span>
-                    <span className="font-semibold text-slate-900">${tax}</span>
-                  </div>
-
-                  <Separator className="my-2" />
-
-                  <div className="flex justify-between text-base font-extrabold text-slate-900">
-                    <span>Total Amount</span>
-                    <span>${total}</span>
-                  </div>
+                )}
+                <div className="border-t pt-3 flex justify-between text-base">
+                  <span className="font-extrabold text-foreground">Estimated Total</span>
+                  <span className="font-extrabold text-primary">${finalTotal}</span>
                 </div>
               </CardContent>
-              <CardFooter className="p-4 sm:p-6 bg-slate-50/50 border-t flex flex-col gap-3 text-xs text-slate-500">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
-                  <span>256-bit SSL encrypted sandboxed checkout.</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Truck className="h-4 w-4 text-blue-600 shrink-0" />
-                  <span>Eligible for Free 2-Day Express Delivery.</span>
-                </div>
-              </CardFooter>
+            </Card>
+
+            {/* Secure Checkout Form */}
+            <Card className="border-muted/60">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center gap-1.5">
+                  <CreditCard className="h-4 w-4 text-primary" />
+                  <span>Secure Checkout</span>
+                </CardTitle>
+                <CardDescription className="text-[10px]">
+                  SSL encrypted transaction. Your details are fully protected.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleCheckout} className="space-y-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Full Name</label>
+                    <Input
+                      placeholder="e.g. Johnathan Vance"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="text-xs"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Shipping Address</label>
+                    <Input
+                      placeholder="e.g. 100 Innovation Way, Suite 400"
+                      value={address}
+                      onChange={(e) => setShippingAddress(e.target.value)}
+                      className="text-xs"
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">City</label>
+                      <Input
+                        placeholder="e.g. New York"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        className="text-xs"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">ZIP Code</label>
+                      <Input
+                        placeholder="e.g. 10001"
+                        value={zip}
+                        onChange={(e) => setZip(e.target.value)}
+                        className="text-xs"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5 pt-2 border-t">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Credit Card Number</label>
+                    <Input
+                      placeholder="4000 1234 5678 9010"
+                      value={cardNumber}
+                      onChange={(e) => setCardNumber(e.target.value)}
+                      className="text-xs"
+                      maxLength={19}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Expiry Date</label>
+                      <Input
+                        placeholder="MM/YY"
+                        value={expiry}
+                        onChange={(e) => setExpiry(e.target.value)}
+                        className="text-xs"
+                        maxLength={5}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">CVV Code</label>
+                      <Input
+                        placeholder="123"
+                        type="password"
+                        value={cvv}
+                        onChange={(e) => setCvv(e.target.value)}
+                        className="text-xs"
+                        maxLength={4}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full h-12 text-sm font-semibold gap-2 mt-2"
+                    disabled={isProcessing}
+                  >
+                    <ShieldCheck className="h-4 w-4" />
+                    <span>{isProcessing ? "Processing Security Payment..." : `Pay Securely - $${finalTotal}`}</span>
+                  </Button>
+                </form>
+              </CardContent>
             </Card>
           </div>
-
+        </div>
+      ) : (
+        <div className="text-center py-20 border-2 border-dashed rounded-3xl bg-card space-y-6">
+          <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mx-auto text-muted-foreground">
+            <ShoppingCart className="h-8 w-8" />
+          </div>
+          <div className="space-y-2">
+            <h3 className="font-extrabold text-lg">Your Cart is Empty</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-sm mx-auto">
+              You haven&apos;t added any smartphones to your cart yet. Browse our flagships and deals to find the perfect device.
+            </p>
+          </div>
+          <Link href="/phones">
+            <Button size="sm" className="font-bold">
+              Browse Smartphones
+            </Button>
+          </Link>
         </div>
       )}
-
     </div>
   );
 }

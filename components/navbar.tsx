@@ -1,164 +1,158 @@
 "use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useCart } from './cart-context';
+import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useStore } from "@/lib/store-context";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { 
   Smartphone, 
   ShoppingCart, 
   GitCompare, 
   Menu, 
-  X, 
-  Search, 
-  PhoneCall, 
-  Sparkles,
-  Info
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { cn } from '@/lib/utils';
+  User, 
+  Wrench, 
+  RefreshCw, 
+  HelpCircle 
+} from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
-export default function Navbar() {
+export function Navbar() {
   const pathname = usePathname();
-  const { getCartCount, compareList } = useCart();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { cart, compareList } = useStore();
+
+  const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/phones', label: 'Phones' },
-    { href: '/compare', label: 'Compare' },
-    { href: '/contact', label: 'Support & FAQ' },
+    { label: "Phones", href: "/phones", icon: Smartphone },
+    { label: "Compare", href: "/compare", icon: GitCompare, badge: compareList.length },
+    { label: "Trade-In", href: "/trade-in", icon: RefreshCw },
+    { label: "Support & Repair", href: "/support", icon: Wrench },
   ];
 
-  const cartCount = getCartCount();
-  const compareCount = compareList.length;
-
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="bg-primary text-primary-foreground p-1.5 rounded-lg flex items-center justify-center">
-              <Smartphone className="h-6 w-6" />
-            </div>
-            <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-              PHONEX
-            </span>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6">
+        {/* Logo */}
+        <Link href="/" className="flex items-center space-x-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
+            <Smartphone className="h-5 w-5" />
+          </div>
+          <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-primary to-muted-foreground bg-clip-text text-transparent">
+            Phonix
+          </span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            const isActive = pathname === link.href;
+            return (
+              <Link key={link.href} href={link.href}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className="relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  <Icon className="h-4 w-4" />
+                  {link.label}
+                  {link.badge !== undefined && link.badge > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground animate-pulse">
+                      {link.badge}
+                    </span>
+                  )}
+                </Button>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Right side controls */}
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          {/* Compare Shortcut (Desktop only) */}
+          <Link href="/compare" className="hidden sm:inline-block">
+            <Button variant="ghost" size="icon" className="relative" title="Compare Phones">
+              <GitCompare className="h-5 w-5" />
+              {compareList.length > 0 && (
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-primary text-primary-foreground text-xs font-bold">
+                  {compareList.length}
+                </Badge>
+              )}
+            </Button>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary relative py-1",
-                    isActive 
-                      ? "text-primary font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:rounded-full" 
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
+          {/* Cart button */}
+          <Link href="/cart">
+            <Button variant="outline" className="relative flex items-center gap-2 border-primary/20 hover:border-primary">
+              <ShoppingCart className="h-4 w-4 text-primary" />
+              <span className="hidden sm:inline font-semibold text-xs">Cart</span>
+              {totalCartItems > 0 && (
+                <Badge className="h-5 min-w-[20px] px-1 rounded-full flex items-center justify-center bg-primary text-primary-foreground text-xs font-bold">
+                  {totalCartItems}
+                </Badge>
+              )}
+            </Button>
+          </Link>
 
-          {/* Action Buttons */}
-          <div className="flex items-center space-x-4">
-            {/* Compare Shortcut */}
-            <Link href="/compare">
-              <Button variant="ghost" size="icon" className="relative" title="Compare Phones">
-                <GitCompare className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
-                {compareCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600 animate-pulse">
-                    {compareCount}
-                  </Badge>
-                )}
+          {/* Mobile Menu */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
               </Button>
-            </Link>
-
-            {/* Shopping Cart */}
-            <Link href="/cart">
-              <Button variant="outline" size="sm" className="relative gap-2 border-primary/20 hover:border-primary/50 hover:bg-primary/5">
-                <ShoppingCart className="h-4 w-4 text-primary" />
-                <span className="hidden sm:inline font-medium text-xs">Cart</span>
-                {cartCount > 0 ? (
-                  <Badge className="h-5 min-w-5 px-1 flex items-center justify-center text-[10px] font-bold bg-primary text-primary-foreground rounded-full">
-                    {cartCount}
-                  </Badge>
-                ) : (
-                  <span className="text-muted-foreground text-xs font-semibold">0</span>
-                )}
-              </Button>
-            </Link>
-
-            {/* Support Hotline / Contact Link */}
-            <div className="hidden lg:flex items-center space-x-1 text-xs text-muted-foreground border-l pl-4">
-              <PhoneCall className="h-3.5 w-3.5 text-green-600 animate-bounce" />
-              <div>
-                <p className="font-semibold text-foreground">1-800-PHONEX</p>
-                <p className="text-[10px]">24/7 Expert Help</p>
-              </div>
-            </div>
-
-            {/* Mobile Menu Toggle */}
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <SheetHeader>
-                  <SheetTitle className="flex items-center gap-2">
-                    <Smartphone className="h-5 w-5 text-primary" /> PHONEX Menu
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col space-y-4 mt-8">
-                  {navLinks.map((link) => {
-                    const isActive = pathname === link.href;
-                    return (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={cn(
-                          "text-lg font-medium p-2 rounded-md hover:bg-accent transition-colors",
-                          isActive ? "text-primary bg-primary/5 font-semibold" : "text-muted-foreground"
-                        )}
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[350px]">
+              <SheetHeader className="text-left border-b pb-4">
+                <SheetTitle className="flex items-center gap-2">
+                  <Smartphone className="h-5 w-5 text-primary" /> Phonix Menu
+                </SheetTitle>
+                <SheetDescription>
+                  Premium smartphones & express support
+                </SheetDescription>
+              </SheetHeader>
+              <div className="flex flex-col gap-4 py-6">
+                {navLinks.map((link) => {
+                  const Icon = link.icon;
+                  const isActive = pathname === link.href;
+                  return (
+                    <Link key={link.href} href={link.href}>
+                      <Button
+                        variant={isActive ? "secondary" : "ghost"}
+                        className="w-full justify-start gap-3 text-base font-medium py-6"
                       >
-                        {link.label}
-                      </Link>
-                    );
-                  })}
-                  <div className="pt-4 border-t mt-4 flex flex-col space-y-3">
-                    <div className="flex justify-between items-center px-2 py-1 text-sm">
-                      <span className="text-muted-foreground">Compare list:</span>
-                      <Badge variant="secondary">{compareCount} phones</Badge>
-                    </div>
-                    <div className="flex justify-between items-center px-2 py-1 text-sm">
-                      <span className="text-muted-foreground">Cart items:</span>
-                      <Badge variant="secondary">{cartCount} items</Badge>
-                    </div>
-                    <Link href="/cart" onClick={() => setMobileMenuOpen(false)} className="w-full">
-                      <Button className="w-full gap-2">
-                        <ShoppingCart className="h-4 w-4" /> Go to Cart
+                        <Icon className="h-5 w-5 text-muted-foreground" />
+                        <span>{link.label}</span>
+                        {link.badge !== undefined && link.badge > 0 && (
+                          <Badge className="ml-auto bg-primary text-primary-foreground">
+                            {link.badge}
+                          </Badge>
+                        )}
                       </Button>
                     </Link>
+                  );
+                })}
+              </div>
+              <div className="absolute bottom-6 left-6 right-6 border-t pt-4">
+                <div className="flex items-center gap-3 p-2 bg-muted/50 rounded-lg">
+                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <User className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium">Welcome to Phonix</p>
+                    <p className="text-[10px] text-muted-foreground">Premium Member Account</p>
                   </div>
                 </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>

@@ -1,4 +1,4 @@
-export interface Review {
+export interface PhoneReview {
   id: string;
   author: string;
   rating: number;
@@ -6,337 +6,330 @@ export interface Review {
   comment: string;
 }
 
+export interface PhoneColor {
+  name: string;
+  hex: string;
+}
+
+export interface PhoneStorage {
+  size: string;
+  priceModifier: number;
+}
+
+export interface PhoneSpecs {
+  screen: string;
+  processor: string;
+  camera: string;
+  battery: string;
+  weight: string;
+  os: string;
+}
+
 export interface Phone {
   id: string;
+  brand: string;
   name: string;
-  brand: 'Apple' | 'Samsung' | 'Google' | 'OnePlus';
   price: number;
   originalPrice?: number;
   image: string;
-  images: string[];
-  rating: number;
-  reviewCount: number;
-  featured: boolean;
-  tag?: string; // e.g. "Best Seller", "New", "Hot Deal"
-  colors: { name: string; hex: string }[];
-  storage: string[]; // e.g. ["128GB", "256GB", "512GB", "1TB"]
-  specs: {
-    screen: string;
-    processor: string;
-    camera: string;
-    battery: string;
-    os: string;
-    weight: string;
-    waterResistance: string;
-    charging: string;
-  };
   description: string;
-  reviews: Review[];
+  colors: PhoneColor[];
+  storageOptions: PhoneStorage[];
+  specs: PhoneSpecs;
+  rating: number;
+  reviewsCount: number;
+  isFeatured: boolean;
+  isDeal: boolean;
+  stock: number;
+  reviews: PhoneReview[];
 }
 
-export const phonesData: Phone[] = [
+export const PHONES: Phone[] = [
   {
-    id: "iphone-15-pro",
-    name: "iPhone 15 Pro Max",
+    id: "iphone-15-pro-max",
     brand: "Apple",
+    name: "iPhone 15 Pro Max",
     price: 1199,
     originalPrice: 1299,
     image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=600",
-    images: [
-      "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=600",
-      "https://images.unsplash.com/photo-1695048133116-291771f28b24?auto=format&fit=crop&q=80&w=600",
-      "https://images.unsplash.com/photo-1695048133148-52643a758784?auto=format&fit=crop&q=80&w=600"
-    ],
-    rating: 4.9,
-    reviewCount: 142,
-    featured: true,
-    tag: "Best Seller",
+    description: "Forged in titanium and featuring the groundbreaking A17 Pro chip, a customizable Action button, and the most powerful iPhone camera system ever.",
     colors: [
-      { name: "Titanium Gray", hex: "#8E8D8A" },
-      { name: "Titanium Black", hex: "#232426" },
-      { name: "Titanium Blue", hex: "#2F4452" },
-      { name: "Titanium Silver", hex: "#E3E4E5" }
+      { name: "Natural Titanium", hex: "#8F8A85" },
+      { name: "Blue Titanium", hex: "#2F4452" },
+      { name: "White Titanium", hex: "#F2F1ED" },
+      { name: "Black Titanium", hex: "#35393B" }
     ],
-    storage: ["256GB", "512GB", "1TB"],
+    storageOptions: [
+      { size: "256GB", priceModifier: 0 },
+      { size: "512GB", priceModifier: 200 },
+      { size: "1TB", priceModifier: 400 }
+    ],
     specs: {
-      screen: "6.7-inch Super Retina XDR OLED, 120Hz ProMotion",
+      screen: "6.7-inch Super Retina XDR OLED, 120Hz",
       processor: "A17 Pro chip with 6-core GPU",
       camera: "48MP Main + 12MP Ultra Wide + 12MP 5x Telephoto",
-      battery: "4441 mAh (Up to 29 hours video playback)",
-      os: "iOS 17 (Upgradable to iOS 18)",
+      battery: "4441 mAh with 25W fast charging",
       weight: "221g",
-      waterResistance: "IP68 (depth of 6 meters up to 30 mins)",
-      charging: "25W USB-C fast charging, 15W MagSafe wireless"
+      os: "iOS 17 (Upgradable to iOS 18)"
     },
-    description: "Forged in titanium and featuring the groundbreaking A17 Pro chip, a customizable Action button, and the most powerful iPhone camera system ever.",
+    rating: 4.9,
+    reviewsCount: 142,
+    isFeatured: true,
+    isDeal: true,
+    stock: 15,
     reviews: [
-      { id: "r1", author: "Sarah Jenkins", rating: 5, date: "2024-02-15", comment: "The titanium build feels incredibly premium and lightweight. The 5x camera lens zoom is crystal clear!" },
-      { id: "r2", author: "David K.", rating: 5, date: "2024-02-10", comment: "Incredible battery life. Easily lasts me two days of moderate usage. A17 Pro runs modern games flawlessly." },
-      { id: "r3", author: "Marc L.", rating: 4.5, date: "2024-01-28", comment: "Excellent screen and build. A bit pricey, but absolutely worth it if you are upgrading from an older iPhone." }
+      { id: "r1", author: "Sarah M.", rating: 5, date: "2024-02-10", comment: "The titanium finish feels amazing in the hand. The camera is outstanding, especially the 5x zoom!" },
+      { id: "r2", author: "David K.", rating: 5, date: "2024-02-01", comment: "Incredibly fast processor. Battery lasts easily over a day and a half under heavy usage." },
+      { id: "r3", author: "Elena R.", rating: 4, date: "2024-01-20", comment: "Amazing screen and performance, but charging speed could be faster." }
     ]
   },
   {
     id: "galaxy-s24-ultra",
-    name: "Galaxy S24 Ultra",
     brand: "Samsung",
+    name: "Galaxy S24 Ultra",
     price: 1299,
-    originalPrice: 1399,
     image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&q=80&w=600",
-    images: [
-      "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&q=80&w=600",
-      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=600"
-    ],
-    rating: 4.8,
-    reviewCount: 118,
-    featured: true,
-    tag: "AI Powered",
-    colors: [
-      { name: "Titanium Yellow", hex: "#EEDC82" },
-      { name: "Titanium Violet", hex: "#4B0082" },
-      { name: "Titanium Gray", hex: "#708090" },
-      { name: "Titanium Black", hex: "#0F0F0F" }
-    ],
-    storage: ["256GB", "512GB", "1TB"],
-    specs: {
-      screen: "6.8-inch Dynamic AMOLED 2X, QHD+, 120Hz, 2600 nits",
-      processor: "Snapdragon 8 Gen 3 for Galaxy",
-      camera: "200MP Main + 50MP Telephoto + 12MP Ultra Wide + 10MP Telephoto",
-      battery: "5000 mAh (45W Super Fast Charging 2.0)",
-      os: "Android 14 with One UI 6.1",
-      weight: "232g",
-      waterResistance: "IP68 dust/water resistant",
-      charging: "45W Wired, 15W Wireless (Qi), 4.5W Reverse Wireless"
-    },
     description: "Welcome to the era of mobile AI. With Galaxy S24 Ultra in your hands, you can unleash whole new levels of creativity, productivity and possibility.",
+    colors: [
+      { name: "Titanium Gray", hex: "#7E7F82" },
+      { name: "Titanium Black", hex: "#212224" },
+      { name: "Titanium Violet", hex: "#463F54" },
+      { name: "Titanium Yellow", hex: "#EBE3CD" }
+    ],
+    storageOptions: [
+      { size: "256GB", priceModifier: 0 },
+      { size: "512GB", priceModifier: 120 },
+      { size: "1TB", priceModifier: 360 }
+    ],
+    specs: {
+      screen: "6.8-inch Dynamic AMOLED 2X, QHD+, 120Hz",
+      processor: "Snapdragon 8 Gen 3 for Galaxy",
+      camera: "200MP Main + 50MP + 12MP + 10MP Quad Camera",
+      battery: "5000 mAh with 45W super fast charging",
+      weight: "232g",
+      os: "Android 14 with One UI 6.1"
+    },
+    rating: 4.8,
+    reviewsCount: 98,
+    isFeatured: true,
+    isDeal: false,
+    stock: 12,
     reviews: [
-      { id: "r4", author: "Elena Rostova", rating: 5, date: "2024-02-18", comment: "The live translation feature works like magic! S-Pen is as handy as ever and the anti-reflective screen is outstanding." },
-      { id: "r5", author: "John Miller", rating: 4, date: "2024-02-12", comment: "200MP camera is insane. Zooming in reveals details you can't see with the naked eye. Quite bulky though." }
+      { id: "r4", author: "James P.", rating: 5, date: "2024-02-15", comment: "The built-in S-Pen is awesome and the AI photo editor features are like magic. Recommended!" },
+      { id: "r5", author: "Chloe W.", rating: 4, date: "2024-02-11", comment: "Outstanding display with almost zero reflection. Very big phone though, hard to use with one hand." }
     ]
   },
   {
-    id: "google-pixel-8-pro",
-    name: "Pixel 8 Pro",
+    id: "pixel-8-pro",
     brand: "Google",
+    name: "Pixel 8 Pro",
     price: 999,
-    originalPrice: 1049,
+    originalPrice: 1099,
     image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&q=80&w=600",
-    images: [
-      "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&q=80&w=600",
-      "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&q=80&w=600"
-    ],
-    rating: 4.7,
-    reviewCount: 95,
-    featured: true,
-    tag: "Best Camera",
+    description: "The all-pro phone engineered by Google. It has the best of Google AI, the most advanced Pixel Camera ever, and can translate languages in real time.",
     colors: [
-      { name: "Bay Blue", hex: "#87CEEB" },
-      { name: "Porcelain", hex: "#FAEBD7" },
-      { name: "Obsidian", hex: "#1C1C1C" }
+      { name: "Bay Blue", hex: "#A6C8E0" },
+      { name: "Porcelain", hex: "#F4EFE6" },
+      { name: "Obsidian", hex: "#2E3033" }
     ],
-    storage: ["128GB", "256GB", "512GB"],
+    storageOptions: [
+      { size: "128GB", priceModifier: 0 },
+      { size: "256GB", priceModifier: 80 },
+      { size: "512GB", priceModifier: 200 }
+    ],
     specs: {
-      screen: "6.7-inch Super Actua LTPO OLED, 120Hz, 2400 nits",
-      processor: "Google Tensor G3 with Titan M2 security",
+      screen: "6.7-inch Super Actua LTPO OLED, 120Hz",
+      processor: "Google Tensor G3 (4nm)",
       camera: "50MP Main + 48MP Ultra Wide + 48MP 5x Zoom",
-      battery: "5050 mAh (30W Fast Charging)",
-      os: "Android 14 (7 years of guaranteed updates)",
+      battery: "5050 mAh with 30W fast charging",
       weight: "213g",
-      waterResistance: "IP68 dust/water resistant",
-      charging: "30W Wired, 23W Wireless (Pixel Stand)"
+      os: "Android 14 (Pure Pixel Experience)"
     },
-    description: "The all-pro phone engineered by Google. It has the best of Google AI, the most advanced Pixel Camera yet, and can even help you filter out spam calls.",
+    rating: 4.7,
+    reviewsCount: 84,
+    isFeatured: true,
+    isDeal: true,
+    stock: 8,
     reviews: [
-      { id: "r6", author: "Clara S.", rating: 5, date: "2024-02-22", comment: "Magic Eraser and Best Take are amazing features. The software feels so clean and fluid." },
-      { id: "r7", author: "Tobias M.", rating: 4, date: "2024-02-05", comment: "Superb photo quality, particularly skin tones and night shots. Battery life is decent but not as stellar as the S24 Ultra." }
+      { id: "r6", author: "Michael T.", rating: 5, date: "2024-01-28", comment: "Magic Eraser and Best Take are insane. Perfect for family photos. Cleanest Android experience ever." }
     ]
   },
   {
     id: "oneplus-12",
-    name: "OnePlus 12",
     brand: "OnePlus",
+    name: "OnePlus 12",
     price: 799,
-    originalPrice: 899,
     image: "https://images.unsplash.com/photo-1565630916779-e303be97b6f5?auto=format&fit=crop&q=80&w=600",
-    images: [
-      "https://images.unsplash.com/photo-1565630916779-e303be97b6f5?auto=format&fit=crop&q=80&w=600"
-    ],
-    rating: 4.6,
-    reviewCount: 74,
-    featured: true,
-    tag: "Value Flagship",
+    description: "Redefined flagship specs. Driven by Snapdragon 8 Gen 3, 4th Gen Hasselblad Camera, and record-breaking 100W SUPERVOOC charging.",
     colors: [
-      { name: "Flowy Emerald", hex: "#507D6E" },
-      { name: "Silky Black", hex: "#1A1A1A" }
+      { name: "Flowy Emerald", hex: "#5F7D6D" },
+      { name: "Silky Black", hex: "#222527" }
     ],
-    storage: ["256GB", "512GB"],
+    storageOptions: [
+      { size: "256GB", priceModifier: 0 },
+      { size: "512GB", priceModifier: 100 }
+    ],
     specs: {
-      screen: "6.82-inch 2K Oriental AMOLED, ProXDR 120Hz, 4500 nits peak",
+      screen: "6.82-inch 2K Oriental AMOLED, 120Hz",
       processor: "Snapdragon 8 Gen 3",
-      camera: "50MP Sony LYT-808 + 64MP 3x Periscope + 48MP Ultra Wide",
-      battery: "5400 mAh (100W SUPERVOOC charging)",
-      os: "OxygenOS based on Android 14",
+      camera: "50MP Main + 64MP 3x Periscope + 48MP Ultra Wide",
+      battery: "5400 mAh with 100W SUPERVOOC",
       weight: "220g",
-      waterResistance: "IP65 water/dust resistant",
-      charging: "100W Wired (0-100% in 26 mins), 50W AIRVOOC wireless"
+      os: "OxygenOS based on Android 14"
     },
-    description: "Redefined flagship specs. Powered by Snapdragon 8 Gen 3 with up to 16GB RAM and revolutionary 100W fast charging that juices up your phone in minutes.",
+    rating: 4.6,
+    reviewsCount: 56,
+    isFeatured: false,
+    isDeal: true,
+    stock: 20,
     reviews: [
-      { id: "r8", author: "Alex R.", rating: 5, date: "2024-02-14", comment: "100W charging is life-changing. Literally plug it in for 15 minutes while getting ready and you're good for the day." },
-      { id: "r9", author: "Samantha T.", rating: 4, date: "2024-01-20", comment: "The display is absolutely gorgeous. Camera tuning by Hasselblad gives beautiful artistic tones. IP65 rather than IP68 is the only minor downside." }
+      { id: "r7", author: "Lucas B.", rating: 5, date: "2024-02-05", comment: "Charges from 0 to 100 in 26 minutes! Absolutely mindblowing speed and gorgeous screen." }
+    ]
+  },
+  {
+    id: "galaxy-z-fold-5",
+    brand: "Samsung",
+    name: "Galaxy Z Fold 5",
+    price: 1799,
+    originalPrice: 1899,
+    image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=600",
+    description: "The ultimate 7.6-inch screen mobile powerhouse. Fold an entire tablet into your pocket with a zero-gap hinge and multi-window multitasking.",
+    colors: [
+      { name: "Icy Blue", hex: "#C5D1DC" },
+      { name: "Phantom Black", hex: "#1C1D1E" },
+      { name: "Cream", hex: "#F3EFE0" }
+    ],
+    storageOptions: [
+      { size: "256GB", priceModifier: 0 },
+      { size: "512GB", priceModifier: 150 },
+      { size: "1TB", priceModifier: 350 }
+    ],
+    specs: {
+      screen: "7.6-inch Foldable Dynamic AMOLED 2X + 6.2-inch Cover Screen",
+      processor: "Snapdragon 8 Gen 2 for Galaxy",
+      camera: "50MP Main + 12MP Ultra Wide + 10MP Telephoto",
+      battery: "4400 mAh with 25W charging",
+      weight: "253g",
+      os: "Android 13 with One UI 5.1.1"
+    },
+    rating: 4.5,
+    reviewsCount: 37,
+    isFeatured: true,
+    isDeal: false,
+    stock: 6,
+    reviews: [
+      { id: "r8", author: "Rebecca F.", rating: 5, date: "2024-01-15", comment: "Multitasking is incredible. I can write emails while watching videos easily. Built like a tank too." }
     ]
   },
   {
     id: "iphone-15",
-    name: "iPhone 15",
     brand: "Apple",
+    name: "iPhone 15",
     price: 799,
-    originalPrice: 849,
-    image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=600",
-    images: [
-      "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=600"
-    ],
-    rating: 4.7,
-    reviewCount: 88,
-    featured: false,
-    tag: "Popular",
+    image: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?auto=format&fit=crop&q=80&w=600",
+    description: "Features Dynamic Island, a 48MP Main camera, and USB-C, all in a durable color-infused glass and aluminum design.",
     colors: [
       { name: "Black", hex: "#222222" },
-      { name: "Blue", hex: "#D2E4EE" },
-      { name: "Pink", hex: "#FADADD" },
-      { name: "Yellow", hex: "#FFFDD0" },
-      { name: "Green", hex: "#E0EEE0" }
+      { name: "Blue", hex: "#D2E5EC" },
+      { name: "Pink", hex: "#F7D5D9" },
+      { name: "Yellow", hex: "#FAF1C9" }
     ],
-    storage: ["128GB", "256GB", "512GB"],
+    storageOptions: [
+      { size: "128GB", priceModifier: 0 },
+      { size: "256GB", priceModifier: 100 },
+      { size: "512GB", priceModifier: 300 }
+    ],
     specs: {
-      screen: "6.1-inch Super Retina XDR OLED with Dynamic Island",
+      screen: "6.1-inch Super Retina XDR OLED",
       processor: "A16 Bionic chip with 5-core GPU",
       camera: "48MP Main + 12MP Ultra Wide",
-      battery: "3349 mAh (Up to 20 hours video playback)",
-      os: "iOS 17",
+      battery: "3349 mAh with 20W charging",
       weight: "171g",
-      waterResistance: "IP68 (depth of 6 meters up to 30 mins)",
-      charging: "20W Wired, 15W MagSafe wireless"
+      os: "iOS 17"
     },
-    description: "Features Dynamic Island, a 48MP Main camera, and USB-C, all in a durable color-infused glass and aluminum design.",
-    reviews: [
-      { id: "r10", author: "Jordan P.", rating: 5, date: "2024-02-28", comment: "Dynamic Island is incredibly useful! The pastel pink color looks beautiful and feels amazing in hand." }
-    ]
-  },
-  {
-    id: "galaxy-s24-plus",
-    name: "Galaxy S24+",
-    brand: "Samsung",
-    price: 999,
-    originalPrice: 1049,
-    image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&q=80&w=600",
-    images: [
-      "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&q=80&w=600"
-    ],
     rating: 4.7,
-    reviewCount: 52,
-    featured: false,
-    tag: "New",
-    colors: [
-      { name: "Onyx Black", hex: "#292A2C" },
-      { name: "Marble Gray", hex: "#7E8082" },
-      { name: "Cobalt Violet", hex: "#3B2F4C" },
-      { name: "Amber Yellow", hex: "#E9D2A3" }
-    ],
-    storage: ["256GB", "512GB"],
-    specs: {
-      screen: "6.7-inch Dynamic AMOLED 2X, QHD+, 120Hz, 2600 nits",
-      processor: "Exynos 2400 / Snapdragon 8 Gen 3",
-      camera: "50MP Main + 10MP Telephoto + 12MP Ultra Wide",
-      battery: "4900 mAh (45W Super Fast Charging)",
-      os: "Android 14 with One UI 6.1",
-      weight: "196g",
-      waterResistance: "IP68 dust/water resistant",
-      charging: "45W Wired, 15W Wireless"
-    },
-    description: "The perfect balance of size and performance. Features a gorgeous QHD+ screen, high-capacity battery, and Galaxy AI tools.",
+    reviewsCount: 110,
+    isFeatured: false,
+    isDeal: false,
+    stock: 25,
     reviews: [
-      { id: "r11", author: "Lucas G.", rating: 4.5, date: "2024-03-01", comment: "Awesome battery life and screen. It is lighter than the Ultra and fits better in the pocket." }
+      { id: "r9", author: "Leo G.", rating: 4, date: "2024-02-14", comment: "The dynamic island makes a big difference. The pastel pink color is beautiful in person." }
     ]
   },
   {
-    id: "google-pixel-8",
-    name: "Pixel 8",
-    brand: "Google",
-    price: 699,
-    originalPrice: 749,
-    image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&q=80&w=600",
-    images: [
-      "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&q=80&w=600"
-    ],
-    rating: 4.5,
-    reviewCount: 63,
-    featured: false,
-    tag: "Compact Pick",
+    id: "nothing-phone-2",
+    brand: "Nothing",
+    name: "Nothing Phone (2)",
+    price: 599,
+    originalPrice: 649,
+    image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&q=80&w=600",
+    description: "A unique glyph interface, premium materials, and custom Nothing OS 2.0. Experience technology with more soul, more focus, and less distraction.",
     colors: [
-      { name: "Hazel", hex: "#8A9A86" },
-      { name: "Rose", hex: "#F3CFC6" },
-      { name: "Obsidian", hex: "#2E2E2E" }
+      { name: "Dark Gray", hex: "#3A3D40" },
+      { name: "White", hex: "#FFFFFF" }
     ],
-    storage: ["128GB", "256GB"],
+    storageOptions: [
+      { size: "128GB", priceModifier: 0 },
+      { size: "256GB", priceModifier: 50 },
+      { size: "512GB", priceModifier: 150 }
+    ],
     specs: {
-      screen: "6.2-inch Actua OLED, 120Hz, 2000 nits peak",
-      processor: "Google Tensor G3",
-      camera: "50MP Main + 12MP Ultra Wide",
-      battery: "4575 mAh (27W Fast Charging)",
-      os: "Android 14 (7 years updates)",
-      weight: "187g",
-      waterResistance: "IP68 dust/water resistant",
-      charging: "27W Wired, 18W Wireless"
+      screen: "6.7-inch Flexible LTPO OLED, 120Hz",
+      processor: "Snapdragon 8+ Gen 1",
+      camera: "50MP Main + 50MP Ultra Wide",
+      battery: "4700 mAh with 45W fast charging",
+      weight: "201.2g",
+      os: "Nothing OS 2.0 based on Android 13"
     },
-    description: "The helpful phone that fits in your hand. Powered by Google Tensor G3, it offers incredible photography and advanced AI features in a compact design.",
-    reviews: [
-      { id: "r12", author: "Nora B.", rating: 4.5, date: "2024-02-11", comment: "Finally, a flagship phone that isn't a giant brick! Fits nicely in smaller hands, and takes superb photos." }
-    ]
-  },
-  {
-    id: "oneplus-12r",
-    name: "OnePlus 12R",
-    brand: "OnePlus",
-    price: 499,
-    originalPrice: 599,
-    image: "https://images.unsplash.com/photo-1565630916779-e303be97b6f5?auto=format&fit=crop&q=80&w=600",
-    images: [
-      "https://images.unsplash.com/photo-1565630916779-e303be97b6f5?auto=format&fit=crop&q=80&w=600"
-    ],
     rating: 4.6,
-    reviewCount: 41,
-    featured: false,
-    tag: "Budget Beast",
-    colors: [
-      { name: "Cool Blue", hex: "#9BC4E2" },
-      { name: "Iron Gray", hex: "#4A4D4F" }
-    ],
-    storage: ["128GB", "256GB"],
-    specs: {
-      screen: "6.78-inch 1.5K AMOLED, 120Hz ProXDR with LTPO 4.0",
-      processor: "Snapdragon 8 Gen 2",
-      camera: "50MP Sony IMX890 + 8MP Ultra Wide + 2MP Macro",
-      battery: "5500 mAh (100W SUPERVOOC)",
-      os: "OxygenOS based on Android 14",
-      weight: "207g",
-      waterResistance: "IP64 water splash resistance",
-      charging: "100W wired fast charging (0-100% in 26 minutes)"
-    },
-    description: "The performance powerhouse. Boasting a massive 5,500 mAh battery, 100W charging, and Snapdragon 8 Gen 2, it sets a new standard for budget flagships.",
+    reviewsCount: 42,
+    isFeatured: false,
+    isDeal: true,
+    stock: 10,
     reviews: [
-      { id: "r13", author: "Marcus V.", rating: 5, date: "2024-03-05", comment: "The battery on this thing is endless! Easily get 10-11 hours of screen-on-time. Best value phone of the year." }
+      { id: "r10", author: "Oliver S.", rating: 5, date: "2024-01-30", comment: "The Glyph lights are not just a gimmick; they are super helpful for timers and silent notifications!" }
     ]
   }
 ];
 
-export function getPhoneById(id: string): Phone | undefined {
-  return phonesData.find(p => p.id === id);
+export interface TradeInModel {
+  brand: string;
+  model: string;
+  baseValue: number;
 }
 
-export function getFeaturedPhones(): Phone[] {
-  return phonesData.filter(p => p.featured);
-}
+export const TRADE_IN_MODELS: TradeInModel[] = [
+  { brand: "Apple", model: "iPhone 14 Pro Max", baseValue: 650 },
+  { brand: "Apple", model: "iPhone 14 Pro", baseValue: 550 },
+  { brand: "Apple", model: "iPhone 13 Pro Max", baseValue: 450 },
+  { brand: "Apple", model: "iPhone 12", baseValue: 250 },
+  { brand: "Samsung", model: "Galaxy S23 Ultra", baseValue: 600 },
+  { brand: "Samsung", model: "Galaxy S22 Ultra", baseValue: 400 },
+  { brand: "Samsung", model: "Galaxy S21", baseValue: 180 },
+  { brand: "Google", model: "Pixel 7 Pro", baseValue: 350 },
+  { brand: "Google", model: "Pixel 6", baseValue: 150 },
+  { brand: "OnePlus", model: "OnePlus 11", baseValue: 300 }
+];
 
-export function getBrands(): string[] {
-  return Array.from(new Set(phonesData.map(p => p.brand)));
-}
+export const FAQS = [
+  {
+    question: "Do Phonix smartphones come with a warranty?",
+    answer: "Yes, all phones purchased from Phonix come with a 2-year manufacturer warranty that covers all technical defects. You can also purchase our Phonix Care+ accidental damage insurance during checkout."
+  },
+  {
+    question: "How does the Trade-In program work?",
+    answer: "Use our interactive Trade-In Estimator to calculate your old phone's value. You will receive an instant promo code that you can apply at checkout. Then, ship us your old device using our free prepaid label within 14 days of receiving your new phone!"
+  },
+  {
+    question: "Can I book a repair online?",
+    answer: "Absolutely! Go to our Support page, pick your device and the issue, select a date, and book an appointment at one of our 150+ express repair hubs, or choose a mail-in repair."
+  },
+  {
+    question: "Is shipping free?",
+    answer: "Yes! We offer free premium express shipping on all orders over $150. Delivery typically takes 1-3 business days depending on your location."
+  },
+  {
+    question: "What is your return policy?",
+    answer: "We offer a 30-day risk-free return policy. If you are not completely satisfied with your smartphone, you can return it in its original packaging for a full refund."
+  }
+];
