@@ -1,5 +1,5 @@
 {
-  "name": "glovix-nexus",
+  "name": "cookie-clicker-pro",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -9,22 +9,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "canvas-confetti": "^1.6.0",
+    "framer-motion": "^11.2.10",
+    "lucide-react": "^0.395.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2",
-    "zustand": "^4.5.5",
-    "lucide-react": "^0.441.0",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^2.5.2"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@types/react": "^18.3.5",
+    "@types/canvas-confetti": "^1.6.4",
+    "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.45",
-    "tailwindcss": "^3.4.10",
-    "typescript": "^5.5.3",
-    "vite": "^5.4.3"
+    "@vitejs/plugin-react": "^4.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.11"
   }
 }
