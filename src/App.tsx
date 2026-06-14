@@ -60,7 +60,7 @@ export default function App() {
   const [mrr, setMrr] = useState(124500);
   const [activeUsers, setActiveUsers] = useState(1420);
   const [systemHealth, setSystemHealth] = useState(99.98);
-  const [salesHistory, setSalesHistory] = useState([45, 52, 49, 62, 58, 74, 81, 95, 89, 110, 115, 124]);
+  const [salesHistory] = useState([45, 52, 49, 62, 58, 74, 81, 95, 89, 110, 115, 124]);
 
   // 2. Kanban State
   const [tasks, setTasks] = useState<Task[]>([
@@ -502,7 +502,7 @@ export default function App() {
                                 <button 
                                   onClick={() => {
                                     const prevs: Record<string, Task['status']> = { todo: 'backlog', progress: 'todo', done: 'progress' };
-                                    moveTask(task.id, prevs[column]);
+                                    moveTask(task.id, prevs[column]!);
                                   }}
                                   className="text-[10px] text-slate-500 hover:text-slate-300 px-1.5 py-0.5 bg-slate-950 border border-slate-800 rounded"
                                 >
@@ -513,7 +513,7 @@ export default function App() {
                                 <button 
                                   onClick={() => {
                                     const nexts: Record<string, Task['status']> = { backlog: 'todo', todo: 'progress', progress: 'done' };
-                                    moveTask(task.id, nexts[column]);
+                                    moveTask(task.id, nexts[column]!);
                                   }}
                                   className="text-[10px] text-indigo-400 hover:text-indigo-300 px-1.5 py-0.5 bg-indigo-950/20 border border-indigo-900/40 rounded"
                                 >
