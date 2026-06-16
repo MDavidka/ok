@@ -225,6 +225,7 @@ export default function DashboardPage() {
       cpu: parseInt(newCpu),
       ram: parseInt(newRam),
       ssd: parseInt(newSsd),
+      bandwidthLimit: 1000,
     })
 
     setIsDeployOpen(false)
